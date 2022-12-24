@@ -14,3 +14,6 @@ If there is a lack of a lecturer/practitioner in some courses, with the help of 
 **Server-side:** `Node.js, Express`
 
 **Database:** `PostgreSQL`
+
+# Project architecture
+![JCE-ATS](https://user-images.githubusercontent.com/74764366/209445493-ef4383c7-1856-47cf-b801-23254368433d.jpg)
