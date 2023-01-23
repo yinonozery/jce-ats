@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+BODY {
+    background-color: #f3f5f9;
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    font-size: 14px;
+}
+
+.container {
+    border-top: 5px solid #8bc7a1;
+    background-color: white;
+    margin: 3% auto;
+    width: 50%;
+    padding: 10px 0;
+    box-shadow: rgba(255, 255, 255, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+        rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+}
+
+.container h1 {
+    background: rgb(0, 91, 255);
+
+    color: rgb(255, 255, 255);
+    text-transform: uppercase;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+.container .form {
+    display: flex;
+}
+
+.applicant_form {
+    display: flex;
+    justify-content: left;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.applicant_form > div {
+    flex: 50%;
+}
+
+.applicant_form textarea {
+    resize: none;
+    font-size: 14px;
+    width: 60%;
+    border: 2px solid #95c6f6;
+    font-family: 'Open Sans', sans-serif;
+    border: 2px solid #ccc;
+    transition: all 0.3s ease-in;
+}
+
+.applicant_form textarea:focus {
+    outline: none;
+    border: 2px solid #2772b8;
+    transition: all 0.3s ease-in;
+}
+
+.applicant_form input {
+    font-family: 'Open Sans', sans-serif;
+    border: 2px solid #95c6f6;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 5px;
+    transition: all 0.3s ease-in;
+}
+
+.applicant_form input:focus {
+    outline: 0;
+    font-family: 'Open Sans', sans-serif;
+    border: 2px solid #2772b8;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 5px;
+    transition: all 0.3s ease-in;
+}
+
+input[type='file'] {
+    color: royalblue;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.linear-progress {
+    margin: 10px auto;
+    padding: 0 5px;
+    border: 1px solid #bababa;
+    border-radius: 10px;
+    width: 100px;
+    font-size: 11px;
+}
+
+.msg {
+    color: green;
+    font-weight: bold;
+}
+
+#applicant button {
+    font-family: 'Open Sans', sans-serif;
+    background: rgb(0, 91, 255);
+    background: linear-gradient(90deg, rgba(0, 91, 255, 1) 0%, rgba(0, 168, 255, 1) 50%, rgba(0, 212, 255, 1) 100%);
+    color: white;
+    padding: 5px 20px;
+    border-radius: 5px;
+    border: 0px;
+    text-transform: uppercase;
+    font-size: 20px;
+    width: 60%;
+}
+
+.must {
+    color: red;
+}
+
+.up-label {
+    display: block;
+}
