@@ -15,5 +15,9 @@ If there is a lack of a lecturer/practitioner in some courses, with the help of 
 
 **Database:** `PostgreSQL`
 
-## Project architecture
-<kbd>![JCE-ATS](https://user-images.githubusercontent.com/74764366/209445493-ef4383c7-1856-47cf-b801-23254368433d.jpg)</kbd>
+## Hiring Manager Use Case
+![image](https://user-images.githubusercontent.com/74764366/214918318-17b339b4-267e-4759-a773-cd2246e0d989.png)
+
+## Applicant Use Case
+![image](https://user-images.githubusercontent.com/74764366/214918985-6808efb3-a78a-406d-b907-20e3ad0253fe.png)
+
