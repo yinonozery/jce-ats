@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import { useState, useRef } from 'react';
 import { CloseCircleOutlined, FileSearchOutlined } from '@ant-design/icons';
-import { MISSING_KEYWORDS, MISSING_COURSE_NAME, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD } from '../utils/validateMessages';
+import { MISSING_KEYWORDS, MISSING_COURSE_NAME, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD } from '../utils/messages';
 import AppConfig from '../stores/appStore';
 import type { FormInstance } from 'antd/es/form';
 
@@ -142,18 +142,3 @@ const AddCourse: React.FC = () => {
 };
 
 export default AddCourse;
-
-{/*
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 20, flexWrap: 'nowrap' }}>
-                    // Minimum Years of Experience
-                    <Form.Item name="years_of_exp" label="Years of Experience" htmlFor='years_of_exp' rules={[
-                        {
-                            type: 'number',
-                            required: false,
-                            message: '',
-                        },
-                    ]} hasFeedback>
-                        <InputNumber min={0} max={99} id='years_of_exp' />
-                    </Form.Item>
-                </div>
-                */}

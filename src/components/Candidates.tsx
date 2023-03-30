@@ -6,7 +6,7 @@ import type { FilterConfirmProps } from 'antd/es/table/interface';
 import type { InputRef } from 'antd';
 import { SearchOutlined, CloseCircleOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 import TableKeywordsSearch from './TableKeywordsSearch';
-import { FETCHING_DATA_FAILED } from '../utils/validateMessages';
+import { FETCHING_DATA_FAILED } from '../utils/messages';
 
 interface DataType {
     first_name: string,
@@ -161,6 +161,7 @@ const Candidates: React.FC = observer(() => {
                     rowExpandable: (record) => record.first_name !== 'Not Expandable',
                 }}
                 loading={isLoading}
+                bordered
             />
         </>
     )

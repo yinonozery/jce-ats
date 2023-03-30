@@ -12,3 +12,6 @@ export const DUPLICATE_KEYWORD = (keyword: string) => `Error: The keyword '${key
 
 export const FIELD_MIN_LENGTH = (type: string, min: number) => `${type} must be at least ${min} characters long`;
 export const FETCHING_DATA_FAILED = "Failed to fetch data from server";
+
+// Auth
+export const LOG_OUT_QUESTION = "Are you sure you want to log out?";

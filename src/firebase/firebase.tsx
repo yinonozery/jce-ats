@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { setPersistence, getAuth, signInWithEmailAndPassword, signOut, browserLocalPersistence, sendPasswordResetEmail, browserSessionPersistence } from "firebase/auth";
+import { setPersistence, getAuth, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, browserSessionPersistence } from "firebase/auth";
 import userStore from "../stores/userStore";
 
 const firebaseConfig = {

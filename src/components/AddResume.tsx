@@ -14,7 +14,7 @@ import {
 import { UploadOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../utils/validateMessages';
+import { MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../utils/messages';
 
 const { TextArea } = Input;
 
@@ -54,7 +54,8 @@ const AddResume: React.FC = () => {
                         resolve(resumeEncoded_base64)
                     }
                 })
-                const resumeEncoded_base64 = await readerPromise;
+                // const resumeEncoded_base64 = await readerPromise;
+                await readerPromise;
             }
 
             // API Request AWS Form

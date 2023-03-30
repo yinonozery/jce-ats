@@ -4,7 +4,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input, message, Divider, Modal } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
 import appConfig from "../../stores/appStore";
-import { MISSING_FIELD, VALID_EMAIL } from "../../utils/validateMessages";
+import { MISSING_FIELD, VALID_EMAIL } from "../../utils/messages";
 
 type loginForm = {
     email: string,

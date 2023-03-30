@@ -1,6 +1,6 @@
 import { Divider, message, Table, Tag } from "antd";
 import React, { useEffect, useState } from "react";
-import { FETCHING_DATA_FAILED } from "../utils/validateMessages";
+import { FETCHING_DATA_FAILED } from "../utils/messages";
 
 type courseData = {
     name: string,
@@ -49,6 +49,7 @@ const Courses: React.FC = () => {
                 columns={columns}
                 size="middle"
                 loading={isLoading}
+                bordered
             />
             {/* : <Empty />} */}
         </>

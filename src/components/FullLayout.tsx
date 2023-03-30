@@ -3,8 +3,8 @@ import { Breadcrumb, Layout, theme } from 'antd';
 import HeaderNav from './Header';
 import SideNav from './SideNav';
 import userStore from '../stores/userStore';
-import React, { useState } from 'react';
-import type { ReactNode } from 'react';
+import React, { useState, ReactNode } from 'react';
+
 const { Content, Sider, Footer } = Layout;
 
 type childrenProps = {
@@ -22,12 +22,13 @@ const FullLayout: React.FC<childrenProps> = (props) => {
             <Layout hasSider>
                 <Layout>
                     <Sider width={200} style={{
-                        background: colorBgContainer, overflow: 'auto',
+                        background: colorBgContainer,
                         height: '100vh',
                         position: 'fixed',
                         left: 0,
                         top: 0,
                         bottom: 0,
+                        boxShadow: 'rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px',
                     }}
                         onCollapse={(smaller) => {
                             if (smaller)
@@ -36,6 +37,8 @@ const FullLayout: React.FC<childrenProps> = (props) => {
                                 setMarginResponsive(200)
                         }}
                         breakpoint="md">
+
+
 
                         <SideNav />
                     </Sider>
