@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import userStore from './stores/userStore';
 import firebase from './firebase/firebase';
 import './assets/css/App.css';
-import appConfig from './stores/appStore';
+import AppConfig from './stores/appStore';
 import { Spin } from 'antd';
 
 const App: React.FC = () => {
@@ -15,7 +15,6 @@ const App: React.FC = () => {
     firebase.auth.onAuthStateChanged((user: any) => {
       if (user) {
         userStore.setUser(user)
-        // console.table({ 'UID': user.uid, 'Email': user.email })
       } else {
         userStore.setUser(null)
       }
@@ -25,7 +24,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div id="overlay" style={{ display: appConfig.isLoading ? 'flex' : 'none' }}><Spin size='large' /></div>
+      <div id="overlay" style={{ display: AppConfig.isLoading ? 'flex' : 'none' }}><Spin size='large' /></div>
       <Router>
         <FullLayout>
           <AllRoutes />

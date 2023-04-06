@@ -4,6 +4,8 @@ import HeaderNav from './Header';
 import SideNav from './SideNav';
 import userStore from '../stores/userStore';
 import React, { useState, ReactNode } from 'react';
+import AppConfig from '../stores/appStore';
+import { observer } from 'mobx-react';
 
 const { Content, Sider, Footer } = Layout;
 
@@ -11,12 +13,26 @@ type childrenProps = {
     children: ReactNode,
 }
 
-const FullLayout: React.FC<childrenProps> = (props) => {
+const FullLayout: React.FC<childrenProps> = observer((props) => {
     const [marginResponsive, setMarginResponsive] = useState(200)
 
     const {
         token: { colorBgContainer },
     } = theme.useToken();
+
+    const capitalizePathName = (pathname: string | null) => {
+        if (pathname) {
+            const splitStr = pathname.split('-');
+            const words = splitStr.map((word) => {
+                const firstLetter = word.charAt(0).toUpperCase();
+                const restOfWord = word.slice(1).toLowerCase();
+                return firstLetter + restOfWord;
+            });
+            return words.join(' ');
+        }
+    };
+
+
     return (
         <>
             <Layout hasSider>
@@ -37,10 +53,7 @@ const FullLayout: React.FC<childrenProps> = (props) => {
                                 setMarginResponsive(200)
                         }}
                         breakpoint="md">
-
-
-
-                        <SideNav />
+                        <SideNav smaller={marginResponsive === 80 ? true : false} />
                     </Sider>
                     <Layout className="site-layout" style={{ marginLeft: (marginResponsive) }} >
                         <HeaderNav />
@@ -48,7 +61,7 @@ const FullLayout: React.FC<childrenProps> = (props) => {
                             <Breadcrumb style={{ margin: '16px 0' }}>
                                 <Breadcrumb.Item>Careers Center</Breadcrumb.Item>
                                 {userStore.userInfo ?
-                                    <Breadcrumb.Item>Welcome {userStore.userInfo.email}</Breadcrumb.Item> : null}
+                                    <Breadcrumb.Item>{capitalizePathName(AppConfig.currPage)}</Breadcrumb.Item> : null}
                             </Breadcrumb>
                             <Content
                                 style={{
@@ -71,6 +84,6 @@ const FullLayout: React.FC<childrenProps> = (props) => {
             </Layout>
         </>
     )
-}
+});
 
 export default FullLayout;

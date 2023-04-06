@@ -30,18 +30,12 @@ const AddCourse: React.FC = () => {
             course_name: values.course_name,
             keywords: keywords,
         }
-
+        
         try {
             if (keywords.length < 3) {
                 message.error(MISSING_KEYWORDS(3 - keywords.length))
                 return;
             }
-
-            // {
-            //     "course_name":"Machine Learning",
-            //     "keywords": ["python","numpy","sklearn","machine","machine-learning","AI"],
-            // }
-            console.log((uploadForm));
 
             // API Request AWS Form
             const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/courses`, {
@@ -84,7 +78,7 @@ const AddCourse: React.FC = () => {
         </div>
     return (
         <>
-            <Divider orientation='left'>Add a new course</Divider>
+            <Divider orientation='center'>Add a new course</Divider>
             <Form
                 form={form}
                 autoComplete="true"

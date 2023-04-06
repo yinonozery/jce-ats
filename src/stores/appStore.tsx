@@ -2,20 +2,20 @@ import { makeAutoObservable } from "mobx";
 
 class appStore {
     isLoading: boolean;
-    tempData: Array<any> | null;
+    currPage: string | null;
 
     constructor() {
         makeAutoObservable(this);
         this.isLoading = false;
-        this.tempData = null;
+        this.currPage = null;
     }
 
     loadingHandler = (mode: boolean) => {
         this.isLoading = mode;
     }
 
-    setTempData = (data: Array<any> | null) => {
-        this.tempData = data;
+    setCurrPage = (currPage: string | null) => {
+        this.currPage = currPage;
     }
 
 }

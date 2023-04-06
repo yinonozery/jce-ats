@@ -8,19 +8,19 @@ import { SearchOutlined, CloseCircleOutlined, CloudDownloadOutlined } from '@ant
 import TableKeywordsSearch from './TableKeywordsSearch';
 import { FETCHING_DATA_FAILED } from '../utils/messages';
 
-interface DataType {
+interface candidateType {
     first_name: string,
     last_name: string,
     role: string,
     keywords: any,
 }
 
-type DataIndex = keyof DataType;
+type DataIndex = keyof candidateType;
 
 const Candidates: React.FC = observer(() => {
-    const [candidates, setCandidates] = useState<any>(null);
+    const [candidates, setCandidates] = useState<candidateType[]>([]);
     const searchInput = useRef<InputRef>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const url = `${process.env.REACT_APP_BASE_URL}/jce/candidates`;
 
     useEffect(() => {
@@ -53,7 +53,7 @@ const Candidates: React.FC = observer(() => {
         clearFilters();
     };
 
-    const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<DataType> => ({
+    const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<candidateType> => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
                 <Input

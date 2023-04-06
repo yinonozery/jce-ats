@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { setPersistence, getAuth, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, browserSessionPersistence } from "firebase/auth";
+import { setPersistence, getAuth, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, browserSessionPersistence, updateProfile, updateEmail, updatePassword } from "firebase/auth";
 import userStore from "../stores/userStore";
 
 const firebaseConfig = {
@@ -41,11 +41,41 @@ const doResetPassword = (email: string) =>
         throw err;
     });
 
+const doUpdateProfile = async (displayName: string, email: string) => {
+    try {
+        if (!displayName || !email)
+            throw new Error('Both name and email are required to update profile');
+
+        if (auth.currentUser) {
+            await updateProfile(auth.currentUser, {
+                displayName: displayName
+            });
+            if (auth.currentUser.email !== email)
+                await updateEmail(auth.currentUser, email);
+        }
+    } catch (error) {
+        throw error;
+    }
+};
+
+const doChangePassword = async (newPassword: string) => {
+    try {
+        if (!newPassword || newPassword.length < 1)
+            throw new Error('Please enter password and try again');
+        if (auth.currentUser)
+            await updatePassword(auth.currentUser, newPassword);
+    } catch (error) {
+        throw error;
+    }
+};
+
 // Export firebase methods
 const firebase = {
     doSignInWithEmailAndPassword,
     doSignOut,
     doResetPassword,
+    doUpdateProfile,
+    doChangePassword,
     auth
 }
 

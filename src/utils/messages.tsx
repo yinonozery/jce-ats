@@ -15,3 +15,10 @@ export const FETCHING_DATA_FAILED = "Failed to fetch data from server";
 
 // Auth
 export const LOG_OUT_QUESTION = "Are you sure you want to log out?";
+
+// Edit Profile Modal
+export const REAUTHENTICATION_MSG = "Please logout and login again to update your email/password.";
+export const PASSWORD_CONFIRMATION = "Please confirm your password!";
+
+// Add Email Template Modal
+export const EMAIL_TEMPLATE_SUCCESS = "Email Template added successfully";

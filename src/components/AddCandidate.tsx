@@ -18,7 +18,7 @@ import { MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../ut
 
 const { TextArea } = Input;
 
-const AddResume: React.FC = () => {
+const AddCandidate: React.FC = () => {
     const [form] = Form.useForm();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [otherRole, setOtherRole] = useState('Other');
@@ -32,7 +32,7 @@ const AddResume: React.FC = () => {
         years_of_exp: string,
         resume: {
             file: File,
-            fileList: Array<File>
+            fileList: Array<File>,
         } | string | undefined,
         terms: boolean,
     }
@@ -71,7 +71,6 @@ const AddResume: React.FC = () => {
             const data = await response.text();
             console.log(data);
 
-            // console.log(await response.text());
             message.success('Success');
             return
         } catch (err) {
@@ -178,7 +177,7 @@ const AddResume: React.FC = () => {
                     required: true,
                     message: MISSING_FILE,
                 }]}>
-                    <Dragger {...props} maxCount={1} accept=".txt .doc, .docx, .pdf">
+                    <Dragger {...props} maxCount={1} accept=".doc, .docx, .pdf">
                         <p className="ant-upload-drag-icon">
                             <UploadOutlined />
                         </p>
@@ -229,4 +228,4 @@ const AddResume: React.FC = () => {
     );
 };
 
-export default AddResume;
+export default AddCandidate;
