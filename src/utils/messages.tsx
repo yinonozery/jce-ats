@@ -22,3 +22,5 @@ export const PASSWORD_CONFIRMATION = "Please confirm your password!";
 
 // Add Email Template Modal
 export const EMAIL_TEMPLATE_SUCCESS = "Email Template added successfully";
+export const DELETE_TEMPLATE_EMAIL = "Are you sure you want to delete this email template?";
+export const DELETE_TEMPLATE_EMAIL_SUCCESS = "Email template deleted successfully";
