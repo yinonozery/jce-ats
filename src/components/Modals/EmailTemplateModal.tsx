@@ -38,7 +38,7 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
             body: props?.template?.Body || ''
         });
 
-    }, [props.mode])
+    }, [form, props.mode, props?.template?.Body, props?.template?.Subject, props?.template?.TemplateType])
 
     useEffect(() => {
         fetch(url)
@@ -66,8 +66,9 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
         if (!type || !subject || !body)
             return;
         setAddLoading(false);
-        const newTemplateForm = {
-            type: type, subject: subject, body: body
+
+        const newTemplateForm: { type: string, subject: string, body: string, id: string | undefined | null } = {
+            type: type, subject: subject, body: body, id: props.template?.TemplateId,
         };
 
         try {
