@@ -1,15 +1,10 @@
 import { Divider, message, Table, Tag } from "antd";
 import React, { useEffect, useState } from "react";
 import { FETCHING_DATA_FAILED } from "../utils/messages";
-
-type courseData = {
-    name: string,
-    keywords: string[],
-    key: number,
-}
+import Course from "./types/Course";
 
 const Courses: React.FC = () => {
-    const [courses, setCourses] = useState<courseData[]>([]);
+    const [courses, setCourses] = useState<Course[]>([]);
     const [isLoading, setIsLoading] = useState(true)
     const url = `${process.env.REACT_APP_BASE_URL}/jce/courses`;
 
@@ -43,7 +38,6 @@ const Courses: React.FC = () => {
     return (
         <>
             <Divider orientation="left">Courses List</Divider>
-            {/* {courses && courses?.length > 0 ? */}
             <Table
                 dataSource={courses}
                 columns={columns}
@@ -51,7 +45,6 @@ const Courses: React.FC = () => {
                 loading={isLoading}
                 bordered
             />
-            {/* : <Empty />} */}
         </>
     )
 }

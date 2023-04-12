@@ -7,18 +7,12 @@ import type { InputRef } from 'antd';
 import { SearchOutlined, CloseCircleOutlined, CloudDownloadOutlined } from '@ant-design/icons';
 import TableKeywordsSearch from './TableKeywordsSearch';
 import { FETCHING_DATA_FAILED } from '../utils/messages';
+import Candidate from './types/Candidate';
 
-interface candidateType {
-    first_name: string,
-    last_name: string,
-    role: string,
-    keywords: any,
-}
-
-type DataIndex = keyof candidateType;
+type DataIndex = keyof Candidate;
 
 const Candidates: React.FC = observer(() => {
-    const [candidates, setCandidates] = useState<candidateType[]>([]);
+    const [candidates, setCandidates] = useState<Candidate[]>([]);
     const searchInput = useRef<InputRef>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const url = `${process.env.REACT_APP_BASE_URL}/jce/candidates`;
@@ -53,7 +47,7 @@ const Candidates: React.FC = observer(() => {
         clearFilters();
     };
 
-    const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<candidateType> => ({
+    const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<Candidate> => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
                 <Input

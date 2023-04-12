@@ -12,6 +12,7 @@ import Error from "../components/Error";
 import Courses from "../components/Courses";
 import AppConfig from "../stores/appStore";
 import EmailTemplates from "../components/EmailTemplates";
+import Explore from "../components/Explore";
 
 const AllRoutes: React.FC = () => {
     const location = useLocation();
@@ -32,6 +33,7 @@ const AllRoutes: React.FC = () => {
                 <Route path="candidates" element={<Candidates />} action={() => AppConfig.setCurrPage('Candidates')} />
                 <Route path="courses" element={<Courses />} />
                 <Route path="email-templates" element={<EmailTemplates />} />
+                <Route path="explore" element={<Explore />} />
             </Route>
         </Routes>
     );

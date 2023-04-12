@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { setPersistence, getAuth, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, browserSessionPersistence, updateProfile, updateEmail, updatePassword } from "firebase/auth";
+import { setPersistence, getAuth, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateProfile, updateEmail, updatePassword, browserLocalPersistence } from "firebase/auth";
 import userStore from "../stores/userStore";
 
 const firebaseConfig = {
@@ -16,7 +16,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 const doSignInWithEmailAndPassword = (email: string, password: string) =>
-    setPersistence(auth, browserSessionPersistence).then(() => {
+    setPersistence(auth, browserLocalPersistence).then(() => {
         return signInWithEmailAndPassword(auth, email, password).then((user) => {
             if (user.user)
                 userStore.setUser(user.user)
