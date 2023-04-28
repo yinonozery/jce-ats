@@ -31,7 +31,7 @@ const EmailTemplates: React.FC = () => {
     }, [openTemplateModal, url])
 
     const deleteTemplate = () => {
-        fetch(`${url}?id=${actionID?.TemplateId}&type=${actionID?.TemplateType}`, {
+        fetch(`${url}?id=${actionID?.TemplateId}`, {
             method: 'DELETE',
         })
             .then(response => response.json().then((data) => {
@@ -48,18 +48,18 @@ const EmailTemplates: React.FC = () => {
 
     const items: MenuProps['items'] = [
         {
-            label: <a href='##' onClick={() => {
+            label: <span onClick={() => {
                 setSelectedTemplate(templates.find((template) => template.TemplateId === actionID?.TemplateId))
                 setModalMode('Edit');
                 setEditTemplateModal(true);
-            }}>Edit</a>,
+            }}>Edit</span>,
             key: '0',
         },
         {
             type: 'divider',
         },
         {
-            label: <a href='#delete' onClick={() => setDeleteModal(true)}>Delete</a >,
+            label: <span onClick={() => setDeleteModal(true)}>Delete</span>,
             key: '3',
             danger: true,
         },

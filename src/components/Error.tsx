@@ -8,6 +8,7 @@ type errorProps = {
 }
 
 const Error: React.FC<errorProps> = (props) => (
+
   <Result
     status={props.statusCode}
     title={<Divider style={{ fontSize: '25px' }}>{props.statusCode}</Divider>}

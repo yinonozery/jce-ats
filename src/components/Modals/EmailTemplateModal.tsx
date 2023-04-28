@@ -100,6 +100,7 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
             open={props.state}
             onCancel={() => props.stateFunc(false)}
             footer={null}
+            forceRender
         >
             <Form
                 form={form}

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import firebase from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Menu, Modal, MenuProps, Avatar, Divider, Dropdown } from 'antd';
-import { LaptopOutlined, ReadOutlined, NotificationOutlined, UserOutlined, FacebookOutlined, GlobalOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, FileAddOutlined, SolutionOutlined, QuestionOutlined, AppstoreAddOutlined, ContainerOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { LaptopOutlined, ReadOutlined, NotificationOutlined, UserOutlined, FacebookOutlined, GlobalOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, FileAddOutlined, SolutionOutlined, QuestionOutlined, AppstoreAddOutlined, ContainerOutlined } from '@ant-design/icons';
 import userStore from "../stores/userStore";
 import { LOG_OUT_QUESTION } from "../utils/messages";
 import EditProfileModal from "./Modals/EditProfileModal";
@@ -20,7 +20,7 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
         { index: 0, icon: UserOutlined, label: 'Home', path: '/', subItems: [] },
         { index: 1, icon: LaptopOutlined, label: 'About', path: '/about', subItems: [] },
         {
-            index: 8, icon: NotificationOutlined, label: 'Contact Us', path: '#', subItems:
+            index: 7, icon: NotificationOutlined, label: 'Contact Us', path: '#', subItems:
                 [
                     { icon: FacebookOutlined, label: 'Facebook', path: 'https://www.facebook.com/JCE.IL' },
                     { icon: InstagramOutlined, label: 'Instagram', path: 'https://www.instagram.com/aguda.jce' },
@@ -36,10 +36,9 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
             { index: 2, icon: SolutionOutlined, label: 'Candidates', path: '/candidates', subItems: [] },
             { index: 3, icon: ReadOutlined, label: 'Courses', path: '/courses', subItems: [] },
             { index: 4, icon: ContainerOutlined, label: 'Email Templates', path: '/email-templates', subItems: [] },
-            { index: 5, icon: ThunderboltOutlined, label: 'Explore', path: '/explore', subItems: [] },
-            { index: 6, icon: FileAddOutlined, label: 'Add Candidate', path: '/add-candidate', subItems: [] },
-            { index: 7, icon: AppstoreAddOutlined, label: 'Add Course', path: '/add-course', subItems: [] },
-            { index: 10, icon: LogoutOutlined, label: 'Logout', path: '/logout', subItems: [] },
+            { index: 5, icon: FileAddOutlined, label: 'Add Candidate', path: '/add-candidate', subItems: [] },
+            { index: 6, icon: AppstoreAddOutlined, label: 'Add Course', path: '/add-course', subItems: [] },
+            { index: 9, icon: LogoutOutlined, label: 'Logout', path: '/logout', subItems: [] },
         );
     } else {
         // Logout
@@ -49,6 +48,7 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
     }
 
     sideMenuItems.sort((a, b) => a.index - b.index); // Sort menu order by index
+    //@ts-ignore
     const menu: MenuProps['items'] =
         sideMenuItems
             .map(
@@ -115,13 +115,12 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
                 mode="inline"
                 inlineIndent={15}
                 selectedKeys={[String(sideMenuItems.find((item) => item.path === `/${AppConfig?.currPage}`)?.index)]}
-                defaultOpenKeys={['3']}
-                style={{ height: '100%', borderRight: 0 }}
+                defaultOpenKeys={['8']}
                 items={menu}
                 onClick={(clicked) => {
-                    let res = menu.find((item) => item?.key === (clicked.keyPath.length < 2 ? clicked?.keyPath[0] : clicked?.keyPath[1]))
+                    let res = menu?.find((item) => item?.key === (clicked.keyPath.length < 2 ? clicked?.keyPath[0] : clicked?.keyPath[1]))
                     // @ts-ignore
-                    if (res.label === 'Logout')
+                    if (res?.label === 'Logout')
                         return setLogoutModal(true);
                     if (clicked.keyPath.length > 1) {
                         // @ts-ignore

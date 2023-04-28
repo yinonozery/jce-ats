@@ -3,7 +3,6 @@ import {
     Input,
     InputNumber,
     Select,
-    Modal,
     Button,
     Upload,
     UploadProps,
@@ -11,24 +10,21 @@ import {
     message,
     Divider,
 } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import { MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../utils/messages';
 
 const { TextArea } = Input;
 
 const AddCandidate: React.FC = () => {
     const [form] = Form.useForm();
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [otherRole, setOtherRole] = useState('Other');
     const { Dragger } = Upload;
 
     type UploadForm = {
         first_name: string,
         last_name: string,
         email: string,
-        role: string,
+        gender: string,
         years_of_exp: string,
         resume: {
             file: File,
@@ -39,7 +35,7 @@ const AddCandidate: React.FC = () => {
 
     const onFinish = async () => {
         try {
-            const values: UploadForm = await form.validateFields(['resume', 'first_name', 'last_name', 'email', 'terms', 'role', 'years_of_exp']);
+            const values: UploadForm = await form.validateFields(['resume', 'first_name', 'last_name', 'email', 'terms', 'gender', 'years_of_exp']);
             if (typeof (values.resume) === "object") {
                 if (values.resume.fileList.length === 0)
                     throw String("A resume file must be attached");
@@ -124,30 +120,18 @@ const AddCandidate: React.FC = () => {
                     </Form.Item>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 20, flexWrap: 'nowrap' }}>
-                    {/* Role */}
-                    <Form.Item style={{ minWidth: '48%' }} name="role" label="Role" htmlFor='role' rules={[
+                    {/* Gender */}
+                    <Form.Item style={{ minWidth: '48%' }} name="gender" label="Gender" htmlFor='gender' rules={[
                         {
                             type: 'string',
                             required: true,
-                            message: MISSING_FIELD("role"),
+                            message: MISSING_FIELD("gender"),
                         },
                     ]} hasFeedback>
-                        <Select id="role" onChange={(e) => e === 'other' ? setIsModalOpen(true) : null}>
-                            <Select.Option value="lecturer">Lecturer</Select.Option>
-                            <Select.Option value="tutor">Tutor</Select.Option>
-                            <Select.Option value='other'>{otherRole} {otherRole !== 'Other' ? '(Other)' : ''}</Select.Option>
+                        <Select id="gender">
+                            <Select.Option value="Male">Male <ManOutlined /></Select.Option>
+                            <Select.Option value="Female">Female <WomanOutlined /></Select.Option>
                         </Select>
-                    </Form.Item>
-
-                    {/* Modal Other Role */}
-                    <Form.Item
-                        shouldUpdate={(prevValues, currentValues) => prevValues.role !== currentValues.role}
-                    >
-                        <Modal title="Choose candidate role" open={isModalOpen} footer={[<Button type="primary" onClick={() => setIsModalOpen(false)}>Submit</Button>]}>
-                            <Form onFinish={() => setIsModalOpen(false)}>
-                                <Input id='other_role' onChange={(e) => setOtherRole(e.currentTarget.value)} />
-                            </Form>
-                        </Modal>
                     </Form.Item>
 
                     {/* Years of Experience */}

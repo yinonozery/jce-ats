@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Select, message } from 'antd';
+import { Card, Divider, Select, Space, Tag, message, Typography } from 'antd';
 import { FETCHING_DATA_FAILED } from '../utils/messages';
 import AppConfig from '../stores/appStore';
 import type Candidate from './types/Candidate';
 import type Course from './types/Course';
+const { Text } = Typography;
 
 interface SelectOption<T> {
     label: string;
@@ -61,41 +62,47 @@ const Explore: React.FC = () => {
     return (
         <>
             <Divider>Find a match</Divider>
-            <Select
-                showSearch
-                placeholder='Select a candidate'
-                onSelect={(_, select2) => setSelectedCandidate(select2.data)}
-                onClear={() => setSelectedCandidate(undefined)}
-                options={candidates}
-                size='large'
-                style={{ width: '100%' }}
-                allowClear
-            />
-            {selectedCandidate ?
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span><b><u>First Name:</u></b> {selectedCandidate?.first_name}</span>
-                    <span><b><u>Last Name:</u></b> {selectedCandidate?.last_name}</span>
-                    <span><b><u>Role:</u></b> {selectedCandidate?.role}</span>
-                    <span><b><u>Keywords:</u></b> {selectedCandidate?.keywords.length} Words</span>
-                </div>
-                : ''}
-            <Select
-                showSearch
-                placeholder='Select a course'
-                onSelect={(_, select2: any) => setSelectedCourse(select2.data)}
-                onClear={() => setSelectedCourse(undefined)}
-                options={courses}
-                size='large'
-                style={{ width: '100%' }}
-                allowClear
-            />
-            {selectedCourse ?
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span><b><u>Name:</u></b> {selectedCourse?.name}</span>
-                    <span><b><u>Keywords:</u></b> {selectedCourse?.keywords.length} Words</span>
+            <div style={{ display: 'flex', gap: 10 }}>
+                <Select
+                    showSearch
+                    placeholder='Select a candidate'
+                    onSelect={(_, select2) => setSelectedCandidate(select2.data)}
+                    onClear={() => setSelectedCandidate(undefined)}
+                    options={candidates}
+                    size='large'
+                    style={{ width: '100%' }}
+                    allowClear
+                />
+                <Select
+                    showSearch
+                    placeholder='Select a course'
+                    onSelect={(_, select2: any) => setSelectedCourse(select2.data)}
+                    onClear={() => setSelectedCourse(undefined)}
+                    options={courses}
+                    size='large'
+                    style={{ width: '100%' }}
+                    allowClear
+                />
+            </div>
+            {selectedCandidate && selectedCourse ?
+                <div style={{ display: 'flex' }}>
+                    <Card title={selectedCandidate?.first_name + selectedCandidate?.last_name} style={{ margin: '10px auto', width: 'fit-content' }}>
+                        <p><Text strong type='danger'>Gender: </Text>{selectedCandidate?.gender}</p>
+                        <p><Text strong type='danger'>Keywords: </Text>{selectedCandidate?.keywords.length} Words</p>
+                    </Card>
+                    <Card title={selectedCourse?.name} style={{ margin: '10px auto', width: 'fit-content' }}>
+                        <p><Text strong type='danger'>Keywords: </Text>{selectedCourse?.keywords.length} Words</p>
+                    </Card>
                 </div>
                 : ''}
             <Divider>Matching Results</Divider>
+            <Space>
+                {selectedCourse?.keywords.filter((courseKeyword: string) => {
+                    return selectedCandidate?.keywords.includes(courseKeyword.toLowerCase());
+                }).map((matchedKeyword: string) => {
+                    return <Tag key={matchedKeyword} color='blue-inverse' >{matchedKeyword.charAt(0).toUpperCase() + matchedKeyword.substring(1,)}</Tag>;
+                })}
+            </Space>
         </>
     )
 };

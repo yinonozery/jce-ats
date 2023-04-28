@@ -37,22 +37,26 @@ const FullLayout: React.FC<childrenProps> = observer((props) => {
         <>
             <Layout hasSider>
                 <Layout>
-                    <Sider width={200} style={{
-                        background: colorBgContainer,
-                        height: '100vh',
-                        position: 'fixed',
-                        left: 0,
-                        top: 0,
-                        bottom: 0,
-                        boxShadow: 'rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px',
-                    }}
+                    <Sider
+                        width={200}
+                        style={{
+                            background: colorBgContainer,
+                            height: '100vh',
+                            position: 'fixed',
+                            left: 0,
+                            top: 0,
+                            bottom: 0,
+                            overflowY: 'auto',
+                            boxShadow: 'rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px',
+                        }}
                         onCollapse={(smaller) => {
                             if (smaller)
                                 setMarginResponsive(80)
                             else
                                 setMarginResponsive(200)
                         }}
-                        breakpoint="md">
+                        breakpoint="md"
+                    >
                         <SideNav smaller={marginResponsive === 80 ? true : false} />
                     </Sider>
                     <Layout className="site-layout" style={{ marginLeft: (marginResponsive) }} >

@@ -1,7 +1,7 @@
 type Candidate = {
     first_name: string,
     last_name: string,
-    role: string,
+    gender: 'Male' | 'Female',
     keywords: any,
     label: string,
     value: string,

@@ -12,28 +12,36 @@ import Error from "../components/Error";
 import Courses from "../components/Courses";
 import AppConfig from "../stores/appStore";
 import EmailTemplates from "../components/EmailTemplates";
-import Explore from "../components/Explore";
 
 const AllRoutes: React.FC = () => {
     const location = useLocation();
+    const appRoutes = [
+        'login',
+        'signout',
+        'add-candidate',
+        'add-course',
+        'candidates',
+        'courses',
+        'email-templates',
+    ]
 
     useEffect(() => {
-        AppConfig.setCurrPage(location.pathname.substring(1,));
-    }, [location])
+        AppConfig.setCurrPage(appRoutes.includes(location.pathname.substring(1,)) ? location.pathname.substring(1,) : '');
+    })
 
     return (
         <Routes>
             <Route path="*" element={<Error statusCode={404} subTitle={"Sorry, the page you visited does not exist."} />} />
             <Route path="/" element={<Home />} />
-            <Route path="login" element={<Login />} />
-            <Route path="signout" element={<SignOut />} />
+            <Route path={appRoutes[0]} element={<Login />} />
+            <Route path={appRoutes[1]} element={<SignOut />} />
             <Route element={<ProtectedRoute user={userStore.userInfo} />}>
-                <Route path="add-candidate" element={<AddCandidate />} />
-                <Route path="add-course" element={<AddCourse />} />
-                <Route path="candidates" element={<Candidates />} action={() => AppConfig.setCurrPage('Candidates')} />
-                <Route path="courses" element={<Courses />} />
-                <Route path="email-templates" element={<EmailTemplates />} />
-                <Route path="explore" element={<Explore />} />
+                <Route path={appRoutes[2]} element={<AddCandidate />} />
+                <Route path={appRoutes[3]} element={<AddCourse />} />
+                <Route path={appRoutes[4]} element={<Candidates />} action={() => AppConfig.setCurrPage('Candidates')} />
+                <Route path={appRoutes[5]} element={<Courses />} />
+                <Route path={appRoutes[6]} element={<EmailTemplates />} />
+                {/* <Route path="explore" element={<Explore />} /> */}
             </Route>
         </Routes>
     );

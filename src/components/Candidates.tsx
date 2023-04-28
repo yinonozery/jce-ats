@@ -111,10 +111,10 @@ const Candidates: React.FC = observer(() => {
             ...getColumnSearchProps('last_name')
         },
         {
-            title: 'Role',
-            dataIndex: 'role',
-            key: 'role',
-            ...getColumnSearchProps('role')
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender',
+            ...getColumnSearchProps('gender')
         },
         {
             title: 'Experience',
@@ -146,6 +146,7 @@ const Candidates: React.FC = observer(() => {
 
     return (
         <>
+            <Divider orientation="left">Search & Sort Candidates</Divider>
             <Divider orientation="left">Candidates List</Divider>
             <Table
                 dataSource={candidates}
