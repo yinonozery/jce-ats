@@ -1,14 +1,6 @@
-import React from "react";
-import { Divider, Carousel } from "antd";
+import { Divider } from "antd";
+
 const Home: React.FC = () => {
-
-    const contentStyle: React.CSSProperties = {
-        color: 'black',
-        fontSize: '20px',
-        background: '#364d79',
-    };
-
-
     return (
         <div>
             <Divider orientation="left" style={{ color: 'black' }}>Applicant Tracking System of JCE Software Engineering Department</Divider>

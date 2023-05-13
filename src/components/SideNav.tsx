@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import firebase from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Menu, Modal, MenuProps, Avatar, Divider, Dropdown } from 'antd';
-import { LaptopOutlined, ReadOutlined, NotificationOutlined, UserOutlined, FacebookOutlined, GlobalOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, FileAddOutlined, SolutionOutlined, QuestionOutlined, AppstoreAddOutlined, ContainerOutlined } from '@ant-design/icons';
+import { LaptopOutlined, ReadOutlined, NotificationOutlined, UserOutlined, FacebookOutlined, GlobalOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, FileAddOutlined, SolutionOutlined, QuestionOutlined, ContainerOutlined } from '@ant-design/icons';
 import userStore from "../stores/userStore";
 import { LOG_OUT_QUESTION } from "../utils/messages";
 import EditProfileModal from "./Modals/EditProfileModal";
@@ -20,7 +20,7 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
         { index: 0, icon: UserOutlined, label: 'Home', path: '/', subItems: [] },
         { index: 1, icon: LaptopOutlined, label: 'About', path: '/about', subItems: [] },
         {
-            index: 7, icon: NotificationOutlined, label: 'Contact Us', path: '#', subItems:
+            index: 6, icon: NotificationOutlined, label: 'Contact Us', path: '#', subItems:
                 [
                     { icon: FacebookOutlined, label: 'Facebook', path: 'https://www.facebook.com/JCE.IL' },
                     { icon: InstagramOutlined, label: 'Instagram', path: 'https://www.instagram.com/aguda.jce' },
@@ -37,7 +37,6 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
             { index: 3, icon: ReadOutlined, label: 'Courses', path: '/courses', subItems: [] },
             { index: 4, icon: ContainerOutlined, label: 'Email Templates', path: '/email-templates', subItems: [] },
             { index: 5, icon: FileAddOutlined, label: 'Add Candidate', path: '/add-candidate', subItems: [] },
-            { index: 6, icon: AppstoreAddOutlined, label: 'Add Course', path: '/add-course', subItems: [] },
             { index: 9, icon: LogoutOutlined, label: 'Logout', path: '/logout', subItems: [] },
         );
     } else {

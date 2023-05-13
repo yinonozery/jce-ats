@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState, useRef, useEffect } from 'react';
 import { Modal, Form, Input, message, Divider, Select, Space, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { EMAIL_TEMPLATE_SUCCESS, FETCHING_DATA_FAILED, FIELD_MIN_LENGTH, MISSING_FIELD } from '../../utils/messages';
+import { ADD_SUCCESS, FETCHING_DATA_FAILED, FIELD_MIN_LENGTH, MISSING_FIELD } from '../../utils/messages';
 
 type emailTemplateType = {
     TemplateId: string,
@@ -82,7 +82,7 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
             });
             const data: any = await response.json();
             if (data.statusCode === 200)
-                message.success(EMAIL_TEMPLATE_SUCCESS);
+                message.success(ADD_SUCCESS('Email Template'));
             else
                 throw data.error;
             form.resetFields();

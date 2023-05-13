@@ -5,9 +5,9 @@ import { observer } from "mobx-react";
 import { BrowserRouter as Router } from "react-router-dom";
 import userStore from './stores/userStore';
 import firebase from './firebase/firebase';
-import './assets/css/App.css';
 import AppConfig from './stores/appStore';
 import { Spin } from 'antd';
+import './assets/css/App.css';
 
 const App: React.FC = () => {
 

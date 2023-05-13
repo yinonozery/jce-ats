@@ -1,6 +1,6 @@
 import { Divider, message, Table, Dropdown, Button, Modal } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { DELETE_TEMPLATE_EMAIL, DELETE_TEMPLATE_EMAIL_SUCCESS, FETCHING_DATA_FAILED } from '../utils/messages';
+import { DELETE_SURE, DELETE_SUCCESS, FETCHING_DATA_FAILED } from '../utils/messages';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
 import type { MenuProps } from 'antd';
@@ -36,7 +36,7 @@ const EmailTemplates: React.FC = () => {
         })
             .then(response => response.json().then((data) => {
                 if (data.statusCode === 200) {
-                    message.success(DELETE_TEMPLATE_EMAIL_SUCCESS);
+                    message.success(DELETE_SUCCESS("Email template"));
                     setTemplates(templates.filter((template) => template.TemplateId !== actionID?.TemplateId));
                 } else {
                     message.error(data?.error);
@@ -125,7 +125,7 @@ const EmailTemplates: React.FC = () => {
                 onOk={() => deleteTemplate()}
                 onCancel={() => setDeleteModal(false)}
                 open={deleteModal}
-                title={DELETE_TEMPLATE_EMAIL}
+                title={DELETE_SURE("email template")}
             />
             <EmailTemplateModal state={openTemplateModal} stateFunc={setEditTemplateModal} template={selectedTemplate} mode={modalMode} />
         </>

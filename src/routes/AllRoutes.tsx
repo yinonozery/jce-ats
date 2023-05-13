@@ -7,7 +7,6 @@ import AddCandidate from "../components/AddCandidate";
 import ProtectedRoute from "../components/Auth/ProtectedRoute";
 import userStore from "../stores/userStore";
 import Candidates from "../components/Candidates";
-import AddCourse from "../components/AddCourse";
 import Error from "../components/Error";
 import Courses from "../components/Courses";
 import AppConfig from "../stores/appStore";
@@ -19,7 +18,6 @@ const AllRoutes: React.FC = () => {
         'login',
         'signout',
         'add-candidate',
-        'add-course',
         'candidates',
         'courses',
         'email-templates',
@@ -37,10 +35,9 @@ const AllRoutes: React.FC = () => {
             <Route path={appRoutes[1]} element={<SignOut />} />
             <Route element={<ProtectedRoute user={userStore.userInfo} />}>
                 <Route path={appRoutes[2]} element={<AddCandidate />} />
-                <Route path={appRoutes[3]} element={<AddCourse />} />
-                <Route path={appRoutes[4]} element={<Candidates />} action={() => AppConfig.setCurrPage('Candidates')} />
-                <Route path={appRoutes[5]} element={<Courses />} />
-                <Route path={appRoutes[6]} element={<EmailTemplates />} />
+                <Route path={appRoutes[3]} element={<Candidates />} action={() => AppConfig.setCurrPage('Candidates')} />
+                <Route path={appRoutes[4]} element={<Courses />} />
+                <Route path={appRoutes[5]} element={<EmailTemplates />} />
                 {/* <Route path="explore" element={<Explore />} /> */}
             </Route>
         </Routes>

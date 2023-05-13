@@ -91,17 +91,17 @@ const Explore: React.FC = () => {
                         <p><Text strong type='danger'>Keywords: </Text>{selectedCandidate?.keywords.length} Words</p>
                     </Card>
                     <Card title={selectedCourse?.name} style={{ margin: '10px auto', width: 'fit-content' }}>
-                        <p><Text strong type='danger'>Keywords: </Text>{selectedCourse?.keywords.length} Words</p>
+                        {/* <p><Text strong type='danger'>Keywords: </Text>{selectedCourse?.keywords.length} Words</p> */}
                     </Card>
                 </div>
                 : ''}
             <Divider>Matching Results</Divider>
             <Space>
-                {selectedCourse?.keywords.filter((courseKeyword: string) => {
+                {/* {selectedCourse?.keywords.filter((courseKeyword: string) => {
                     return selectedCandidate?.keywords.includes(courseKeyword.toLowerCase());
                 }).map((matchedKeyword: string) => {
                     return <Tag key={matchedKeyword} color='blue-inverse' >{matchedKeyword.charAt(0).toUpperCase() + matchedKeyword.substring(1,)}</Tag>;
-                })}
+                })} */}
             </Space>
         </>
     )

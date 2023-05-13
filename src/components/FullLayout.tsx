@@ -72,7 +72,8 @@ const FullLayout: React.FC<childrenProps> = observer((props) => {
                                     padding: '30px',
                                     margin: '0 auto',
                                     minWidth: 'fit-content',
-                                    maxWidth: 'min(100%, 450px)',
+                                    // maxWidth: 'min(100%, 450px)',
+                                    width: '70%',
                                     background: colorBgContainer,
                                     boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px"
                                 }}

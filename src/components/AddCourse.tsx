@@ -30,7 +30,7 @@ const AddCourse: React.FC = () => {
             course_name: values.course_name,
             keywords: keywords,
         }
-        
+
         try {
             if (keywords.length < 3) {
                 message.error(MISSING_KEYWORDS(3 - keywords.length))

@@ -55,16 +55,15 @@ const AddCandidate: React.FC = () => {
             }
 
             // API Request AWS Form
-            const response = await fetch('https://k00isbe8n9.execute-api.us-east-1.amazonaws.com/jce/candidates/add/', {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/candidates/add/`, {
                 method: 'POST',
                 headers: {
-                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(values),
             })
 
-            const data = await response.text();
+            const data = await response.json();
             console.log(data);
 
             message.success('Success');

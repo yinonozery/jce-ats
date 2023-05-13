@@ -1,6 +1,6 @@
 type Course = {
     name: string,
-    keywords: string[],
+    keywords: Map<string, number>,
     key: number,
 }
 

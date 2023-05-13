@@ -14,6 +14,7 @@
     "firebase": "^9.16.0",
     "mobx": "^6.7.0",
     "mobx-react": "^7.6.0",
+    "rc-tween-one": "^3.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.7.0",

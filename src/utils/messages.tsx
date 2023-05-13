@@ -16,11 +16,11 @@ export const FETCHING_DATA_FAILED = "Failed to fetch data from server";
 // Auth
 export const LOG_OUT_QUESTION = "Are you sure you want to log out?";
 
+// Modals
+export const DELETE_SURE = (item: string) => `Are you sure you want to delete this ${item}?`;
+export const DELETE_SUCCESS = (item: string) => `${item} deleted successfully`;
+export const ADD_SUCCESS = (item: string) => `${item} added successfully`;
+
 // Edit Profile Modal
 export const REAUTHENTICATION_MSG = "Please logout and login again to update your email/password.";
 export const PASSWORD_CONFIRMATION = "Please confirm your password!";
-
-// Add Email Template Modal
-export const EMAIL_TEMPLATE_SUCCESS = "Email Template added successfully";
-export const DELETE_TEMPLATE_EMAIL = "Are you sure you want to delete this email template?";
-export const DELETE_TEMPLATE_EMAIL_SUCCESS = "Email template deleted successfully";
