@@ -1,14 +1,14 @@
-import { observer } from 'mobx-react';
 import React, { useEffect, useState, useRef } from 'react';
-import { Button, Input, Space, Table, Divider, message, InputRef, Collapse, Checkbox, Select, Row, InputNumber, Tag, Form } from 'antd';
-import type { ColumnType } from 'antd/es/table';
-import type { FilterConfirmProps } from 'antd/es/table/interface';
-import { SearchOutlined, CloseCircleOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import { observer } from 'mobx-react';
+import { Button, Input, Space, Table, Divider, message, InputRef, Collapse, Checkbox, Select, Row, InputNumber, Form } from 'antd';
+import { SearchOutlined, CloseCircleOutlined, CloudDownloadOutlined, UpCircleOutlined } from '@ant-design/icons';
 import { FETCHING_DATA_FAILED, MISSING_FIELD } from '../utils/messages';
 import Candidate from './types/Candidate';
 import Course from './types/Course';
 import Keywords from './types/Keywords';
 import AppConfig from '../stores/appStore';
+import ResultsModal from './modals/ResultsModal';
+import type { ColumnType } from 'antd/es/table';
 
 type DataIndex = keyof Candidate;
 
@@ -17,8 +17,10 @@ const Candidates: React.FC = observer(() => {
     const [courses, setCourses] = useState<Course[]>();
     const [selectedCourse, setSelectedCourse] = useState<Course>();
     const [minExpDisabled, setMinExpDisabled] = useState<boolean>(false);
-    const [filteredCandidates, setFilteredCandidates] = useState<Candidate[]>([]);
+    const [filteredCandidates, setFilteredCandidates] = useState<Candidate[] | undefined>(undefined);
     const [allKeywords, setAllKeywords] = useState<Keywords>();
+    const [resultsModal, setResultsModal] = useState<boolean>(false);
+
     const searchInput = useRef<InputRef>(null);
     const [form] = Form.useForm();
     const { Panel } = Collapse;
@@ -77,56 +79,25 @@ const Candidates: React.FC = observer(() => {
     const contact_facebook = (link: string) =>
         <a key='facebook' href={`https://${link}`} target='_blank' rel='noreferrer'><img style={{ height: '36px' }} alt='Facebook' src='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPgo8c3ZnIHdpZHRoPSI4MDBweCIgaGVpZ2h0PSI4MDBweCIgdmlld0JveD0iMCAwIDMyIDMyIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPg0KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTQiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl84N183MjA4KSIvPg0KPHBhdGggZD0iTTIxLjIxMzcgMjAuMjgxNkwyMS44MzU2IDE2LjMzMDFIMTcuOTQ1MlYxMy43NjdDMTcuOTQ1MiAxMi42ODU3IDE4LjQ4NzcgMTEuNjMxMSAyMC4yMzAyIDExLjYzMTFIMjJWOC4yNjY5OUMyMiA4LjI2Njk5IDIwLjM5NDUgOCAxOC44NjAzIDhDMTUuNjU0OCA4IDEzLjU2MTcgOS44OTI5NCAxMy41NjE3IDEzLjMxODRWMTYuMzMwMUgxMFYyMC4yODE2SDEzLjU2MTdWMjkuODM0NUMxNC4yNzY3IDI5Ljk0NCAxNS4wMDgyIDMwIDE1Ljc1MzQgMzBDMTYuNDk4NiAzMCAxNy4yMzAyIDI5Ljk0NCAxNy45NDUyIDI5LjgzNDVWMjAuMjgxNkgyMS4yMTM3WiIgZmlsbD0id2hpdGUiLz4NCjxkZWZzPg0KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzg3XzcyMDgiIHgxPSIxNiIgeTE9IjIiIHgyPSIxNiIgeTI9IjI5LjkxNyIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPg0KPHN0b3Agc3RvcC1jb2xvcj0iIzE4QUNGRSIvPg0KPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDE2M0UwIi8+DQo8L2xpbmVhckdyYWRpZW50Pg0KPC9kZWZzPg0KPC9zdmc+' /></a>;
 
-
-    const handleSearch = (
-        selectedKeys: string[],
-        confirm: (param?: FilterConfirmProps) => void,
-        dataIndex: DataIndex,
-    ) => {
-        confirm();
-    };
-
-    const handleReset = (clearFilters: () => void) => {
-        clearFilters();
-    };
-
-    const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<Candidate> => ({
+    const getColumnSearchProps = (dataIndex: DataIndex, dataIndex2: DataIndex): ColumnType<Candidate> => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
-                    placeholder={`Search ${dataIndex}`}
+                    placeholder={dataIndex2 ? `Search Name` : `Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                    onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
+                    onPressEnter={() => confirm()}
                     style={{ marginBottom: 8, display: 'block' }}
                 />
                 <Space>
-                    <Button
-                        type='primary'
-                        onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
-                        icon={<SearchOutlined />}
-                        size='small'
-                        style={{ width: 90 }}
-                    >
+                    <Button type='primary' onClick={() => confirm()} icon={<SearchOutlined />} size='small' style={{ width: 90 }}>
                         Search
                     </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size='small'
-                        style={{ width: 90 }}
-                    >
+                    <Button onClick={() => clearFilters && clearFilters()} size='small' style={{ width: 90 }}>
                         Reset
                     </Button>
-                    <Button
-                        type='link'
-                        size='small'
-                        onClick={() => {
-                            close();
-                        }}
-                    >
-                        <CloseCircleOutlined />
-                    </Button>
+                    <Button type='link' size='small' onClick={() => close()}><CloseCircleOutlined /></Button>
                 </Space>
             </div>
         ),
@@ -134,14 +105,12 @@ const Candidates: React.FC = observer(() => {
             <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
         ),
         onFilter: (value, record) =>
-            record[dataIndex]
-                .toString()
-                .toLowerCase()
-                .includes((value as string).toLowerCase()),
+            record[dataIndex].toString().toLowerCase().includes((value as string).toLowerCase())
+            ||
+            record[dataIndex2].toString().toLowerCase().includes((value as string).toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
-            if (visible) {
+            if (visible)
                 setTimeout(() => searchInput.current?.select(), 100);
-            }
         }
     });
 
@@ -150,8 +119,7 @@ const Candidates: React.FC = observer(() => {
             title: 'Name',
             key: 'name',
             render: (record: { first_name: any; last_name: any; }) => `${record.first_name} ${record.last_name}`,
-            ...getColumnSearchProps('first_name'),
-            ...getColumnSearchProps('last_name')
+            ...getColumnSearchProps('last_name', 'first_name')
         },
         {
             title: 'Gender',
@@ -173,7 +141,7 @@ const Candidates: React.FC = observer(() => {
             title: 'Resume file',
             dataIndex: 'resume_file_name',
             key: 'resume_file_name',
-            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '23px', height: '45px', width: '45px' }} type="default" shape="circle" icon={<CloudDownloadOutlined />} size={'middle'} /></a>
+            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '2vh', height: '4.5vh', width: '4.5vh' }} type="default" shape="circle" icon={<CloudDownloadOutlined />} /></a>
         },
         {
             title: 'Contact',
@@ -193,7 +161,6 @@ const Candidates: React.FC = observer(() => {
     ];
 
     const searchForCandidate = (values: any) => {
-        setFilteredCandidates([])
         const tmpCandidates = []
 
         // TF-IDF Calculation
@@ -204,30 +171,31 @@ const Candidates: React.FC = observer(() => {
                 if (selectedCourse)
                     selectedCourse?.keywords.forEach((keyword) => { //@ts-ignore, Iterate over all of the course keywords (keyword: [term, weight])
                         if (candidate.keywords.includes(keyword[0])) { // @ts-ignore, Check if candidate have this keyword
-                            console.log('\t', keyword[0],'-', keyword[1])// @ts-ignore
+                            console.log('\t', keyword[0], '-', keyword[1])// @ts-ignore
                             const numerator = 1 + allKeywords?.length; // @ts-ignore
                             const denominator = 1 + (allKeywords?.data.get(keyword) || 0)// @ts-ignore
                             candidate.score += (Math.log(numerator / denominator)) * keyword[1] // IDF(term) * Multiple by keyword weight value
                         }
                     });
             }
-            console.log('\t Score:',candidate.score,'\n');
+            console.log('\t Score:', candidate.score, '\n');
             if (candidate.score > 0)
                 tmpCandidates.push(candidate)
         }
         tmpCandidates.sort((a, b) => b.score - a.score) // Sort candidates scores by descending order
-        setFilteredCandidates(tmpCandidates)
+        setFilteredCandidates(tmpCandidates);
+        setResultsModal(true);
     }
+
 
     return (
         <>
-            <Collapse ghost style={{ maxWidth: '100%' }} >
-                <Panel showArrow={true} header={<Divider style={{ alignItems: 'flex-start' }}>Search & Sort Candidates</Divider>} key='1'>
-                    <Form
-                        form={form}
-                        onResetCapture={() => { setFilteredCandidates([]); setSelectedCourse(undefined); setMinExpDisabled(false) }}
+            <ResultsModal state={resultsModal} stateFunc={setResultsModal} data={filteredCandidates} />
+            <Collapse bordered={false} expandIcon={({ isActive }) => <UpCircleOutlined style={{ fontSize: '16px' }} rotate={isActive ? 180 : 0} />} >
+                <Panel header={<span style={{ fontWeight: 'bold' }}>Discover Relevant Candidates</span>} key='0'>
+                    <Form form={form} initialValues={{ 'min_years_of_exp': 1 }}
+                        onResetCapture={() => { setFilteredCandidates(undefined); setSelectedCourse(undefined); setMinExpDisabled(false) }}
                         onFinish={searchForCandidate}
-                        initialValues={{ 'min_years_of_exp': 1 }}
                     >
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
@@ -261,15 +229,6 @@ const Candidates: React.FC = observer(() => {
                                     allowClear
                                 />
                             </Form.Item>
-
-                            <Form.Item label='Selected Course Keywords' style={{ marginBottom: '0' }} />
-
-                            <div style={{ display: 'flex', flexDirection: 'row', marginBlockEnd: '15px', flexWrap: 'wrap', rowGap: '5px' }}>
-                                {/* @ts-ignore */}
-                                {selectedCourse?.keywords?.map((keyword, index) =>
-                                    <Tag key={index}>{keyword[0]}</Tag>
-                                )}
-                            </div>
                         </div>
 
                         {/* Buttons */}
@@ -279,19 +238,15 @@ const Candidates: React.FC = observer(() => {
                                 <Button shape='round' type='primary' htmlType='submit'>Search For Candidate</Button>
                             </Row>
                         </Form.Item>
-
                     </Form>
-                    {filteredCandidates.map((candidate, index) => <Tag key={index}>{index}) {candidate.first_name} {candidate.last_name}</Tag>)}
                 </Panel>
             </Collapse>
+
+            {/* Candidates */}
             <Divider orientation='left'>Candidates List</Divider>
             <Table
                 dataSource={candidates}
                 columns={columns}
-                expandable={{
-                    // expandedRowRender: (record) => { return <TableKeywordsSearch record={record} /> },
-                    // rowExpandable: (record) => record.first_name !== 'Not Expandable',
-                }}
                 bordered
             />
         </>

@@ -4,7 +4,7 @@ import { DELETE_SUCCESS, DELETE_SURE, FETCHING_DATA_FAILED } from '../utils/mess
 import { EllipsisOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
 import type { MenuProps } from 'antd';
-import CourseModal from './Modals/CourseModal';
+import CourseModal from './modals/CourseModal';
 import Course from './types/Course';
 
 
@@ -90,7 +90,7 @@ const Courses: React.FC = () => {
             key: 'keywords',
             dataIndex: 'keywords',
             render: (record: any) =>
-                record.map((tag: string, index: number) => {
+                record.sort((a: any, b: any) => b[1] - a[1]).map((tag: string, index: number) => {
                     return <Tag key={index} style={{ marginBlock: '3px' }}>{tag[0]} ({weightsLevels.get(Number(tag[1]))})</Tag>
                 })
             ,

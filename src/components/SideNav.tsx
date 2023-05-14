@@ -5,8 +5,8 @@ import { Menu, Modal, MenuProps, Avatar, Divider, Dropdown } from 'antd';
 import { LaptopOutlined, ReadOutlined, NotificationOutlined, UserOutlined, FacebookOutlined, GlobalOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, FileAddOutlined, SolutionOutlined, QuestionOutlined, ContainerOutlined } from '@ant-design/icons';
 import userStore from "../stores/userStore";
 import { LOG_OUT_QUESTION } from "../utils/messages";
-import EditProfileModal from "./Modals/EditProfileModal";
-import ChangePasswordModal from "./Modals/ChangePasswordModal";
+import EditProfileModal from "./modals/EditProfileModal";
+import ChangePasswordModal from "./modals/ChangePasswordModal";
 import AppConfig from "../stores/appStore";
 import { observer } from "mobx-react";
 

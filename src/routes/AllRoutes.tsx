@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Home from '../components/Home';
-import Login from "../components/Auth/Login";
-import SignOut from "../components/Auth/Signout";
+import Login from "../components/auth/Login";
+import SignOut from "../components/auth/Signout";
 import AddCandidate from "../components/AddCandidate";
-import ProtectedRoute from "../components/Auth/ProtectedRoute";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
 import userStore from "../stores/userStore";
 import Candidates from "../components/Candidates";
 import Error from "../components/Error";

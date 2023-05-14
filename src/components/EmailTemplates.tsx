@@ -4,7 +4,7 @@ import { DELETE_SURE, DELETE_SUCCESS, FETCHING_DATA_FAILED } from '../utils/mess
 import { EllipsisOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
 import type { MenuProps } from 'antd';
-import EmailTemplateModal from './Modals/EmailTemplateModal';
+import EmailTemplateModal from './modals/EmailTemplateModal';
 import EmailTemplate from './types/EmailTemplates';
 
 
