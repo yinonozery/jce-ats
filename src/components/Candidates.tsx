@@ -9,6 +9,7 @@ import Keywords from './types/Keywords';
 import AppConfig from '../stores/appStore';
 import ResultsModal from './modals/ResultsModal';
 import type { ColumnType } from 'antd/es/table';
+import RelevantCandidate from './types/RelevantCandidate';
 
 type DataIndex = keyof Candidate;
 
@@ -17,7 +18,7 @@ const Candidates: React.FC = observer(() => {
     const [courses, setCourses] = useState<Course[]>();
     const [selectedCourse, setSelectedCourse] = useState<Course>();
     const [minExpDisabled, setMinExpDisabled] = useState<boolean>(false);
-    const [filteredCandidates, setFilteredCandidates] = useState<Candidate[] | undefined>(undefined);
+    const [filteredCandidates, setFilteredCandidates] = useState<RelevantCandidate[]>([]);
     const [allKeywords, setAllKeywords] = useState<Keywords>();
     const [resultsModal, setResultsModal] = useState<boolean>(false);
 
@@ -37,14 +38,14 @@ const Candidates: React.FC = observer(() => {
             .then((res) => res.json()
                 .then((data) => {
                     if (!data.data)
-                        message.error("Candidates " + FETCHING_DATA_FAILED)
+                        message.error('Candidates ' + FETCHING_DATA_FAILED)
                     setCandidates(data.data)
                 }).finally(() =>
                     fetch(url_courses)
                         .then((res) => res.json()
                             .then((data) => {
                                 if (!data.data)
-                                    message.error("Courses " + FETCHING_DATA_FAILED)
+                                    message.error('Courses ' + FETCHING_DATA_FAILED)
                                 data.data.forEach((course: Course) => {
                                     const courseSelect = {
                                         label: course.name,
@@ -58,7 +59,7 @@ const Candidates: React.FC = observer(() => {
                                     .then((res) => res.json()
                                         .then((data: any) => {
                                             if (!data.data)
-                                                message.error("Keywords " + FETCHING_DATA_FAILED)
+                                                message.error('Keywords ' + FETCHING_DATA_FAILED)
                                             setAllKeywords({
                                                 data: new Map(Object.entries(data.data)),
                                                 length: data.numOfResumes
@@ -141,7 +142,7 @@ const Candidates: React.FC = observer(() => {
             title: 'Resume file',
             dataIndex: 'resume_file_name',
             key: 'resume_file_name',
-            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '2vh', height: '4.5vh', width: '4.5vh' }} type="default" shape="circle" icon={<CloudDownloadOutlined />} /></a>
+            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '2vh', height: '4.5vh', width: '4.5vh' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
         },
         {
             title: 'Contact',
@@ -161,29 +162,36 @@ const Candidates: React.FC = observer(() => {
     ];
 
     const searchForCandidate = (values: any) => {
-        const tmpCandidates = []
+        const relevantsCandidates = []
 
         // TF-IDF Calculation
         for (const candidate of candidates) { // Iterate over all of the candidates
+            const relevantCandidate: RelevantCandidate = {
+                candidate: undefined,
+                keywordsMatches: [],
+                score: 0,
+            }
             console.log(candidate.first_name, candidate.last_name)
-            candidate.score = 0
             if (candidate?.work_experience >= values.min_years_of_exp) {
                 if (selectedCourse)
                     selectedCourse?.keywords.forEach((keyword) => { //@ts-ignore, Iterate over all of the course keywords (keyword: [term, weight])
                         if (candidate.keywords.includes(keyword[0])) { // @ts-ignore, Check if candidate have this keyword
+                            relevantCandidate.candidate = candidate;//@ts-ignore
                             console.log('\t', keyword[0], '-', keyword[1])// @ts-ignore
                             const numerator = 1 + allKeywords?.length; // @ts-ignore
                             const denominator = 1 + (allKeywords?.data.get(keyword) || 0)// @ts-ignore
-                            candidate.score += (Math.log(numerator / denominator)) * keyword[1] // IDF(term) * Multiple by keyword weight value
+                            relevantCandidate.score += (Math.log(numerator / denominator)) * keyword[1] // @ts-ignore, IDF(term) * Multiple by keyword weight value
+                            relevantCandidate.keywordsMatches.push(keyword[0])
                         }
                     });
             }
-            console.log('\t Score:', candidate.score, '\n');
-            if (candidate.score > 0)
-                tmpCandidates.push(candidate)
+            relevantCandidate.score = Number(relevantCandidate.score.toPrecision(4))
+            console.log('\t Score:', relevantCandidate.score, '\n');
+            if (relevantCandidate.score > 0)
+                relevantsCandidates.push(relevantCandidate)
         }
-        tmpCandidates.sort((a, b) => b.score - a.score) // Sort candidates scores by descending order
-        setFilteredCandidates(tmpCandidates);
+        relevantsCandidates.sort((a, b) => b.score - a.score)// Sort candidates scores by descending order
+        setFilteredCandidates(relevantsCandidates);
         setResultsModal(true);
     }
 
@@ -196,7 +204,7 @@ const Candidates: React.FC = observer(() => {
                     Discover Relevant Candidates
                 </span>} key='0' extra={<ThunderboltOutlined />}>
                     <Form form={form} initialValues={{ 'min_years_of_exp': 1 }}
-                        onResetCapture={() => { setFilteredCandidates(undefined); setSelectedCourse(undefined); setMinExpDisabled(false) }}
+                        onResetCapture={() => { setFilteredCandidates([]); setSelectedCourse(undefined); setMinExpDisabled(false) }}
                         onFinish={searchForCandidate}
                     >
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -213,7 +221,7 @@ const Candidates: React.FC = observer(() => {
                                 </Form.Item>
 
                                 {/* Checkbox */}
-                                <Form.Item name='checkbox_zero' label="No Experience Required" valuePropName="checked" colon={false}>
+                                <Form.Item name='checkbox_zero' label='No Experience Required' valuePropName='checked' colon={false}>
                                     <Checkbox onClick={() => { setMinExpDisabled(!minExpDisabled); form.setFieldsValue({ 'min_years_of_exp': 0 }) }} />
                                 </Form.Item>
                             </div>
