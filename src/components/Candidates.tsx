@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Button, Input, Space, Table, Divider, message, InputRef, Collapse, Checkbox, Select, Row, InputNumber, Form } from 'antd';
-import { SearchOutlined, CloseCircleOutlined, CloudDownloadOutlined, UpCircleOutlined } from '@ant-design/icons';
+import { ThunderboltOutlined, SearchOutlined, CloseCircleOutlined, CloudDownloadOutlined, UpCircleOutlined } from '@ant-design/icons';
 import { FETCHING_DATA_FAILED, MISSING_FIELD } from '../utils/messages';
 import Candidate from './types/Candidate';
 import Course from './types/Course';
@@ -192,7 +192,9 @@ const Candidates: React.FC = observer(() => {
         <>
             <ResultsModal state={resultsModal} stateFunc={setResultsModal} data={filteredCandidates} />
             <Collapse bordered={false} expandIcon={({ isActive }) => <UpCircleOutlined style={{ fontSize: '16px' }} rotate={isActive ? 180 : 0} />} >
-                <Panel header={<span style={{ fontWeight: 'bold' }}>Discover Relevant Candidates</span>} key='0'>
+                <Panel header={<span style={{ fontWeight: 'bold' }}>
+                    Discover Relevant Candidates
+                </span>} key='0' extra={<ThunderboltOutlined />}>
                     <Form form={form} initialValues={{ 'min_years_of_exp': 1 }}
                         onResetCapture={() => { setFilteredCandidates(undefined); setSelectedCourse(undefined); setMinExpDisabled(false) }}
                         onFinish={searchForCandidate}
