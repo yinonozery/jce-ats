@@ -40,6 +40,7 @@ const Candidates: React.FC = observer(() => {
                     if (!data.data)
                         message.error('Candidates ' + FETCHING_DATA_FAILED)
                     setCandidates(data.data)
+
                 }).finally(() =>
                     fetch(url_courses)
                         .then((res) => res.json()
@@ -115,6 +116,7 @@ const Candidates: React.FC = observer(() => {
         }
     });
 
+
     const columns = [
         {
             title: 'Name',
@@ -142,7 +144,7 @@ const Candidates: React.FC = observer(() => {
             title: 'Resume file',
             dataIndex: 'resume_file_name',
             key: 'resume_file_name',
-            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '2vh', height: '4.5vh', width: '4.5vh' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
+            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '2vh', height: '4.5vh', width: '4.5vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
         },
         {
             title: 'Contact',
@@ -150,7 +152,7 @@ const Candidates: React.FC = observer(() => {
             key: 'contact',
             render: (record: any) =>
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {record?.map((word: string) => {
+                    {Object.keys(record).map((word: string) => {
                         if (word.includes('linkedin.com/in')) return contact_linkedin(word);
                         else if (word.includes('github.com')) return contact_github(word);
                         else if (word.includes('github.com')) return contact_facebook(word);
@@ -175,7 +177,7 @@ const Candidates: React.FC = observer(() => {
             if (candidate?.work_experience >= values.min_years_of_exp) {
                 if (selectedCourse)
                     selectedCourse?.keywords.forEach((keyword) => { //@ts-ignore, Iterate over all of the course keywords (keyword: [term, weight])
-                        if (candidate.keywords.includes(keyword[0])) { // @ts-ignore, Check if candidate have this keyword
+                        if (Object.keys(candidate.keywords).includes(keyword[0])) { // @ts-ignore, Check if candidate have this keyword
                             relevantCandidate.candidate = candidate;//@ts-ignore
                             console.log('\t', keyword[0], '-', keyword[1])// @ts-ignore
                             const numerator = 1 + allKeywords?.length; // @ts-ignore

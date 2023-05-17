@@ -6,6 +6,7 @@ import { AlignType } from 'rc-table/lib/interface';
 import type { MenuProps } from 'antd';
 import CourseModal from './modals/CourseModal';
 import Course from './types/Course';
+import Keyword from './types/Keyword';
 
 
 const Courses: React.FC = () => {
@@ -90,10 +91,9 @@ const Courses: React.FC = () => {
             key: 'keywords',
             dataIndex: 'keywords',
             render: (record: any) =>
-                record.sort((a: any, b: any) => b[1] - a[1]).map((tag: string, index: number) => {
-                    return <Tag key={index} style={{ marginBlock: '3px' }}>{tag[0]} ({weightsLevels.get(Number(tag[1]))})</Tag>
+                record.sort((a: any, b: any) => b.weight - a.weight).map((tag: Keyword, index: number) => {
+                    return <Tag key={index} style={{ marginBlock: '3px' }}>{tag.keyword} ({weightsLevels.get(Number(tag.weight))})</Tag>
                 })
-            ,
         },
         {
             title: 'Actions',

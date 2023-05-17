@@ -1,6 +1,8 @@
+import type Keyword from "./Keyword";
+
 type Course = {
     name: string,
-    keywords: Map<string, number>,
+    keywords: Keyword[],
     key: number,
 }
 
