@@ -23,7 +23,7 @@ const Tracker = () => {
 
     trackVisit();
   }, []);
-
+  return <></>
 };
 
 export default Tracker;
