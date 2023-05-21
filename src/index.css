@@ -26,3 +26,16 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+.responsive-content {
+    width: 70%;
+    max-width: 450px;
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .responsive-content {
+      width: 90%;
+      max-width: 100%;
+    }
+  }
+  

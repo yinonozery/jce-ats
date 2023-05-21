@@ -20,6 +20,7 @@ export const LOG_OUT_QUESTION = "Are you sure you want to log out?";
 export const DELETE_SURE = (item: string) => `Are you sure you want to delete this ${item}?`;
 export const DELETE_SUCCESS = (item: string) => `${item} deleted successfully`;
 export const ADD_SUCCESS = (item: string) => `${item} added successfully`;
+export const ADD_FAILED = (item: string) => `Error: Unable to add new ${item}. Please try again later.`;
 
 // Edit Profile Modal
 export const REAUTHENTICATION_MSG = "Please logout and login again to update your email/password.";

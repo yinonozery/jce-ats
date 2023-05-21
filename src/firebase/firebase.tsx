@@ -30,7 +30,6 @@ const doSignInWithEmailAndPassword = (email: string, password: string) =>
 const doSignOut = () =>
     signOut(auth).then(() => {
         userStore.setUser(null)
-        window.location.href = '/'
     }).catch((err) => console.error(err));
 
 const doResetPassword = (email: string) =>

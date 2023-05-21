@@ -9,11 +9,7 @@ import { observer } from 'mobx-react';
 
 const { Content, Sider, Footer } = Layout;
 
-type childrenProps = {
-    children: ReactNode,
-}
-
-const FullLayout: React.FC<childrenProps> = observer((props) => {
+const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
     const [marginResponsive, setMarginResponsive] = useState(200)
     const [currentTime, setCurrentTime] = useState<string>(new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: undefined }));
     useEffect(() => {
@@ -73,7 +69,6 @@ const FullLayout: React.FC<childrenProps> = observer((props) => {
                     </Sider>
                     <Layout className="site-layout" style={{ marginLeft: (marginResponsive) }} >
                         <HeaderNav />
-
                         <div style={{ padding: '14px 16px 0' }}>
                             <Breadcrumb style={{ margin: '16px 0' }}>
                                 <Breadcrumb.Item>Careers Center</Breadcrumb.Item>
@@ -81,25 +76,24 @@ const FullLayout: React.FC<childrenProps> = observer((props) => {
                                     <Breadcrumb.Item>{capitalizePathName(AppConfig.currPage)}</Breadcrumb.Item> : null}
                             </Breadcrumb>
                             <Content
+                                className="responsive-content"
                                 style={{
                                     padding: '30px',
                                     margin: '0 auto',
                                     minWidth: 'fit-content',
-                                    // maxWidth: 'min(100%, 450px)',
-                                    width: '70%',
                                     background: colorBgContainer,
                                     boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px"
                                 }}
                             >
-                                {props.children}
-                            </Content>
-                        </div>
-                        <Footer style={{ textAlign: 'center', marginTop: '5px', backgroundColor: 'transparent', bottom: '0' }}>
-                            JCE Careers Final Project &copy; 2023 Created by Yinon Ozery
-                        </Footer>
-                    </Layout>
+                            {props.children}
+                        </Content>
+                    </div>
+                    <Footer style={{ textAlign: 'center', marginTop: '5px', backgroundColor: 'transparent', bottom: '0' }}>
+                        JCE Careers Final Project &copy; 2023 Created by Yinon Ozery
+                    </Footer>
                 </Layout>
             </Layout>
+        </Layout >
         </>
     )
 });

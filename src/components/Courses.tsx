@@ -8,7 +8,6 @@ import CourseModal from './modals/CourseModal';
 import Course from './types/Course';
 import Keyword from './types/Keyword';
 
-
 const Courses: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
@@ -17,12 +16,29 @@ const Courses: React.FC = () => {
     const [openTemplateModal, setEditTemplateModal] = useState<boolean>(false);
     const [modalMode, setModalMode] = useState<'Add' | 'Edit'>('Add');
     const [actionID, setActionID] = useState<{ courseName: string }>();
-    const weightsLevels = new Map(
-        [[0.25, 'Low'],
-        [0.5, 'Moderate'],
-        [0.75, 'High'],
-        [1, 'Max']
-        ]);
+
+    const weightLevels: Record<number, { level: string, color: string, backgroundColor: string }> = {
+        0.25: {
+            level: 'Low',
+            color: '#333333',
+            backgroundColor: '#bce6cb',
+        },
+        0.5: {
+            level: 'Moderate',
+            color: '#333333',
+            backgroundColor: '#ffe599',
+        },
+        0.75: {
+            level: 'High',
+            color: '#f2f2f2',
+            backgroundColor: '#ff9999',
+        },
+        1: {
+            level: 'Max',
+            color: '#ffffff',
+            backgroundColor: '#ff6666',
+        },
+    };
 
     let url = `${process.env.REACT_APP_BASE_URL}/jce/courses`;
 
@@ -91,8 +107,8 @@ const Courses: React.FC = () => {
             key: 'keywords',
             dataIndex: 'keywords',
             render: (record: any) =>
-                record.sort((a: any, b: any) => b.weight - a.weight).map((tag: Keyword, index: number) => {
-                    return <Tag key={index} style={{ marginBlock: '3px' }}>{tag.keyword} ({weightsLevels.get(Number(tag.weight))})</Tag>
+                record.sort((a: any, b: any) => b.weight - a.weight).map((tag: Keyword, index: number) => { //// @ts-ignore 
+                    return <Tag key={index} style={{ marginBlock: '3px', color: weightLevels[tag.weight].color }} color={weightLevels[tag.weight].backgroundColor}>{tag.keyword} ({weightLevels[tag.weight].level})</Tag>
                 })
         },
         {
@@ -113,7 +129,6 @@ const Courses: React.FC = () => {
             }}>New</Button>
             <Table
                 dataSource={courses}
-                //@ts-ignore
                 columns={columns}
                 size='small'
                 loading={isLoading}
@@ -125,7 +140,7 @@ const Courses: React.FC = () => {
                 open={deleteModal}
                 title={DELETE_SURE("course")}
             />
-            <CourseModal state={openTemplateModal} weightsLevels={weightsLevels} stateFunc={setEditTemplateModal} course={selectedCourse} mode={modalMode} />
+            <CourseModal state={openTemplateModal} weightLevels={weightLevels} stateFunc={setEditTemplateModal} course={selectedCourse} mode={modalMode} />
         </>
     )
 }

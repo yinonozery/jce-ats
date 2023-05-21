@@ -1,76 +1,52 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
-import { Button, Input, Space, Table, Divider, message, InputRef, Collapse, Checkbox, Select, Row, InputNumber, Form } from 'antd';
-import { ThunderboltOutlined, SearchOutlined, CloseCircleOutlined, CloudDownloadOutlined, UpCircleOutlined } from '@ant-design/icons';
-import { FETCHING_DATA_FAILED, MISSING_FIELD } from '../utils/messages';
+import { Button, Input, Space, Table, Divider, message, InputRef, Modal, Tooltip } from 'antd';
+import { SearchOutlined, CheckCircleOutlined, CloseCircleOutlined, CloudDownloadOutlined } from '@ant-design/icons';
+import { DELETE_SUCCESS, DELETE_SURE, FETCHING_DATA_FAILED } from '../utils/messages';
 import Candidate from './types/Candidate';
-import Course from './types/Course';
-import Keywords from './types/Keywords';
 import AppConfig from '../stores/appStore';
-import ResultsModal from './modals/ResultsModal';
 import type { ColumnType } from 'antd/es/table';
-import RelevantCandidate from './types/RelevantCandidate';
+import Discover from './Discover';
 
 type DataIndex = keyof Candidate;
 
-const Candidates: React.FC = observer(() => {
+const Candidates: React.FC = () => {
     const [candidates, setCandidates] = useState<Candidate[]>([]);
-    const [courses, setCourses] = useState<Course[]>();
-    const [selectedCourse, setSelectedCourse] = useState<Course>();
-    const [minExpDisabled, setMinExpDisabled] = useState<boolean>(false);
-    const [filteredCandidates, setFilteredCandidates] = useState<RelevantCandidate[]>([]);
-    const [allKeywords, setAllKeywords] = useState<Keywords>();
-    const [resultsModal, setResultsModal] = useState<boolean>(false);
-
+    const [deleteModal, setDeleteModal] = useState<{ mode: boolean, id: string, file: string }>({ mode: false, id: '', file: '' });
     const searchInput = useRef<InputRef>(null);
-    const [form] = Form.useForm();
-    const { Panel } = Collapse;
-
     const url_candidates = `${process.env.REACT_APP_BASE_URL}/jce/candidates`;
-    const url_courses = `${process.env.REACT_APP_BASE_URL}/jce/courses`;
-    const url_keywords = `${process.env.REACT_APP_BASE_URL}/jce/keywords`;
 
     useEffect(() => {
         setCandidates([]);
-        setCourses([]);
-        AppConfig.loadingHandler(true)
+        AppConfig.loadingHandler(true);
         fetch(url_candidates)
-            .then((res) => res.json()
-                .then((data) => {
-                    if (!data.data)
-                        message.error('Candidates ' + FETCHING_DATA_FAILED)
-                    setCandidates(data.data)
+            .then((res) => res.json())
+            .then((data) => {
+                if (!data?.data) {
+                    message.error('Candidates ' + FETCHING_DATA_FAILED);
+                    return;
+                }
+                setCandidates(data.data);
+            })
+            .catch(() => message.error('Failed to fetch candidates'))
+            .finally(() => AppConfig.loadingHandler(false));
+    }, [url_candidates]);
 
-                }).finally(() =>
-                    fetch(url_courses)
-                        .then((res) => res.json()
-                            .then((data) => {
-                                if (!data.data)
-                                    message.error('Courses ' + FETCHING_DATA_FAILED)
-                                data.data.forEach((course: Course) => {
-                                    const courseSelect = {
-                                        label: course.name,
-                                        value: course.name,
-                                        data: course,
-                                    }
-                                    setCourses((courses: any) => [...courses, courseSelect])
-                                })
-                            }).finally(() =>
-                                fetch(url_keywords)
-                                    .then((res) => res.json()
-                                        .then((data: any) => {
-                                            if (!data.data)
-                                                message.error('Keywords ' + FETCHING_DATA_FAILED)
-                                            setAllKeywords({
-                                                data: new Map(Object.entries(data.data)),
-                                                length: data.numOfResumes
-                                            })
-                                        }))
-                                    .finally(() => AppConfig.loadingHandler(false))
-                            ))
-                ));
+    const deleteCandidate = () => {
+        fetch(`${url_candidates}?id=${deleteModal.id}&file=${deleteModal.file}`, {
+            method: 'DELETE',
+        })
+            .then(response => response.json().then((data) => {
+                if (data.statusCode === 200) {
+                    message.success(DELETE_SUCCESS("Candidate"));
+                    setCandidates(candidates.filter((candidate) => candidate.id !== deleteModal.id));
+                } else {
+                    message.error(data?.error);
+                }
 
-    }, [url_courses, url_candidates, url_keywords])
+                setDeleteModal({ mode: false, id: '', file: '' });
+            }))
+    }
 
     const contact_email = (link: string) =>
         <a key='email' href={`mailto:${link}`}><img style={{ height: '36px' }} alt='Email' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iMTQ0IiBoZWlnaHQ9IjE0NCIKdmlld0JveD0iMCAwIDQ4IDQ4Ij4KPHBhdGggZmlsbD0iIzFlODhlNSIgZD0iTTM0LDQySDE0Yy00LjQxMSwwLTgtMy41ODktOC04VjE0YzAtNC40MTEsMy41ODktOCw4LThoMjBjNC40MTEsMCw4LDMuNTg5LDgsOHYyMCBDNDIsMzguNDExLDM4LjQxMSw0MiwzNCw0MnoiPjwvcGF0aD48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMzUuOTI2LDE3LjQ4OEwyOS40MTQsMjRsNi41MTEsNi41MTFDMzUuOTY5LDMwLjM0NywzNiwzMC4xNzgsMzYsMzBWMTggQzM2LDE3LjgyMiwzNS45NjksMTcuNjUzLDM1LjkyNiwxNy40ODh6IE0yNi42ODgsMjMuODk5bDcuODI0LTcuODI1QzM0LjM0NywxNi4wMzEsMzQuMTc4LDE2LDM0LDE2SDE0IGMtMC4xNzgsMC0wLjM0NywwLjAzMS0wLjUxMiwwLjA3NGw3LjgyNCw3LjgyNUMyMi43OTUsMjUuMzgsMjUuMjA1LDI1LjM4LDI2LjY4OCwyMy44OTl6IE0yNCwyNy4wMDkgYy0xLjQ0LDAtMi44NzMtMC41NDItMy45OS0xLjYwNWwtNi41MjIsNi41MjJDMTMuNjUzLDMxLjk2OSwxMy44MjIsMzIsMTQsMzJoMjBjMC4xNzgsMCwwLjM0Ny0wLjAzMSwwLjUxMi0wLjA3NGwtNi41MjItNi41MjIgQzI2Ljg3MywyNi40NjcsMjUuNDQsMjcuMDA5LDI0LDI3LjAwOXogTTEyLjA3NCwxNy40ODhDMTIuMDMxLDE3LjY1MywxMiwxNy44MjIsMTIsMTh2MTJjMCwwLjE3OCwwLjAzMSwwLjM0NywwLjA3NCwwLjUxMiBMMTguNTg2LDI0TDEyLjA3NCwxNy40ODh6Ij48L3BhdGg+Cjwvc3ZnPg==' /></a>;
@@ -116,13 +92,29 @@ const Candidates: React.FC = observer(() => {
         }
     });
 
+    const CircleButton = (color: string, tooltip: string) =>
+        <div style={{ textAlign: 'center' }}>
+            <Tooltip title={tooltip}>
+                <Button type="text" style={{
+                    width: '24px',
+                    height: '24px',
+                    borderRadius: '50%',
+                    backgroundColor: color,
+                }}
+                    icon={<CheckCircleOutlined style={{ color: '#fff', textAlign: 'center', verticalAlign: 'top' }} />}
+
+                />
+            </Tooltip>
+        </div>
+
 
     const columns = [
         {
             title: 'Name',
             key: 'name',
-            render: (record: { first_name: any; last_name: any; }) => `${record.first_name} ${record.last_name}`,
-            ...getColumnSearchProps('last_name', 'first_name')
+            render: (record: { first_name: string; last_name: string; }) => `${record.first_name} ${record.last_name}`,
+            ...getColumnSearchProps('last_name', 'first_name'),
+            sorter: (a: Candidate, b: Candidate) => a.first_name.localeCompare(b.first_name),
         },
         {
             title: 'Gender',
@@ -135,7 +127,7 @@ const Candidates: React.FC = observer(() => {
             onFilter: (value: any, record: Candidate) => record.gender === value,
         },
         {
-            title: 'Experience',
+            title: 'Years Exp',
             dataIndex: 'work_experience',
             key: 'work_experience',
             sorter: (a: any, b: any) => a.work_experience - b.work_experience,
@@ -144,7 +136,7 @@ const Candidates: React.FC = observer(() => {
             title: 'Resume file',
             dataIndex: 'resume_file_name',
             key: 'resume_file_name',
-            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '2vh', height: '4.5vh', width: '4.5vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
+            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '1.5vh', height: '3.5vh', width: '3.5vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
         },
         {
             title: 'Contact',
@@ -161,108 +153,45 @@ const Candidates: React.FC = observer(() => {
                     })}
                 </div>
         },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (record: string) =>
+                record === "Available" ? CircleButton('#2196f3', 'Available')
+                    : record === "Rejected" ? CircleButton('#ff4d4f', 'Rejected')
+                        : record === "In progress" ? CircleButton('#ffa726', 'In progress')
+                            : CircleButton('#4caf50', 'Accepted'),
+        },
+        {
+            title: 'Actions',
+            dataIndex: 'id',
+            key: 'id',
+            render: (render: string, rowData: { id: string, resume_file_name: string }) => <span onClick={() => setDeleteModal({ mode: true, id: rowData.id, file: rowData.resume_file_name })}><Button type='link' size='small'>Delete</Button>
+            </span>
+        },
     ];
-
-    const searchForCandidate = (values: any) => {
-        const relevantsCandidates = []
-
-        // TF-IDF Calculation
-        for (const candidate of candidates) { // Iterate over all of the candidates
-            const relevantCandidate: RelevantCandidate = {
-                candidate: undefined,
-                keywordsMatches: [],
-                score: 0,
-            }
-            console.log(candidate.first_name, candidate.last_name)
-            if (candidate?.work_experience >= values.min_years_of_exp) {
-                if (selectedCourse)
-                    selectedCourse?.keywords.forEach((keyword) => { //@ts-ignore, Iterate over all of the course keywords (keyword: [term, weight])
-                        if (Object.keys(candidate.keywords).includes(keyword[0])) { // @ts-ignore, Check if candidate have this keyword
-                            relevantCandidate.candidate = candidate;//@ts-ignore
-                            console.log('\t', keyword[0], '-', keyword[1])// @ts-ignore
-                            const numerator = 1 + allKeywords?.length; // @ts-ignore
-                            const denominator = 1 + (allKeywords?.data.get(keyword) || 0)// @ts-ignore
-                            relevantCandidate.score += (Math.log(numerator / denominator)) * keyword[1] // @ts-ignore, IDF(term) * Multiple by keyword weight value
-                            relevantCandidate.keywordsMatches.push(keyword[0])
-                        }
-                    });
-            }
-            relevantCandidate.score = Number(relevantCandidate.score.toPrecision(4))
-            console.log('\t Score:', relevantCandidate.score, '\n');
-            if (relevantCandidate.score > 0)
-                relevantsCandidates.push(relevantCandidate)
-        }
-        relevantsCandidates.sort((a, b) => b.score - a.score)// Sort candidates scores by descending order
-        setFilteredCandidates(relevantsCandidates);
-        setResultsModal(true);
-    }
 
 
     return (
         <>
-            <ResultsModal state={resultsModal} stateFunc={setResultsModal} data={filteredCandidates} />
-            <Collapse bordered={false} expandIcon={({ isActive }) => <UpCircleOutlined style={{ fontSize: '16px' }} rotate={isActive ? 180 : 0} />} >
-                <Panel header={<span style={{ fontWeight: 'bold' }}>
-                    Discover Relevant Candidates
-                </span>} key='0' extra={<ThunderboltOutlined />}>
-                    <Form form={form} initialValues={{ 'min_years_of_exp': 1 }}
-                        onResetCapture={() => { setFilteredCandidates([]); setSelectedCourse(undefined); setMinExpDisabled(false) }}
-                        onFinish={searchForCandidate}
-                    >
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
-
-                                {/* Min Years of Exp */}
-                                <Form.Item name='min_years_of_exp' label='Minimum Years of Experience' htmlFor='min_years_of_exp'>
-                                    <InputNumber
-                                        min={1}
-                                        max={99}
-                                        style={{ width: '60px', marginRight: '15px' }}
-                                        disabled={minExpDisabled}
-                                    />
-                                </Form.Item>
-
-                                {/* Checkbox */}
-                                <Form.Item name='checkbox_zero' label='No Experience Required' valuePropName='checked' colon={false}>
-                                    <Checkbox onClick={() => { setMinExpDisabled(!minExpDisabled); form.setFieldsValue({ 'min_years_of_exp': 0 }) }} />
-                                </Form.Item>
-                            </div>
-
-                            {/* Select Course */}
-                            <Form.Item name='course' label='Course' htmlFor='course' rules={[{
-                                required: true,
-                                message: MISSING_FIELD('course name')
-                            }]}>
-                                <Select
-                                    options={courses}
-                                    onSelect={(_, select: any) => setSelectedCourse(select.data)}
-                                    onClear={() => setSelectedCourse(undefined)}
-                                    style={{ width: '250px' }}
-                                    allowClear
-                                />
-                            </Form.Item>
-                        </div>
-
-                        {/* Buttons */}
-                        <Form.Item>
-                            <Row justify={'space-around'}>
-                                <Button shape='round' type='default' htmlType='reset'>Reset</Button>
-                                <Button shape='round' type='primary' htmlType='submit'>Search For Candidate</Button>
-                            </Row>
-                        </Form.Item>
-                    </Form>
-                </Panel>
-            </Collapse>
-
+            <Discover candidates={candidates} />
             {/* Candidates */}
             <Divider orientation='left'>Candidates List</Divider>
             <Table
-                dataSource={candidates}
+                dataSource={candidates} // @ts-ignore
                 columns={columns}
+                size='small'
                 bordered
+            />
+            <Modal
+                onOk={() => deleteCandidate()}
+                onCancel={() => setDeleteModal({ mode: false, id: '', file: '' })}
+                open={deleteModal.mode}
+                title={DELETE_SURE("candidate")}
             />
         </>
     )
-});
+};
 
-export default Candidates;
+export default observer(Candidates);

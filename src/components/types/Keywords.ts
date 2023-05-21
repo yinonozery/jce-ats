@@ -1,6 +1,7 @@
 type Keywords = {
-    data: Map<string, number>,
-    length: number,
+    currentKeywords: Record<string, number>,
+    numOfResumes: number,
+    currentDocStats: Record<string, number>,
 }
 
 export default Keywords;

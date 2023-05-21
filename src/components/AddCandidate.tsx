@@ -1,18 +1,8 @@
-import {
-    Form,
-    Input,
-    InputNumber,
-    Select,
-    Button,
-    Upload,
-    UploadProps,
-    Checkbox,
-    message,
-    Divider,
-} from 'antd';
+import { Form, Input, InputNumber, Select, Button, Upload, UploadProps, Checkbox, message, Divider } from 'antd';
 import { UploadOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
+import { ADD_FAILED, ADD_SUCCESS, MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../utils/messages';
 import { Link } from 'react-router-dom';
-import { MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../utils/messages';
+import AppConfig from '../stores/appStore';
 
 const { TextArea } = Input;
 
@@ -50,10 +40,10 @@ const AddCandidate: React.FC = () => {
                         resolve(resumeEncoded_base64)
                     }
                 })
-                // const resumeEncoded_base64 = await readerPromise;
                 await readerPromise;
             }
 
+            AppConfig.loadingHandler(true);
             // API Request AWS Form
             const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/candidates/add/`, {
                 method: 'POST',
@@ -62,17 +52,20 @@ const AddCandidate: React.FC = () => {
                 },
                 body: JSON.stringify(values),
             })
-
             const data = await response.json();
-            console.log(data);
-
-            message.success('Success');
-            return
+            if (data.statusCode === 200) {
+                message.success(ADD_SUCCESS('Candidate'));
+                form.resetFields();
+                return;
+            } else {
+                message.error(ADD_FAILED('Candidate'))
+            }
         } catch (err) {
-            message.error('Failed: ' + err);
-            console.log(err);
-
+            message.error('Failed: ' + err + ', Try again please.');
+            console.error(err);
             return;
+        } finally {
+            AppConfig.loadingHandler(false);
         }
     };
 
@@ -96,6 +89,7 @@ const AddCandidate: React.FC = () => {
                 style={{ display: 'flex', flexDirection: 'column', maxWidth: 'max(65%, 750px)', justifyContent: 'center' }}
             >
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 20, flexWrap: 'nowrap' }}>
+
                     {/* First Name */}
                     <Form.Item style={{ minWidth: '48%' }} name="first_name" label="First Name" htmlFor='firstname' rules={[
                         {
@@ -119,6 +113,7 @@ const AddCandidate: React.FC = () => {
                     </Form.Item>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 20, flexWrap: 'nowrap' }}>
+
                     {/* Gender */}
                     <Form.Item style={{ minWidth: '48%' }} name="gender" label="Gender" htmlFor='gender' rules={[
                         {

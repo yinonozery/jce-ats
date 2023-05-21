@@ -1,53 +1,42 @@
 import React, { Dispatch, SetStateAction, useState, useEffect, useRef } from 'react';
-import { Modal, Form, Input, message, Divider, Button, List, FormInstance, Radio } from 'antd';
+import { Modal, Form, Input, message, Divider, Button, List, FormInstance, Radio, Tag } from 'antd';
 import { MISSING_FIELD, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD, ADD_SUCCESS } from '../../utils/messages';
-import Course from '../types/Course';
 import { FileSearchOutlined, CloseCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import Keyword from '../types/Keyword';
+import Course from '../types/Course';
 
 interface modalProps {
     mode: 'Add' | 'Edit';
     course: Course | undefined;
-    weightsLevels: Map<number, string>
+    weightLevels: Record<number, { level: string, color: string, backgroundColor: string }>,
     state: boolean,
     stateFunc: Dispatch<SetStateAction<boolean>>;
 }
-
 
 const CourseModal: React.FC<modalProps> = (props: modalProps) => {
     const [form] = Form.useForm();
     const [addLoading, setAddLoading] = useState(false);
     const [keywords, setKeywords] = useState<Keyword[]>([]);
-    const [keywordsKeysArr, setKeywordsKeysArr] = useState<string[]>([]);
     const formRef = useRef<FormInstance>(null);
     const pageSize = 5;
 
     useEffect(() => {
-        setKeywordsKeysArr([]);
         form.setFieldsValue({
             name: props?.course?.name || '',
         });
-
-        // const newMap = new Map(props.course?.keywords.map((keyword: Keyword) => [keyword.keyword, keyword.weight]))
-        setKeywords(props?.course?.keywords ? props?.course?.keywords : [])
-
-        //@ts-ignore
-        setKeywordsKeysArr(props.course?.keywords?.map((keyword: Keyword) => keyword.keyword));
+        setKeywords(props?.course?.keywords || [])
 
     }, [form, props.mode, props.course?.keywords, props.course?.name])
-
-    useEffect(() => {
-        console.log(keywords)
-    }, [keywords])
 
     const onFinish = async () => {
         const values = await form.validateFields(['name']);
 
         if (!values.name || !keywords)
             return;
+
         setAddLoading(false);
 
-        const newCourseForm: { name: string | undefined, keywords: Keyword[] | undefined | null | [string, number][], mode: 'Add' | 'Edit' } = {
+        const newCourseForm = {
             name: values.name,
             keywords: keywords,
             mode: props.mode,
@@ -63,26 +52,25 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
                 body: JSON.stringify(newCourseForm),
             });
             const data: any = await response.json();
-            if (data.statusCode === 200)
+            if (data.statusCode === 200) {
                 message.success(ADD_SUCCESS("Course"));
-            else
+            } else {
                 throw data.error;
-            form.resetFields();
-            props.stateFunc(false);
+            }
+            handleReset(true);
         } catch (error: any) {
             message.error(error);
         } finally {
             setAddLoading(false);
-            setKeywordsKeysArr([]);
         }
     };
-
 
     const addKeyword = () => {
         const word = formRef.current?.getFieldValue('keyword')?.toLowerCase();
         const weight = formRef.current?.getFieldValue('weight');
         let synonyms = formRef.current?.getFieldValue('synonyms');
         synonyms = synonyms ? synonyms.split(',').map((word: string) => word.trim()) : null // Split string into string[] & Trim all synonyms
+
         const uniqueSet = new Set(synonyms) // Set for duplicated synonyms check
         if (!word || !weight) {
             message.error(MISSING_FIELD(!word ? "keyword" : "weight"));
@@ -101,7 +89,6 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
                 synonyms: synonyms,
             }
             setKeywords(keywords => [...keywords, keywordObj]);
-            keywordsKeysArr && keywordsKeysArr.length > 0 ? setKeywordsKeysArr([...keywordsKeysArr, word]) : setKeywordsKeysArr([word])
             form.resetFields(['keyword', 'weight', 'synonyms'])
         }
     }
@@ -146,11 +133,36 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
             </div>
         </>
 
+    const handleDeleteTag = (_keyword: string | undefined, _synonym: string) => {
+        setKeywords((prevKeywords) => {
+            // Find the keyword object with matching keyword value
+            const keywordIndex = prevKeywords.findIndex((keyword) => keyword.keyword === _keyword);
+
+            if (keywordIndex !== -1) {
+                // Filter the synonyms array and remove the specified synonym
+                const updatedSynonyms = prevKeywords[keywordIndex].synonyms.filter((synonym) => synonym !== _synonym);
+
+                // Create a new array with the updated synonyms for the keyword
+                const updatedKeywords = [...prevKeywords];
+                updatedKeywords[keywordIndex] = { ...updatedKeywords[keywordIndex], synonyms: updatedSynonyms };
+
+                return updatedKeywords;
+            }
+            return prevKeywords; // Return the previous state if the keyword is not found
+        });
+    };
+
+    const handleReset = (closeModal: boolean) => {
+        props.stateFunc(closeModal);
+        setKeywords([]);
+        form.resetFields()
+    }
+
     return (
         <Modal
             title={<Divider orientation='left'>{props.mode === 'Add' ? 'Add a new course' : 'Edit course'}</Divider>}
             open={props.state}
-            onCancel={() => { props.stateFunc(false); setKeywords([]) }}
+            onCancel={() => handleReset(false)}
             footer={null}
             forceRender
         >
@@ -183,14 +195,26 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
                             position: 'bottom',
                         }}
                         style={{ width: '100%' }}
-                        dataSource={keywordsKeysArr}
-                        renderItem={(item: string) => {
+                        dataSource={keywords}
+                        renderItem={(item: Keyword) => {
                             return (
                                 <List.Item>
-                                    # {item} - {props.weightsLevels.get(Number(keywords.find((keyObj) => keyObj.keyword === item)?.weight))}
-                                    <span style={{ 'float': 'right', marginLeft: '10px' }} onClick={() => { keywords.filter((keyObj) => keyObj.keyword !== item); setKeywordsKeysArr(keywordsKeysArr.filter((word: string) => word !== item)) }}><CloseCircleOutlined /></span>
+                                    # {item.keyword} - {props.weightLevels[Number(keywords.find((keyObj) => keyObj.keyword === item.keyword)?.weight)].level}
+                                    {keywords.find((keyObj) => keyObj.keyword === item.keyword)?.synonyms?.map((synonym, index) => {
+                                        const uniqueKey = `${item.keyword}-${synonym}-${index}`;
+                                        return (
+                                            <Tag key={uniqueKey} onClose={() => handleDeleteTag(item.keyword, synonym)} closable>
+                                                {synonym}
+                                            </Tag>
+                                        )
+                                    })}
+
+                                    <span style={{ 'float': 'right', marginLeft: '10px' }} onClick={() => { setKeywords(keywords.filter((keyObj) => keyObj.keyword !== item.keyword)) }}>
+                                        <CloseCircleOutlined />
+                                    </span>
                                 </List.Item>
-                            )
+                            );
+
                         }}
                     />
                 </div>
@@ -198,7 +222,7 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
                 {/* Submit Button */}
                 <Form.Item>
                     <div style={{ textAlign: 'center' }}>
-                        <Button type='dashed' htmlType='reset' loading={addLoading} style={{ marginBottom: '10px' }} onClick={() => { setKeywordsKeysArr([]); setKeywords([]) }}>Reset</Button>
+                        <Button type='dashed' htmlType='reset' loading={addLoading} style={{ marginBottom: '10px' }} onClick={() => { handleReset(true) }}>Reset</Button>
                     </div>
                     <Button block type='primary' htmlType='submit' loading={addLoading}>{props.mode === 'Add' ? 'Add' : 'Save'}</Button>
                 </Form.Item>

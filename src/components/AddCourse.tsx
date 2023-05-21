@@ -1,11 +1,4 @@
-import {
-    Form,
-    Input,
-    Divider,
-    List,
-    Button,
-    message,
-} from 'antd';
+import { Form, Input, Divider, List, Button, message } from 'antd';
 import { useState, useRef } from 'react';
 import { CloseCircleOutlined, FileSearchOutlined } from '@ant-design/icons';
 import { MISSING_KEYWORDS, MISSING_COURSE_NAME, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD } from '../utils/messages';

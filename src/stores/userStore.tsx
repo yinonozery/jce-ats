@@ -8,16 +8,17 @@ class UserStore {
         makeAutoObservable(this
             , {
                 userInfo: observable,
-                setUser: action,
+                setUser: action.bound,
             });
     }
 
     setUser(user: UserInfo | null) {
+        this.userInfo = user;
         if (user) {
-            this.userInfo = user;
             localStorage.setItem("userInfo", JSON.stringify(user))
         } else {
             localStorage.removeItem('userInfo');
+            indexedDB.deleteDatabase('firebaser-heartbeat-database');
         }
     };
 

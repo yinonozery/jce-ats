@@ -1,12 +1,11 @@
 type Candidate = {
+    id: string,
     first_name: string,
     last_name: string,
     gender: 'Male' | 'Female',
     work_experience: number,
     keywords: any,
-    // label: string,
-    // value: string,
-    // score: number,
+    status: 'Available' | 'Accepted' | 'Rejected' | 'In progress',
 }
 
 export default Candidate;

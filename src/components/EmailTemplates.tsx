@@ -17,21 +17,21 @@ const EmailTemplates: React.FC = () => {
     const [modalMode, setModalMode] = useState<'Add' | 'Edit'>('Add');
     const [actionID, setActionID] = useState<{ TemplateId: string, TemplateType: string }>();
 
-    let url = `${process.env.REACT_APP_BASE_URL}/jce/email-templates`;
+    const url_templates = `${process.env.REACT_APP_BASE_URL}/jce/email-templates`;
 
     useEffect(() => {
         if (!openTemplateModal)
-            fetch(url)
+            fetch(url_templates)
                 .then((res) => res.json()
                     .then((data) => {
                         if (!data.data)
                             message.error(FETCHING_DATA_FAILED)
                         setTemplates(data.data);
                     }).finally(() => setIsLoading(false)));
-    }, [openTemplateModal, url])
+    }, [openTemplateModal, url_templates])
 
     const deleteTemplate = () => {
-        fetch(`${url}?id=${actionID?.TemplateId}`, {
+        fetch(`${url_templates}?id=${actionID?.TemplateId}`, {
             method: 'DELETE',
         })
             .then(response => response.json().then((data) => {

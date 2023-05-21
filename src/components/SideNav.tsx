@@ -88,12 +88,19 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
         },
     ];
 
+    const signOut = () => {
+        firebase.doSignOut();
+        userStore.setUser(null);
+        navigate('/');
+        setLogoutModal(false)
+    }
+
     return (
         <>
             <Modal
                 title="Logout"
                 open={logoutModal}
-                onOk={() => firebase.doSignOut()}
+                onOk={signOut}
                 onCancel={() => setLogoutModal(false)}
             >
                 <p>{LOG_OUT_QUESTION}</p>
