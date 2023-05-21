@@ -11,7 +11,7 @@ If there is a lack of a lecturer/practitioner in some courses, with the help of 
 ## Stack
 **Client-side:** `React, TypeScript, MobX, Firebase (User Authentication), Ant Design`
 
-**Server-side:** `Node.js, Express`
+**Server-side:** `Python, Node.js`
 
 **Storage** `AWS Simple Storage Service (S3)`
 
