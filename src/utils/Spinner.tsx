@@ -1,5 +1,5 @@
 import { observer } from "mobx-react";
-import AppConfig from "./stores/appStore";
+import AppConfig from "../stores/appStore";
 import { Spin } from "antd";
 
 const Spinner = () =>

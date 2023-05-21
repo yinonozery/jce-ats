@@ -146,7 +146,7 @@ const AddCandidate: React.FC = () => {
                 </Form.Item>
 
                 {/* Additional Comments */}
-                <Form.Item label="Additional Comments" htmlFor='additional' requiredMark="optional" hasFeedback>
+                <Form.Item label="Additional Comments (Optional)" htmlFor='additional' hasFeedback>
                     <TextArea rows={4} showCount maxLength={200} style={{ resize: 'none' }} id='additional' />
                 </Form.Item>
 

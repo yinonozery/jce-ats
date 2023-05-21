@@ -12,6 +12,7 @@ const { Content, Sider, Footer } = Layout;
 const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
     const [marginResponsive, setMarginResponsive] = useState(200)
     const [currentTime, setCurrentTime] = useState<string>(new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: undefined }));
+
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentTime(new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: undefined }));
@@ -25,7 +26,8 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
         token: { colorBgContainer },
     } = theme.useToken();
 
-    const capitalizePathName = (pathname: string | null) => {
+    const setPath = (pathname: string | null) => {
+        window.document.title = process.env.REACT_APP_WINDOW_TITLE || '';
         if (pathname) {
             const splitStr = pathname.split('-');
             const words = splitStr.map((word) => {
@@ -33,6 +35,7 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
                 const restOfWord = word.slice(1).toLowerCase();
                 return firstLetter + restOfWord;
             });
+            window.document.title = process.env.REACT_APP_WINDOW_TITLE + " " + words.join(' ');
             return words.join(' ');
         }
     };
@@ -68,32 +71,39 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
                         </div>
                     </Sider>
                     <Layout className="site-layout" style={{ marginLeft: (marginResponsive) }} >
-                        <HeaderNav />
-                        <div style={{ padding: '14px 16px 0' }}>
-                            <Breadcrumb style={{ margin: '16px 0' }}>
-                                <Breadcrumb.Item>Careers Center</Breadcrumb.Item>
-                                {userStore.userInfo ?
-                                    <Breadcrumb.Item>{capitalizePathName(AppConfig.currPage)}</Breadcrumb.Item> : null}
-                            </Breadcrumb>
+                        <HeaderNav>
+                            <div style={{ position: 'fixed', marginLeft: '20px', left: marginResponsive, marginTop: '30px', color: 'black' }}>
+                                <Breadcrumb style={{ margin: '16px 0px', position: 'fixed' }}>
+                                    {userStore.userInfo && AppConfig.currPage
+                                        ? <><Breadcrumb.Item >Careers Center</Breadcrumb.Item>
+                                            <Breadcrumb.Item>{setPath(AppConfig.currPage)}</Breadcrumb.Item></>
+                                        : <Breadcrumb.Item >Careers Center</Breadcrumb.Item>
+                                    }
+                                </Breadcrumb>
+                            </div>
+                        </HeaderNav>
+                        <div style={{ padding: '14px 16px 0', marginBlockStart: '130px' }}>
                             <Content
                                 className="responsive-content"
                                 style={{
-                                    padding: '30px',
                                     margin: '0 auto',
+                                    marginBlockStart: '50px',
+                                    zIndex: -1,
+                                    padding: '30px',
                                     minWidth: 'fit-content',
                                     background: colorBgContainer,
                                     boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px"
                                 }}
                             >
-                            {props.children}
-                        </Content>
-                    </div>
-                    <Footer style={{ textAlign: 'center', marginTop: '5px', backgroundColor: 'transparent', bottom: '0' }}>
-                        JCE Careers Final Project &copy; 2023 Created by Yinon Ozery
-                    </Footer>
+                                {props.children}
+                            </Content>
+                        </div>
+                        <Footer style={{ textAlign: 'center', marginTop: '5px', backgroundColor: 'transparent', bottom: '0' }}>
+                            JCE Careers Final Project &copy; 2023 Created by Yinon Ozery
+                        </Footer>
+                    </Layout>
                 </Layout>
-            </Layout>
-        </Layout >
+            </Layout >
         </>
     )
 });

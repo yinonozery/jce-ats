@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Modal, Divider, Tag, InputNumber, Form, Badge, List, Avatar, Button } from 'antd';
 import RelevantCandidate from '../types/RelevantCandidate';
+import VirtualList from 'rc-virtual-list';
 
 interface modalProps {
     state: boolean,
@@ -32,9 +33,39 @@ const ResultsModal: React.FC<modalProps> = (props) => {
             {/* Search Results */}
             {typeof (props.data) !== 'undefined' && props.data && props.data.length > 0 ?
                 <>
+                    <List>
+                        <VirtualList
+                            data={props.data}
+                            height={450}
+                            itemKey="candidate"
+                            virtual
+                        >
+                            {(item: any, index: number) => (
+                                <List.Item>
+                                    <List.Item.Meta
+                                        key={index}
+                                        avatar={null}
+                                        title={<><span style={{ marginRight: '10px' }}><Badge count={index + 1} offset={[-15, 15]} color='#222061' ><Avatar size={30} style={{ backgroundColor: '#aed8e6' }} /></Badge></span>{item.candidate?.first_name + ' ' + item.candidate?.last_name}</>}
+                                        description={
+                                            <>
+                                                <b>Keywords Matches:</b>
+                                                <div style={{ display: 'flex', flexWrap: 'wrap', marginBlockEnd: '10px' }}>
+                                                    {item.keywordsMatches.map((keyword: string, index: number) => <Tag color='green' key={index}>{keyword}</Tag>)}
+                                                </div>
+                                                <b>Score:</b> {item.score}
+                                            </>
+                                        }
+                                    />
+                                </List.Item>
+                            )}
+                        </VirtualList>
+                    </List>
+                    {/*                     
                     <List
                         itemLayout='horizontal'
                         dataSource={props.data}
+
+                        pagination={{ position: 'bottom', align: 'center' }}
                         renderItem={(item, index) => {
                             if (item.score >= minScore)
                                 return (
@@ -42,6 +73,7 @@ const ResultsModal: React.FC<modalProps> = (props) => {
                                         <List.Item.Meta
                                             key={index}
                                             avatar={null}
+
                                             title={<><span style={{ marginRight: '10px' }}><Badge count={index + 1} offset={[-15, 15]} color='#222061' ><Avatar size={30} style={{ backgroundColor: '#aed8e6' }} /></Badge></span>{item.candidate?.first_name + ' ' + item.candidate?.last_name}</>}
                                             description={
                                                 <>
@@ -57,9 +89,10 @@ const ResultsModal: React.FC<modalProps> = (props) => {
                                 )
                         }}
                         bordered
-                    />
-                </> : 'No matches, try again'}
-        </Modal>
+                    /> */}
+                </> : 'No matches, try again'
+            }
+        </Modal >
     )
 };
 

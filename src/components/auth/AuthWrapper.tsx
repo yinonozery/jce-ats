@@ -1,7 +1,7 @@
 import React, { ReactNode, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import firebase from './firebase/firebase';
-import userStore from './stores/userStore';
+import firebase from '../../firebase/firebase';
+import userStore from '../../stores/userStore';
 
 const AuthWrapper: React.FC<{ children: ReactNode }> = (props) => {
     const location = useLocation();
