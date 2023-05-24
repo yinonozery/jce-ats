@@ -44,9 +44,12 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
         fetch(url)
             .then((res) => res.json()
                 .then((data) => {
-                    if (!data.data)
+                    if (data.statusCode === 200)
+                        setItems(data.body);
+                    else {
                         message.error(FETCHING_DATA_FAILED)
-                    setItems(data.data);
+                        return;
+                    }
                 })
                 .finally(() => setIsLoading(false)));
     }, [url])

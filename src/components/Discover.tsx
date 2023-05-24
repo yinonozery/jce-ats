@@ -32,12 +32,12 @@ const Discover: React.FC<{ candidates: Candidate[] }> = (props) => {
             fetch(url_courses)
                 .then((res) => res.json())
                 .then((data) => {
-                    if (!data.data) {
+                    if (data.statusCode === 500) {
                         message.error('Courses ' + FETCHING_DATA_FAILED);
                         return;
                     }
 
-                    const courseSelects = data.data.map((course: Course) => ({
+                    const courseSelects = data.body.map((course: Course) => ({
                         label: course.name,
                         value: course.name,
                         data: course,

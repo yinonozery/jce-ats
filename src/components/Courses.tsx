@@ -47,9 +47,13 @@ const Courses: React.FC = () => {
             fetch(url)
                 .then((res) => res.json()
                     .then((data) => {
-                        if (!data.data)
+                        if (data.statusCode === 200)
+                            setCourses(data.body);
+                        else {
                             message.error(FETCHING_DATA_FAILED)
-                        setCourses(data.data);
+                            return
+                        }
+
                     }).finally(() => setIsLoading(false)));
     }, [openTemplateModal, url])
 

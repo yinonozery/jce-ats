@@ -24,9 +24,12 @@ const EmailTemplates: React.FC = () => {
             fetch(url_templates)
                 .then((res) => res.json()
                     .then((data) => {
-                        if (!data.data)
+                        if (data.statusCode === 200)
+                            setTemplates(data.body);
+                        else {
                             message.error(FETCHING_DATA_FAILED)
-                        setTemplates(data.data);
+                            return;
+                        }
                     }).finally(() => setIsLoading(false)));
     }, [openTemplateModal, url_templates])
 

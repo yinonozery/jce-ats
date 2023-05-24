@@ -26,11 +26,11 @@ const Candidates: React.FC = () => {
         fetch(url_candidates)
             .then((res) => res.json())
             .then((data) => {
-                if (!data?.data) {
+                if (!data?.body) {
                     message.error('Candidates ' + FETCHING_DATA_FAILED);
                     return;
                 }
-                setCandidates(data.data);
+                setCandidates(data.body);
             })
             .catch(() => message.error('Failed to fetch candidates'))
             .finally(() => AppConfig.loadingHandler(false));

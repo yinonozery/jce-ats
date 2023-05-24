@@ -3,25 +3,15 @@ import { Breadcrumb, Layout, theme } from 'antd';
 import HeaderNav from './Header';
 import SideNav from './SideNav';
 import userStore from '../stores/userStore';
-import React, { useState, ReactNode, useEffect } from 'react';
+import React, { useState, ReactNode } from 'react';
 import AppConfig from '../stores/appStore';
 import { observer } from 'mobx-react';
+import CurrentTime from '../utils/CurrentTime';
 
 const { Content, Sider, Footer } = Layout;
 
 const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
     const [marginResponsive, setMarginResponsive] = useState(200)
-    const [currentTime, setCurrentTime] = useState<string>(new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: undefined }));
-
-    useEffect(() => {
-        document.title = process.env.REACT_APP_WINDOW_TITLE || '';
-        const interval = setInterval(() => {
-            setCurrentTime(new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: undefined }));
-        }, 1000);
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
 
     const {
         token: { colorBgContainer },
@@ -67,9 +57,7 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
                         breakpoint="md"
                     >
                         <SideNav smaller={marginResponsive === 80 ? true : false} />
-                        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'center', margin: 10, fontSize: '.9em' }}>
-                            {currentTime}
-                        </div>
+                        <CurrentTime />
                     </Sider>
                     <Layout className="site-layout" style={{ marginLeft: (marginResponsive) }} >
                         <HeaderNav>
