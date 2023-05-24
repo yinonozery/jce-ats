@@ -3,8 +3,10 @@ type Candidate = {
     first_name: string,
     last_name: string,
     gender: 'Male' | 'Female',
+    email: string,
     work_experience: number,
     keywords: any,
+    resume_file_name: string,
     status: 'Available' | 'Accepted' | 'Rejected' | 'In progress',
 }
 

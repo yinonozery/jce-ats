@@ -65,7 +65,7 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
         const { type, subject, body } = values;
         if (!type || !subject || !body)
             return;
-        setAddLoading(false);
+        setAddLoading(true);
 
         const newTemplateForm: { type: string, subject: string, body: string, id: string | undefined | null } = {
             type: type, subject: subject, body: body, id: props.template?.TemplateId,
@@ -150,11 +150,21 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
                 </Form.Item>
 
                 {/* Body */}
-                <Form.Item label='Body' name='body' extra={'Use double curly braces `{{}}` for pass in data'} rules={[{
-                    required: true,
-                    min: 10,
-                    message: FIELD_MIN_LENGTH('Body', 10)
-                }]}>
+                <Form.Item label='Body' name='body' extra={
+                    <div>
+                        <h5 style={{ marginBlock: '10px' }}>Use double curly braces to insert data:</h5>
+                        {'{{first_name}}'}
+                        <br />
+                        {'{{last_name}}'}
+                        <br />
+                        {'{{email}}'}
+                    </div>
+                }
+                    rules={[{
+                        required: true,
+                        min: 10,
+                        message: FIELD_MIN_LENGTH('Body', 10)
+                    }]}>
                     <Input.TextArea size='middle' rows={9}
                         // defaultValue={props.mode === 'Edit' ? props.template?.Body : ''}
                         showCount />

@@ -98,7 +98,7 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'center' }}>
 
                 {/* Keyword */}
-                <Form.Item style={{ marginBlock: 'auto' }} label="Keyword" name="keyword" htmlFor='keyword' normalize={(value) => value.trim()}>
+                <Form.Item style={{ marginBlock: 'auto' }} label="Keyword" name="keyword" htmlFor='keyword' normalize={(value) => value.trim()} required>
                     <Input id='keyword' maxLength={20} placeholder="Enter keyword" style={{ width: 'max(120px, 100%)' }} />
                 </Form.Item>
 
@@ -110,7 +110,7 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
                         <u>High:</u> Important, should be present<br />
                         <u>Max:</u> Essential, must be included
                     </p>
-                }>
+                } required>
                     <Radio.Group optionType="button" buttonStyle="solid" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'start' }}>
                         <Radio.Button value="0.25">Low</Radio.Button>
                         <Radio.Button value="0.5" >Moderate</Radio.Button>
@@ -128,7 +128,7 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
             {/* Button */}
             <div style={{ textAlign: 'center' }}>
                 <Button type="primary" onClick={addKeyword} style={{ margin: '15px auto' }}>
-                    <PlusCircleOutlined />Add Keyword<PlusCircleOutlined />
+                    <PlusCircleOutlined />&nbsp;Add Keyword
                 </Button>
             </div>
         </>

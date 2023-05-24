@@ -30,7 +30,7 @@ const Courses: React.FC = () => {
         },
         0.75: {
             level: 'High',
-            color: '#f2f2f2',
+            color: '#ffffff',
             backgroundColor: '#ff9999',
         },
         1: {
@@ -108,7 +108,7 @@ const Courses: React.FC = () => {
             dataIndex: 'keywords',
             render: (record: any) =>
                 record.sort((a: any, b: any) => b.weight - a.weight).map((tag: Keyword, index: number) => { //// @ts-ignore 
-                    return <Tag key={index} style={{ marginBlock: '3px', color: weightLevels[tag.weight].color }} color={weightLevels[tag.weight].backgroundColor}>{tag.keyword} ({weightLevels[tag.weight].level})</Tag>
+                    return <Tag key={index} style={{ marginBlock: '3px', color: weightLevels[tag.weight].color }} color={weightLevels[tag.weight].backgroundColor}><span style={{ fontWeight: '600', fontSize: '1.1em' }}>{tag.keyword.toLowerCase()}</span> <span style={{ fontSize: '.9em' }}>({weightLevels[tag.weight].level})</span></Tag>
                 })
         },
         {

@@ -7,12 +7,16 @@ import Candidate from './types/Candidate';
 import AppConfig from '../stores/appStore';
 import type { ColumnType } from 'antd/es/table';
 import Discover from './Discover';
+import SendEmail from './SendEmail';
 
 type DataIndex = keyof Candidate;
 
 const Candidates: React.FC = () => {
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [deleteModal, setDeleteModal] = useState<{ mode: boolean, id: string, file: string }>({ mode: false, id: '', file: '' });
+    const [sendEmailModal, setSendEmailModal] = useState<boolean>(false);
+    const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
+
     const searchInput = useRef<InputRef>(null);
     const url_candidates = `${process.env.REACT_APP_BASE_URL}/jce/candidates`;
 
@@ -95,14 +99,14 @@ const Candidates: React.FC = () => {
     const CircleButton = (color: string, tooltip: string) =>
         <div style={{ textAlign: 'center' }}>
             <Tooltip title={tooltip}>
-                <Button type="text" style={{
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '50%',
-                    backgroundColor: color,
-                }}
-                    icon={<CheckCircleOutlined style={{ color: '#fff', textAlign: 'center', verticalAlign: 'top' }} />}
-
+                <Button type="text"
+                    style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        backgroundColor: color,
+                    }}
+                    icon={<CheckCircleOutlined style={{ position: 'relative', color: '#fff', textAlign: 'center', verticalAlign: 'center', bottom: '3px' }} />}
                 />
             </Tooltip>
         </div>
@@ -167,14 +171,17 @@ const Candidates: React.FC = () => {
             title: 'Actions',
             dataIndex: 'id',
             key: 'id',
-            render: (render: string, rowData: { id: string, resume_file_name: string }) => <span onClick={() => setDeleteModal({ mode: true, id: rowData.id, file: rowData.resume_file_name })}><Button type='link' size='small'>Delete</Button>
-            </span>
+            render: (render: string, rowData: Candidate) => <>
+                <Button type='link' size='small' onClick={() => setDeleteModal({ mode: true, id: rowData.id, file: rowData.resume_file_name })}>Delete</Button>
+                <Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}>Invite</Button>
+            </>
         },
     ];
 
 
     return (
         <>
+            <SendEmail state={sendEmailModal} stateFunc={setSendEmailModal} candidate={selectedCandidate} />
             <Discover candidates={candidates} />
             {/* Candidates */}
             <Divider orientation='left'>Candidates List</Divider>

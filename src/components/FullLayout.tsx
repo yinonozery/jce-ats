@@ -14,6 +14,7 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
     const [currentTime, setCurrentTime] = useState<string>(new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: undefined }));
 
     useEffect(() => {
+        document.title = process.env.REACT_APP_WINDOW_TITLE || '';
         const interval = setInterval(() => {
             setCurrentTime(new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', second: undefined }));
         }, 1000);
@@ -27,7 +28,7 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
     } = theme.useToken();
 
     const setPath = (pathname: string | null) => {
-        window.document.title = process.env.REACT_APP_WINDOW_TITLE || '';
+        document.title = process.env.REACT_APP_WINDOW_TITLE || '';
         if (pathname) {
             const splitStr = pathname.split('-');
             const words = splitStr.map((word) => {
@@ -35,7 +36,7 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
                 const restOfWord = word.slice(1).toLowerCase();
                 return firstLetter + restOfWord;
             });
-            window.document.title = process.env.REACT_APP_WINDOW_TITLE + " " + words.join(' ');
+            document.title = process.env.REACT_APP_WINDOW_TITLE + " - " + words.join(' ');
             return words.join(' ');
         }
     };
@@ -72,11 +73,14 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
                     </Sider>
                     <Layout className="site-layout" style={{ marginLeft: (marginResponsive) }} >
                         <HeaderNav>
-                            <div style={{ position: 'fixed', marginLeft: '20px', left: marginResponsive, marginTop: '30px', color: 'black' }}>
+                            <div style={{ position: 'fixed', marginLeft: '20px', left: marginResponsive, marginTop: '60px', color: 'black' }}>
                                 <Breadcrumb style={{ margin: '16px 0px', position: 'fixed' }}>
                                     {userStore.userInfo && AppConfig.currPage
-                                        ? <><Breadcrumb.Item >Careers Center</Breadcrumb.Item>
-                                            <Breadcrumb.Item>{setPath(AppConfig.currPage)}</Breadcrumb.Item></>
+                                        ?
+                                        <>
+                                            <Breadcrumb.Item>Careers Center</Breadcrumb.Item>
+                                            <Breadcrumb.Item>{setPath(AppConfig.currPage)}</Breadcrumb.Item>
+                                        </>
                                         : <Breadcrumb.Item >Careers Center</Breadcrumb.Item>
                                     }
                                 </Breadcrumb>
