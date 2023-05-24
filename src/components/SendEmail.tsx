@@ -32,9 +32,12 @@ const SendEmail: React.FC<sendEmailProps> = (props) => {
         fetch(url_templates)
             .then((res) => res.json()
                 .then((data) => {
-                    if (!data.data)
+                    if (data.statusCode === 2000)
+                        setTemplates(data.body);
+                    else {
                         message.error(FETCHING_DATA_FAILED)
-                    setTemplates(data.data);
+                        return;
+                    }
                 }).finally(() => AppConfig.loadingHandler(false)));
     }, [url_templates])
 
