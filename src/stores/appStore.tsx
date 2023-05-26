@@ -22,6 +22,7 @@ class appStore {
     setCurrPage = (currPage: string | null) => {
         this.currPage = currPage;
     };
+
 }
 
 const AppConfig = new appStore();

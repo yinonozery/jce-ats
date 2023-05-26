@@ -1,17 +1,18 @@
 import { Divider, message, Table, Dropdown, Button, Modal, Tag } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { DELETE_SUCCESS, DELETE_SURE, FETCHING_DATA_FAILED } from '../utils/messages';
+import { DELETE_SUCCESS, DELETE_SURE } from '../utils/messages';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
 import type { MenuProps } from 'antd';
 import CourseModal from './modals/CourseModal';
 import Course from './types/Course';
 import Keyword from './types/Keyword';
+import DataStore from '../stores/dataStore';
+import { observer } from 'mobx-react';
 
 const Courses: React.FC = () => {
-    const [courses, setCourses] = useState<Course[]>([]);
+    // const [courses, setCourses] = useState<Course[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [openTemplateModal, setEditTemplateModal] = useState<boolean>(false);
     const [modalMode, setModalMode] = useState<'Add' | 'Edit'>('Add');
@@ -40,43 +41,30 @@ const Courses: React.FC = () => {
         },
     };
 
-    let url = `${process.env.REACT_APP_BASE_URL}/jce/courses`;
 
     useEffect(() => {
-        if (!openTemplateModal)
-            fetch(url)
-                .then((res) => res.json()
-                    .then((data) => {
-                        if (data.statusCode === 200)
-                            setCourses(data.body);
-                        else {
-                            message.error(FETCHING_DATA_FAILED)
-                            return
-                        }
+        DataStore.fetchCoursesData(false);
+    }, [])
 
-                    }).finally(() => setIsLoading(false)));
-    }, [openTemplateModal, url])
-
-    const deleteTemplate = () => {
-        fetch(`${url}?name=${actionID?.courseName}`, {
+    const deleteTemplate = async () => {
+        const url_courses = `${process.env.REACT_APP_BASE_URL}/jce/courses`;
+        const response = await fetch(`${url_courses}?name=${actionID?.courseName}`, {
             method: 'DELETE',
         })
-            .then(response => response.json().then((data) => {
-                if (data.statusCode === 200) {
-                    message.success(DELETE_SUCCESS("Course"));
-                    setCourses(courses.filter((course) => course.name !== actionID?.courseName));
-                } else {
-                    message.error(data?.error);
-                }
-                setDeleteModal(false);
-            }))
+        const data = await response.json();
+        if (data.statusCode === 200) {
+            message.success(DELETE_SUCCESS("Course"));
+            DataStore.fetchCoursesData(true);
+        } else {
+            message.error(data?.error);
+        }
+        setDeleteModal(false);
     }
-
 
     const items: MenuProps['items'] = [
         {
             label: <span onClick={() => {
-                setSelectedCourse(courses.find((course) => course.name === actionID?.courseName))
+                setSelectedCourse(DataStore.coursesData?.find((course) => course.name === actionID?.courseName))
                 setModalMode('Edit');
                 setEditTemplateModal(true);
             }}>Edit</span>,
@@ -132,10 +120,10 @@ const Courses: React.FC = () => {
                 setSelectedCourse(undefined);
             }}>New</Button>
             <Table
-                dataSource={courses}
+                dataSource={DataStore.coursesData}
                 columns={columns}
                 size='small'
-                loading={isLoading}
+                loading={DataStore.coursesData ? false : true}
                 bordered
             />
             <Modal
@@ -149,4 +137,4 @@ const Courses: React.FC = () => {
     )
 }
 
-export default Courses;
+export default observer(Courses);

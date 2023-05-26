@@ -1,58 +1,45 @@
-import { Divider, message, Table, Dropdown, Button, Modal } from 'antd';
+import { Divider, message, Table, Dropdown, Button, Modal, TableProps } from 'antd';
 import React, { useState, useEffect } from 'react';
-import { DELETE_SURE, DELETE_SUCCESS, FETCHING_DATA_FAILED } from '../utils/messages';
+import { DELETE_SURE, DELETE_SUCCESS } from '../utils/messages';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
 import type { MenuProps } from 'antd';
 import EmailTemplateModal from './modals/EmailTemplateModal';
 import EmailTemplate from './types/EmailTemplates';
+import DataStore from '../stores/dataStore';
 
 
 const EmailTemplates: React.FC = () => {
-    const [templates, setTemplates] = useState<EmailTemplate[]>([]);
     const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | undefined>(undefined);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [openTemplateModal, setEditTemplateModal] = useState<boolean>(false);
     const [modalMode, setModalMode] = useState<'Add' | 'Edit'>('Add');
     const [actionID, setActionID] = useState<{ TemplateId: string, TemplateType: string }>();
 
-    const url_templates = `${process.env.REACT_APP_BASE_URL}/jce/email-templates`;
-
     useEffect(() => {
-        if (!openTemplateModal)
-            fetch(url_templates)
-                .then((res) => res.json()
-                    .then((data) => {
-                        if (data.statusCode === 200)
-                            setTemplates(data.body);
-                        else {
-                            message.error(FETCHING_DATA_FAILED)
-                            return;
-                        }
-                    }).finally(() => setIsLoading(false)));
-    }, [openTemplateModal, url_templates])
+        DataStore.fetchTemplatesData(false)
+    }, [])
 
-    const deleteTemplate = () => {
-        fetch(`${url_templates}?id=${actionID?.TemplateId}`, {
+    const deleteTemplate = async () => {
+        const url_templates = `${process.env.REACT_APP_BASE_URL}/jce/email-templates`;
+        const response = await fetch(`${url_templates}?id=${actionID?.TemplateId}`, {
             method: 'DELETE',
         })
-            .then(response => response.json().then((data) => {
-                if (data.statusCode === 200) {
-                    message.success(DELETE_SUCCESS("Email template"));
-                    setTemplates(templates.filter((template) => template.TemplateId !== actionID?.TemplateId));
-                } else {
-                    message.error(data?.error);
-                }
-                setDeleteModal(false);
-            }))
+        const data = await response.json();
+        if (data.statusCode === 200) {
+            message.success(DELETE_SUCCESS("Email template"));
+            DataStore.fetchKeywordsData(true);
+        } else {
+            message.error(data?.error);
+        }
+        setDeleteModal(false);
     }
 
 
     const items: MenuProps['items'] = [
         {
             label: <span onClick={() => {
-                setSelectedTemplate(templates.find((template) => template.TemplateId === actionID?.TemplateId))
+                setSelectedTemplate(DataStore.templatesData?.find((template) => template.TemplateId === actionID?.TemplateId))
                 setModalMode('Edit');
                 setEditTemplateModal(true);
             }}>Edit</span>,
@@ -76,7 +63,7 @@ const EmailTemplates: React.FC = () => {
         )
     }
 
-    const columns = [
+    const columns: TableProps<EmailTemplate>['columns'] = [
         {
             title: 'Type',
             key: 'TemplateType',
@@ -97,14 +84,14 @@ const EmailTemplates: React.FC = () => {
             key: 'Body',
             dataIndex: 'UpdatedAt',
             defaultSortOrder: 'descend',
-            sorter: (a: any, b: any) => Number(a.UpdatedAt) - Number(b.UpdatedAt),
-            render: (record: any) => <>{new Date(Number(record)).toLocaleString('he-IL')}</>,
+            sorter: (a: EmailTemplate, b: EmailTemplate) => Number(a.UpdatedAt) - Number(b.UpdatedAt),
+            render: (record: string) => <>{new Date(Number(record)).toLocaleString('he-IL')}</>,
         },
         {
             title: 'Actions',
             key: 'Actions',
             align: 'center' as AlignType,
-            render: (text: string, row: EmailTemplate) => dropdown(row.TemplateId, row.TemplateType),
+            render: (text: string, rowData: EmailTemplate) => dropdown(rowData.TemplateId, rowData.TemplateType),
         },
     ];
 
@@ -117,11 +104,10 @@ const EmailTemplates: React.FC = () => {
                 setSelectedTemplate(undefined);
             }}>New</Button>
             <Table
-                dataSource={templates}
-                //@ts-ignore
+                dataSource={DataStore.templatesData}
                 columns={columns}
                 size='middle'
-                loading={isLoading}
+                loading={DataStore.templatesData ? false : true}
                 bordered
             />
             <Modal

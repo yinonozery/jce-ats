@@ -2,17 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Button, Input, Space, Table, Divider, message, InputRef, Modal, Tooltip } from 'antd';
 import { SearchOutlined, CheckCircleOutlined, CloseCircleOutlined, CloudDownloadOutlined } from '@ant-design/icons';
-import { DELETE_SUCCESS, DELETE_SURE, FETCHING_DATA_FAILED } from '../utils/messages';
+import { DELETE_SUCCESS, DELETE_SURE } from '../utils/messages';
 import Candidate from './types/Candidate';
-import AppConfig from '../stores/appStore';
-import type { ColumnType } from 'antd/es/table';
 import Discover from './Discover';
 import SendEmail from './SendEmail';
+import DataStore from '../stores/dataStore';
+import type { ColumnType } from 'antd/es/table';
 
 type DataIndex = keyof Candidate;
 
 const Candidates: React.FC = () => {
-    const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [deleteModal, setDeleteModal] = useState<{ mode: boolean, id: string, file: string }>({ mode: false, id: '', file: '' });
     const [sendEmailModal, setSendEmailModal] = useState<boolean>(false);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
@@ -21,21 +20,9 @@ const Candidates: React.FC = () => {
     const url_candidates = `${process.env.REACT_APP_BASE_URL}/jce/candidates`;
 
     useEffect(() => {
-        setCandidates([]);
-        AppConfig.loadingHandler(true);
-        fetch(url_candidates)
-            .then((res) => res.json())
-            .then((data) => {
-                if (!data?.body) {
-                    message.error('Candidates ' + FETCHING_DATA_FAILED);
-                    return;
-                }
-                setCandidates(data.body);
-            })
-            .catch(() => message.error('Failed to fetch candidates'))
-            .finally(() => AppConfig.loadingHandler(false));
-    }, [url_candidates]);
-
+        DataStore.fetchCandidatesData(false);
+    }, []);
+    
     const deleteCandidate = () => {
         fetch(`${url_candidates}?id=${deleteModal.id}&file=${deleteModal.file}`, {
             method: 'DELETE',
@@ -43,7 +30,7 @@ const Candidates: React.FC = () => {
             .then(response => response.json().then((data) => {
                 if (data.statusCode === 200) {
                     message.success(DELETE_SUCCESS("Candidate"));
-                    setCandidates(candidates.filter((candidate) => candidate.id !== deleteModal.id));
+                    DataStore.fetchCandidatesData(true);
                 } else {
                     message.error(data?.error);
                 }
@@ -178,15 +165,15 @@ const Candidates: React.FC = () => {
         },
     ];
 
-
     return (
         <>
             <SendEmail state={sendEmailModal} stateFunc={setSendEmailModal} candidate={selectedCandidate} />
-            <Discover candidates={candidates} />
+            <Discover />
             {/* Candidates */}
             <Divider orientation='left'>Candidates List</Divider>
             <Table
-                dataSource={candidates} // @ts-ignore
+                dataSource={DataStore.candidatesData || []}
+                loading={DataStore.candidatesData ? false : true}
                 columns={columns}
                 size='small'
                 bordered

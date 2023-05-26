@@ -47,7 +47,7 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
     }
 
     sideMenuItems.sort((a, b) => a.index - b.index); // Sort menu order by index
-    //@ts-ignore
+
     const menu: MenuProps['items'] =
         sideMenuItems
             .map(

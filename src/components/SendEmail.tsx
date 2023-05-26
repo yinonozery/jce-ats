@@ -1,9 +1,8 @@
 import { Button, Form, Input, Modal, Select, message } from 'antd';
 import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import Candidate from './types/Candidate';
-import { FETCHING_DATA_FAILED } from '../utils/messages';
-import emailTemplate from './types/EmailTemplates';
-import AppConfig from '../stores/appStore';
+import EmailTemplate from './types/EmailTemplates';
+import DataStore from '../stores/dataStore';
 
 interface sendEmailProps {
     candidate: Candidate | undefined,
@@ -21,25 +20,9 @@ interface SelectGroup {
     options: SelectOption[];
 }
 
-const SendEmail: React.FC<sendEmailProps> = (props) => {
-    const url_templates = `${process.env.REACT_APP_BASE_URL}/jce/email-templates`;
-    const [templates, setTemplates] = useState<emailTemplate[]>();
-    const [selectedTemplate, setSelectedTemplate] = useState<emailTemplate>();
+const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
+    const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate>();
     const [form] = Form.useForm();
-
-    // AppConfig.loadingHandler(true);
-    useEffect(() => {
-        fetch(url_templates)
-            .then((res) => res.json()
-                .then((data) => {
-                    if (data.statusCode === 2000)
-                        setTemplates(data.body);
-                    else {
-                        message.error(FETCHING_DATA_FAILED)
-                        return;
-                    }
-                }).finally(() => AppConfig.loadingHandler(false)));
-    }, [url_templates])
 
     const onCancelModal = () => {
         props.stateFunc(false);
@@ -95,7 +78,7 @@ const SendEmail: React.FC<sendEmailProps> = (props) => {
 
 
 
-    const groupEmailTemplatesByType = (emailTemplates: emailTemplate[]): SelectGroup[] => {
+    const groupEmailTemplatesByType = (emailTemplates: EmailTemplate[]): SelectGroup[] => {
         return emailTemplates.reduce((groups: SelectGroup[], template) => {
 
             let group: SelectGroup | undefined = groups.find((group) => group.label === template.TemplateType);
@@ -138,8 +121,8 @@ const SendEmail: React.FC<sendEmailProps> = (props) => {
                     </Form.Item>
                     <Form.Item label='Email Template' name='option'>
                         <Select
-                            options={groupEmailTemplatesByType(templates || [])}
-                            onSelect={(e: string) => setSelectedTemplate(templates?.find((template) => template.TemplateId === e))}
+                            options={groupEmailTemplatesByType(DataStore.templatesData || [])}
+                            onSelect={(e: string) => setSelectedTemplate(DataStore.templatesData?.find((template) => template.TemplateId === e))}
                             allowClear
                         />
                     </Form.Item>
@@ -154,6 +137,6 @@ const SendEmail: React.FC<sendEmailProps> = (props) => {
             </Modal>
         </>
     )
-}
+})
 
 export default SendEmail;

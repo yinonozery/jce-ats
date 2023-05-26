@@ -60,7 +60,7 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
                         <CurrentTime />
                     </Sider>
                     <Layout className="site-layout" style={{ marginLeft: (marginResponsive) }} >
-                        <HeaderNav>
+                        <HeaderNav marginResponsive={marginResponsive}>
                             <div style={{ position: 'fixed', marginLeft: '20px', left: marginResponsive, marginTop: '60px', color: 'black' }}>
                                 <Breadcrumb style={{ margin: '16px 0px', position: 'fixed' }}>
                                     {userStore.userInfo && AppConfig.currPage

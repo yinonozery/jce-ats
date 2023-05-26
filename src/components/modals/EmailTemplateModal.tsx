@@ -1,7 +1,8 @@
 import React, { Dispatch, SetStateAction, useState, useRef, useEffect } from 'react';
 import { Modal, Form, Input, message, Divider, Select, Space, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { ADD_SUCCESS, FETCHING_DATA_FAILED, FIELD_MIN_LENGTH, MISSING_FIELD } from '../../utils/messages';
+import { ADD_SUCCESS, FIELD_MIN_LENGTH, MISSING_FIELD } from '../../utils/messages';
+import dataStore from '../../stores/dataStore';
 
 type emailTemplateType = {
     TemplateId: string,
@@ -22,14 +23,9 @@ interface modalProps {
 
 const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
     const [form] = Form.useForm();
-    const [items, setItems] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [addLoading, setAddLoading] = useState(false);
     const [newType, setNewType] = useState<string>('');
-
     const inputRef = useRef(null);
-
-    const url = `${process.env.REACT_APP_BASE_URL}/jce/email-templates/types`;
 
     useEffect(() => {
         form.setFieldsValue({
@@ -40,23 +36,9 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
 
     }, [form, props.mode, props?.template?.Body, props?.template?.Subject, props?.template?.TemplateType])
 
-    useEffect(() => {
-        fetch(url)
-            .then((res) => res.json()
-                .then((data) => {
-                    if (data.statusCode === 200)
-                        setItems(data.body);
-                    else {
-                        message.error(FETCHING_DATA_FAILED)
-                        return;
-                    }
-                })
-                .finally(() => setIsLoading(false)));
-    }, [url])
-
     const addType = () => {
         if (newType.length > 3) {
-            setItems([...items, newType]);
+            dataStore.templatesTypesData = [...dataStore.templatesTypesData, newType]
             setNewType('');
         }
         else
@@ -117,8 +99,6 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
                     message: MISSING_FIELD('Type')
                 }]}>
                     <Select
-                        loading={isLoading}
-                        // defaultValue={props.template?.TemplateType}
                         dropdownRender={(menu) => (
                             <>
                                 {menu}
@@ -134,7 +114,7 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
                                 </Space>
                             </>
                         )}
-                        options={items?.map((item) => ({
+                        options={dataStore.templatesTypesData?.map((item) => ({
                             label: item,
                             value: item,
                         }))}

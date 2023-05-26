@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Collapse, Checkbox, Select, Row, InputNumber, Form, message } from 'antd';
+import { Button, Collapse, Checkbox, Select, Row, InputNumber, Form } from 'antd';
 import { ThunderboltOutlined, UpCircleOutlined } from '@ant-design/icons';
-import { FETCHING_DATA_FAILED, MISSING_FIELD } from '../utils/messages';
+import { MISSING_FIELD } from '../utils/messages';
 import ResultsModal from './modals/ResultsModal';
 import RelevantCandidate from './types/RelevantCandidate';
-import AppConfig from '../stores/appStore';
 import Course from './types/Course';
-import Keywords from './types/Keywords';
 import Keyword from './types/Keyword';
-import Candidate from './types/Candidate';
+import DataStore from '../stores/dataStore';
+import { observer } from 'mobx-react';
 
-const Discover: React.FC<{ candidates: Candidate[] }> = (props) => {
-    const [courses, setCourses] = useState<Course[]>();
-    const [allKeywords, setAllKeywords] = useState<Keywords>();
+const Discover: React.FC = () => {
+    const [coursesOptions, setCoursesOptions] = useState<any>();
     const [selectedCourse, setSelectedCourse] = useState<Course>();
     const [filteredCandidates, setFilteredCandidates] = useState<RelevantCandidate[]>([]);
     const [resultsModal, setResultsModal] = useState<boolean>(false);
@@ -21,64 +19,21 @@ const Discover: React.FC<{ candidates: Candidate[] }> = (props) => {
     const [form] = Form.useForm();
     const { Panel } = Collapse;
 
-    const url_courses = `${process.env.REACT_APP_BASE_URL}/jce/courses`;
-    const url_keywords = `${process.env.REACT_APP_BASE_URL}/jce/keywords`;
-
     useEffect(() => {
-        setCourses([]);
-        AppConfig.loadingHandler(true);
-
-        const fetchCourses = () => {
-            fetch(url_courses)
-                .then((res) => res.json())
-                .then((data) => {
-                    if (data.statusCode === 500) {
-                        message.error('Courses ' + FETCHING_DATA_FAILED);
-                        return;
-                    }
-
-                    const courseSelects = data.body.map((course: Course) => ({
-                        label: course.name,
-                        value: course.name,
-                        data: course,
-                    }));
-
-                    setCourses((courses: any) => [...courses, ...courseSelects]);
-                })
-                .catch(() => {
-                    message.error('Failed to fetch courses');
-                });
-        };
-
-        const fetchKeywords = () => {
-            fetch(url_keywords)
-                .then((res) => res.json())
-                .then((data) => {
-                    if (!data.currentKeywords) {
-                        message.error('Keywords ' + FETCHING_DATA_FAILED);
-                        return;
-                    }
-
-                    setAllKeywords({
-                        currentKeywords: data.currentKeywords,
-                        numOfResumes: data.numOfResumes,
-                        currentDocStats: data.currentDocStats,
-                    });
-                })
-                .catch(() => {
-                    message.error('Failed to fetch keywords');
-                })
-                .finally(() => {
-                    AppConfig.loadingHandler(false);
-                });
-        };
-
-        Promise.all([fetchCourses(), fetchKeywords()]);
-    }, [url_courses, url_keywords]);
+        DataStore.fetchKeywordsData(false);
+        DataStore.fetchCoursesData(false).then(() => {
+            setCoursesOptions(DataStore.coursesData?.map((course: Course) => ({
+                label: course.name,
+                value: course.name,
+                data: course,
+            })))
+        }
+        );
+    }, []);
 
     const searchForCandidate = (values: any) => {
         const relevantsCandidates = [];
-        for (const candidate of props.candidates) {
+        for (const candidate of DataStore.candidatesData || []) {
             const relevantCandidate: RelevantCandidate = {
                 candidate: undefined,
                 keywordsMatches: [],
@@ -99,8 +54,8 @@ const Discover: React.FC<{ candidates: Candidate[] }> = (props) => {
                             const TF = candidate.keywords[keyword] || 1;
 
                             // IDF(t)
-                            const numerator = 1 + (allKeywords?.numOfResumes || 0);
-                            const denominator = 1 + (allKeywords?.currentDocStats[keywordObj.keyword] || 0);
+                            const numerator = 1 + (DataStore.keywordsData?.numOfResumes || 0);
+                            const denominator = 1 + (DataStore.keywordsData?.currentDocStats[keywordObj.keyword] || 0);
                             const IDF = Math.log(numerator / denominator)
 
                             // relevantCandidate.score += (TF * IDF !== 0 ? IDF : 1 * keywordObj.weight); Old formula
@@ -161,7 +116,7 @@ const Discover: React.FC<{ candidates: Candidate[] }> = (props) => {
                                 message: MISSING_FIELD('course name')
                             }]}>
                                 <Select
-                                    options={courses}
+                                    options={coursesOptions}
                                     onSelect={(_, select: any) => setSelectedCourse(select.data)}
                                     onClear={() => setSelectedCourse(undefined)}
                                     style={{ width: '250px' }}
@@ -183,4 +138,4 @@ const Discover: React.FC<{ candidates: Candidate[] }> = (props) => {
         </>
     )
 }
-export default Discover;
+export default observer(Discover);

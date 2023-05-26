@@ -1,4 +1,4 @@
-type emailTemplate = {
+type EmailTemplate = {
     TemplateId: string,
     TemplateType: string,
     Subject: string,
@@ -7,4 +7,4 @@ type emailTemplate = {
     key: number,
 };
 
-export default emailTemplate;
+export default EmailTemplate;
