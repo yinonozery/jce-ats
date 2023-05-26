@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Modal, Divider, Tag, InputNumber, Form, Badge, List, Avatar, Button } from 'antd';
 import RelevantCandidate from '../types/RelevantCandidate';
 import VirtualList from 'rc-virtual-list';
-import SendEmail from '../SendEmail';
+import SendEmail from './SendEmailModal';
 import Candidate from '../types/Candidate';
 
 interface modalProps {

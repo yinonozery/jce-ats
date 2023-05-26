@@ -5,7 +5,7 @@ import { SearchOutlined, CheckCircleOutlined, CloseCircleOutlined, CloudDownload
 import { DELETE_SUCCESS, DELETE_SURE } from '../utils/messages';
 import Candidate from './types/Candidate';
 import Discover from './Discover';
-import SendEmail from './SendEmail';
+import SendEmail from './modals/SendEmailModal';
 import DataStore from '../stores/dataStore';
 import type { ColumnType } from 'antd/es/table';
 

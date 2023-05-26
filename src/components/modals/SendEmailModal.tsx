@@ -1,8 +1,8 @@
 import { Button, Form, Input, Modal, Select, message } from 'antd';
 import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
-import Candidate from './types/Candidate';
-import EmailTemplate from './types/EmailTemplates';
-import DataStore from '../stores/dataStore';
+import Candidate from '../types/Candidate';
+import EmailTemplate from '../types/EmailTemplates';
+import DataStore from '../../stores/dataStore';
 
 interface sendEmailProps {
     candidate: Candidate | undefined,
@@ -22,6 +22,8 @@ interface SelectGroup {
 
 const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
     const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate>();
+    const [isLoading, setIsLoading] = useState(false);
+
     const [form] = Form.useForm();
 
     const onCancelModal = () => {
@@ -51,6 +53,7 @@ const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
     }, [selectedTemplate, form, props.candidate])
 
     const sendEmail = async () => {
+        setIsLoading(true)
         const { subject, body } = await form.getFieldsValue(['subject', 'body'])
         const values = {
             email: props.candidate?.email,
@@ -73,7 +76,7 @@ const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
         }).catch((err) => {
             message.error("Error occured: " + err)
             return;
-        })
+        }).finally(() => setIsLoading(true))
     }
 
 
@@ -132,7 +135,7 @@ const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
                     <Form.Item label='Body' name='body'>
                         <Input.TextArea />
                     </Form.Item>
-                    <Button type='primary' htmlType='submit' block>Send Email</Button>
+                    <Button type='primary' htmlType='submit' loading={isLoading} block>Send Email</Button>
                 </Form>
             </Modal>
         </>
