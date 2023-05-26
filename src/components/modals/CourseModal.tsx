@@ -26,7 +26,7 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
         });
         setKeywords(props?.course?.keywords || [])
 
-    }, [form, props.mode, props.course?.keywords, props.course?.name])
+    }, [form, props.mode, props.course?.keywords, props.course?.name, props.state])
 
     const onFinish = async () => {
         const values = await form.validateFields(['name']);
