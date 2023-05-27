@@ -1,15 +1,11 @@
-import { action, observable, makeAutoObservable } from 'mobx';
+import { makeAutoObservable } from 'mobx';
 import type { UserInfo } from 'firebase/auth';
 
 class UserStore {
     userInfo: UserInfo | null = null;
 
     constructor() {
-        makeAutoObservable(this
-            , {
-                userInfo: observable,
-                setUser: action.bound,
-            });
+        makeAutoObservable(this);
     }
 
     setUser(user: UserInfo | null) {
@@ -25,4 +21,5 @@ class UserStore {
 }
 
 const userStore = new UserStore();
+
 export default userStore;

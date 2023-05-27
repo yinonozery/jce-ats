@@ -7,7 +7,7 @@ import userStore from "../stores/userStore";
 import { LOG_OUT_QUESTION } from "../utils/messages";
 import EditProfileModal from "./modals/EditProfileModal";
 import ChangePasswordModal from "./modals/ChangePasswordModal";
-import AppConfig from "../stores/appStore";
+import appConfig from "../stores/appStore";
 import { observer } from "mobx-react";
 
 const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
@@ -120,7 +120,7 @@ const SideNav: React.FC<{ smaller: boolean }> = observer((props) => {
             <Menu
                 mode="inline"
                 inlineIndent={15}
-                selectedKeys={[String(sideMenuItems.find((item) => item.path === `/${AppConfig?.currPage}`)?.index)]}
+                selectedKeys={[String(sideMenuItems.find((item) => item.path === `/${appConfig?.currPage}`)?.index)]}
                 defaultOpenKeys={['8']}
                 items={menu}
                 onClick={(clicked) => {

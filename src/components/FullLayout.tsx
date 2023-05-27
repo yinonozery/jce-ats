@@ -4,13 +4,14 @@ import HeaderNav from './Header';
 import SideNav from './SideNav';
 import userStore from '../stores/userStore';
 import React, { useState, ReactNode } from 'react';
-import AppConfig from '../stores/appStore';
+import appConfig from '../stores/appStore';
 import { observer } from 'mobx-react';
 import CurrentTime from '../utils/CurrentTime';
+import ErrorDataModal from './modals/ErrorDataModal';
 
 const { Content, Sider, Footer } = Layout;
 
-const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
+const FullLayout: React.FC<{ children: ReactNode }> = (props) => {
     const [marginResponsive, setMarginResponsive] = useState(200)
 
     const {
@@ -63,11 +64,11 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
                         <HeaderNav marginResponsive={marginResponsive}>
                             <div style={{ position: 'fixed', marginLeft: '20px', left: marginResponsive, marginTop: '60px', color: 'black' }}>
                                 <Breadcrumb style={{ margin: '16px 0px', position: 'fixed' }}>
-                                    {userStore.userInfo && AppConfig.currPage
+                                    {userStore.userInfo && appConfig.currPage
                                         ?
                                         <>
                                             <Breadcrumb.Item>Careers Center</Breadcrumb.Item>
-                                            <Breadcrumb.Item>{setPath(AppConfig.currPage)}</Breadcrumb.Item>
+                                            <Breadcrumb.Item>{setPath(appConfig.currPage)}</Breadcrumb.Item>
                                         </>
                                         : <Breadcrumb.Item >Careers Center</Breadcrumb.Item>
                                     }
@@ -87,7 +88,7 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
                                     boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px"
                                 }}
                             >
-                                {props.children}
+                                {!appConfig.errorModalVisible ? props.children : <ErrorDataModal />}
                             </Content>
                         </div>
                         <Footer style={{ textAlign: 'center', marginTop: '5px', backgroundColor: 'transparent', bottom: '0' }}>
@@ -98,6 +99,6 @@ const FullLayout: React.FC<{ children: ReactNode }> = observer((props) => {
             </Layout >
         </>
     )
-});
+};
 
-export default FullLayout;
+export default observer(FullLayout);

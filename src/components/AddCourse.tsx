@@ -2,7 +2,7 @@ import { Form, Input, Divider, List, Button, message } from 'antd';
 import { useState, useRef } from 'react';
 import { CloseCircleOutlined, FileSearchOutlined } from '@ant-design/icons';
 import { MISSING_KEYWORDS, MISSING_COURSE_NAME, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD } from '../utils/messages';
-import AppConfig from '../stores/appStore';
+import appConfig from '../stores/appStore';
 import type { FormInstance } from 'antd/es/form';
 
 const AddCourse: React.FC = () => {
@@ -17,7 +17,7 @@ const AddCourse: React.FC = () => {
     }
 
     const onFinish = async (values: any) => {
-        AppConfig.loadingHandler(true);
+        appConfig.loadingHandler(true);
 
         const uploadForm: UploadForm = {
             course_name: values.course_name,
@@ -44,7 +44,7 @@ const AddCourse: React.FC = () => {
         } catch (error) {
             console.error(error)
         } finally {
-            AppConfig.loadingHandler(false);
+            appConfig.loadingHandler(false);
         }
 
         // AppConfig.loadingHandler(false);

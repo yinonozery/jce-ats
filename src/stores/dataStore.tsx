@@ -1,6 +1,6 @@
 import { makeAutoObservable, reaction } from "mobx";
 import Candidate from "../components/types/Candidate";
-import AppConfig from "./appStore";
+import appConfig from "./appStore";
 import Course from "../components/types/Course";
 import EmailTemplate from "../components/types/EmailTemplates";
 import userStore from "./userStore";
@@ -30,11 +30,18 @@ class DataStore {
             () => userStore.userInfo,
             (userInfo) => {
                 if (userInfo?.uid) {
-                    this.fetchCandidatesData(false);
-                    this.fetchCoursesData(false);
-                    this.fetchKeywordsData(false);
-                    this.fetchTemplatesData(false);
-                    this.getTemplatesTypes();
+                    appConfig.loadingHandler(true)
+                    const promises = [
+                        this.fetchCandidatesData(true),
+                        this.fetchCoursesData(true),
+                        this.fetchKeywordsData(true),
+                        this.fetchTemplatesData(true),
+                        this.getTemplatesTypes(),
+                    ]
+                    Promise.all(promises).then(() => {
+                        console.log("Data Loaded Successfully")
+                        appConfig.loadingHandler(false)
+                    })
                 }
             }
         );
@@ -50,8 +57,7 @@ class DataStore {
             timeElapsed >= this.waitingTime
         ) {
             try {
-                console.log("Fetching candidates data...");
-                AppConfig.loadingHandler(true);
+                appConfig.loadingHandler(true);
                 const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/candidates`);
                 const data = await response.json();
                 if (data.statusCode === 200) {
@@ -60,8 +66,9 @@ class DataStore {
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
+                appConfig.setErrorModalVisible(true);
             } finally {
-                AppConfig.loadingHandler(false);
+                appConfig.loadingHandler(false);
             }
         }
     };
@@ -76,8 +83,7 @@ class DataStore {
             timeElapsed >= this.waitingTime
         ) {
             try {
-                console.log("Fetching courses data...");
-                AppConfig.loadingHandler(true);
+                appConfig.loadingHandler(true);
                 const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/courses`);
                 const data = await response.json();
                 if (data.statusCode === 200) {
@@ -86,8 +92,9 @@ class DataStore {
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
+                appConfig.setErrorModalVisible(true);
             } finally {
-                AppConfig.loadingHandler(false);
+                appConfig.loadingHandler(false);
             }
         }
     };
@@ -102,8 +109,7 @@ class DataStore {
             timeElapsed >= this.waitingTime
         ) {
             try {
-                console.log("Fetching keywords data...");
-                AppConfig.loadingHandler(true);
+                appConfig.loadingHandler(true);
                 const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/keywords`);
                 const data = await response.json();
                 if (data.statusCode === 200) {
@@ -116,8 +122,9 @@ class DataStore {
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
+                appConfig.setErrorModalVisible(true);
             } finally {
-                AppConfig.loadingHandler(false);
+                appConfig.loadingHandler(false);
             }
         }
     };
@@ -132,8 +139,7 @@ class DataStore {
             timeElapsed >= this.waitingTime
         ) {
             try {
-                console.log("Fetching email templates data...");
-                AppConfig.loadingHandler(true);
+                appConfig.loadingHandler(true);
                 const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/email-templates`);
                 const data = await response.json();
                 if (data.statusCode === 200) {
@@ -142,8 +148,9 @@ class DataStore {
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
+                appConfig.setErrorModalVisible(true);
             } finally {
-                AppConfig.loadingHandler(false);
+                appConfig.loadingHandler(false);
             }
         }
     };

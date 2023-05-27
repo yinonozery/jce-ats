@@ -2,7 +2,7 @@ import { Form, Input, InputNumber, Select, Button, Upload, UploadProps, Checkbox
 import { UploadOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
 import { ADD_FAILED, ADD_SUCCESS, MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../utils/messages';
 import { Link } from 'react-router-dom';
-import AppConfig from '../stores/appStore';
+import appConfig from '../stores/appStore';
 
 const { TextArea } = Input;
 
@@ -43,7 +43,7 @@ const AddCandidate: React.FC = () => {
                 await readerPromise;
             }
 
-            AppConfig.loadingHandler(true);
+            appConfig.loadingHandler(true);
             // API Request AWS Form
             const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/candidates/add/`, {
                 method: 'POST',
@@ -65,7 +65,7 @@ const AddCandidate: React.FC = () => {
             console.error(err);
             return;
         } finally {
-            AppConfig.loadingHandler(false);
+            appConfig.loadingHandler(false);
         }
     };
 

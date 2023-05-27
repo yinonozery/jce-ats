@@ -1,18 +1,12 @@
-import { action, makeAutoObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class appStore {
-    isLoading: boolean;
-    currPage: string | null;
+    isLoading: boolean = false;
+    errorModalVisible: boolean = false;
+    currPage: string | null = null;
 
     constructor() {
-        makeAutoObservable(this, {
-            isLoading: observable,
-            currPage: observable,
-            loadingHandler: action,
-            setCurrPage: action,
-        });
-        this.isLoading = false;
-        this.currPage = null;
+        makeAutoObservable(this);
     }
 
     loadingHandler = (mode: boolean) => {
@@ -23,8 +17,12 @@ class appStore {
         this.currPage = currPage;
     };
 
+    setErrorModalVisible = (mode: boolean) => {
+        this.errorModalVisible = mode;
+    }
+
 }
 
-const AppConfig = new appStore();
+const appConfig = new appStore();
 
-export default AppConfig;
+export default appConfig;

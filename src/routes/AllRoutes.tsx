@@ -9,7 +9,7 @@ import userStore from "../stores/userStore";
 import Candidates from "../components/Candidates";
 import Error from "../components/Error";
 import Courses from "../components/Courses";
-import AppConfig from "../stores/appStore";
+import appConfig from "../stores/appStore";
 import EmailTemplates from "../components/EmailTemplates";
 
 const AllRoutes: React.FC = () => {
@@ -24,7 +24,7 @@ const AllRoutes: React.FC = () => {
     ]
 
     useEffect(() => {
-        AppConfig.setCurrPage(appRoutes.includes(location.pathname.substring(1,)) ? location.pathname.substring(1,) : '');
+        appConfig.setCurrPage(appRoutes.includes(location.pathname.substring(1,)) ? location.pathname.substring(1,) : '');
     })
 
     return (
@@ -35,10 +35,9 @@ const AllRoutes: React.FC = () => {
             <Route path={appRoutes[1]} element={<SignOut />} />
             <Route element={<ProtectedRoute user={userStore.userInfo} />}>
                 <Route path={appRoutes[2]} element={<AddCandidate />} />
-                <Route path={appRoutes[3]} element={<Candidates />} action={() => AppConfig.setCurrPage('Candidates')} />
+                <Route path={appRoutes[3]} element={<Candidates />} action={() => appConfig.setCurrPage('Candidates')} />
                 <Route path={appRoutes[4]} element={<Courses />} />
                 <Route path={appRoutes[5]} element={<EmailTemplates />} />
-                {/* <Route path="explore" element={<Explore />} /> */}
             </Route>
         </Routes>
     );
