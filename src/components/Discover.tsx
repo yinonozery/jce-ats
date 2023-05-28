@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Collapse, Checkbox, Select, Row, InputNumber, Form } from 'antd';
-import { ThunderboltOutlined, UpCircleOutlined } from '@ant-design/icons';
+import { ThunderboltTwoTone, UpCircleFilled } from '@ant-design/icons';
 import { MISSING_FIELD } from '../utils/messages';
 import ResultsModal from './modals/ResultsModal';
 import RelevantCandidate from './types/RelevantCandidate';
@@ -83,10 +83,10 @@ const Discover: React.FC = () => {
     return (
         <>
             <ResultsModal state={resultsModal} stateFunc={setResultsModal} data={filteredCandidates} />
-            <Collapse bordered={false} expandIcon={({ isActive }) => <UpCircleOutlined style={{ fontSize: '16px' }} rotate={isActive ? 180 : 0} />} >
+            <Collapse bordered={false} expandIcon={({ isActive }) => <UpCircleFilled style={{ fontSize: '16px' }} rotate={isActive ? 180 : 0} />} >
                 <Panel header={<span style={{ fontWeight: 'bold' }}>
                     Discover Relevant Candidates
-                </span>} key='0' extra={<ThunderboltOutlined />}>
+                </span>} key='0' extra={<ThunderboltTwoTone />}>
                     <Form form={form} initialValues={{ 'min_years_of_exp': 0 }}
                         onResetCapture={() => { setFilteredCandidates([]); setSelectedCourse(undefined); setMinExpDisabled(false) }}
                         onFinish={searchForCandidate}
