@@ -3,6 +3,7 @@ import { UploadOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
 import { ADD_FAILED, ADD_SUCCESS, MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../utils/messages';
 import { Link } from 'react-router-dom';
 import appConfig from '../stores/appStore';
+import dataStore from '../stores/dataStore';
 
 const { TextArea } = Input;
 
@@ -55,6 +56,8 @@ const AddCandidate: React.FC = () => {
             const data = await response.json();
             if (data.statusCode === 200) {
                 message.success(ADD_SUCCESS('Candidate'));
+                dataStore.fetchCandidatesData(true);
+                dataStore.fetchKeywordsData(true);
                 form.resetFields();
                 return;
             } else {

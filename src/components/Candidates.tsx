@@ -6,36 +6,45 @@ import { DELETE_SUCCESS, DELETE_SURE } from '../utils/messages';
 import Candidate from './types/Candidate';
 import Discover from './Discover';
 import SendEmail from './modals/SendEmailModal';
-import DataStore from '../stores/dataStore';
+import dataStore from '../stores/dataStore';
 import type { ColumnType } from 'antd/es/table';
 
 type DataIndex = keyof Candidate;
 
 const Candidates: React.FC = () => {
-    const [deleteModal, setDeleteModal] = useState<{ mode: boolean, id: string, file: string }>({ mode: false, id: '', file: '' });
+    const [deleteModal, setDeleteModal] = useState<{ mode: boolean, id: string, file: string, keywords: Map<string, number> | undefined }>({ mode: false, id: '', file: '', keywords: undefined });
     const [sendEmailModal, setSendEmailModal] = useState<boolean>(false);
+    const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
 
     const searchInput = useRef<InputRef>(null);
     const url_candidates = `${process.env.REACT_APP_BASE_URL}/jce/candidates`;
 
     useEffect(() => {
-        DataStore.fetchCandidatesData(false);
+        dataStore.fetchCandidatesData(false);
     }, []);
 
     const deleteCandidate = () => {
+        setDeleteLoading(true);
         fetch(`${url_candidates}?id=${deleteModal.id}&file=${deleteModal.file}`, {
             method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(deleteModal.keywords),
+
         })
             .then(response => response.json().then((data) => {
                 if (data.statusCode === 200) {
                     message.success(DELETE_SUCCESS("Candidate"));
-                    DataStore.fetchCandidatesData(true);
+                    dataStore.fetchCandidatesData(true);
+                    dataStore.fetchKeywordsData(true);
                 } else {
                     message.error(data?.error);
                 }
-
-                setDeleteModal({ mode: false, id: '', file: '' });
+                setDeleteModal({ mode: false, id: '', file: '', keywords: undefined });
+                setDeleteLoading(false);
             }))
     }
 
@@ -162,7 +171,7 @@ const Candidates: React.FC = () => {
             align: 'center',
             render: (_: string, rowData: Candidate) =>
                 <div style={{ display: 'flex' }}>
-                    <Tooltip title="Delete"><Button type='link' size='small' onClick={() => setDeleteModal({ mode: true, id: rowData.id, file: rowData.resume_file_name })} danger><DeleteOutlined style={{ fontSize: '1.2em' }} /></Button></Tooltip>
+                    <Tooltip title="Delete"><Button type='link' size='small' onClick={() => setDeleteModal({ mode: true, id: rowData.id, file: rowData.resume_file_name, keywords: rowData.keywords })} danger><DeleteOutlined style={{ fontSize: '1.2em' }} /></Button></Tooltip>
                     <Tooltip title="Edit"><Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}><EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} /></Button></Tooltip>
                     <Tooltip title="Send Email"><Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}><SendOutlined style={{ fontSize: '1.2em', color: '#00C851 ' }} /></Button></Tooltip>
                 </div>
@@ -174,10 +183,10 @@ const Candidates: React.FC = () => {
             <SendEmail state={sendEmailModal} stateFunc={setSendEmailModal} candidate={selectedCandidate} />
             <Discover />
             {/* Candidates */}
-            <Divider orientation='left'><DoubleRightOutlined />&nbsp;&nbsp;Candidates List</Divider>
+            <Divider orientation='left'><DoubleRightOutlined />&nbsp;&nbsp;Candidates List ({dataStore.candidatesData?.length})</Divider>
             <Table
-                dataSource={DataStore.candidatesData || []}
-                loading={DataStore.candidatesData ? false : true}
+                dataSource={dataStore.candidatesData || []}
+                loading={dataStore.candidatesData ? false : true}
                 // @ts-ignore
                 columns={columns}
                 size='small'
@@ -187,9 +196,10 @@ const Candidates: React.FC = () => {
             />
             <Modal
                 onOk={() => deleteCandidate()}
-                onCancel={() => setDeleteModal({ mode: false, id: '', file: '' })}
+                onCancel={() => setDeleteModal({ mode: false, id: '', file: '', keywords: undefined })}
                 open={deleteModal.mode}
                 title={DELETE_SURE("candidate")}
+                confirmLoading={deleteLoading}
             />
         </>
     )

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Collapse, Checkbox, Select, Row, InputNumber, Form } from 'antd';
+import { Button, Collapse, Checkbox, Select, Row, InputNumber, Form, message } from 'antd';
 import { ThunderboltTwoTone, UpCircleFilled } from '@ant-design/icons';
 import { MISSING_FIELD } from '../utils/messages';
 import ResultsModal from './modals/ResultsModal';
@@ -32,6 +32,11 @@ const Discover: React.FC = () => {
     }, []);
 
     const searchForCandidate = (values: any) => {
+        if (DataStore?.candidatesData && DataStore?.candidatesData?.length <= 0) {
+            message.error("No Candidates")
+            return;
+        }
+
         const relevantsCandidates = [];
         for (const candidate of DataStore.candidatesData || []) {
             const relevantCandidate: RelevantCandidate = {
