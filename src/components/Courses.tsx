@@ -9,6 +9,7 @@ import Course from './types/Course';
 import Keyword from './types/Keyword';
 import DataStore from '../stores/dataStore';
 import { observer } from 'mobx-react';
+import dataStore from '../stores/dataStore';
 
 const Courses: React.FC = () => {
     // const [courses, setCourses] = useState<Course[]>([]);
@@ -113,7 +114,7 @@ const Courses: React.FC = () => {
 
     return (
         <>
-            <Divider orientation='left'>Courses Management</Divider>
+            <Divider orientation='left'>Courses Management ({dataStore.coursesData?.length})</Divider>
             <Button type='primary' style={{ marginBlockEnd: '15px' }} onClick={() => {
                 setEditTemplateModal(true);
                 setModalMode('Add');

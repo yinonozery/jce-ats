@@ -56,6 +56,7 @@ const Discover: React.FC = () => {
                             console.log('\t', `${keywordObj.keyword} (${keywordObj.weight})`);
 
                             // TF(t,d)
+                            //@ts-ignore
                             const TF = candidate.keywords[keyword] || 1;
 
                             // IDF(t)
@@ -92,7 +93,9 @@ const Discover: React.FC = () => {
                 <Panel header={<span style={{ fontWeight: 'bold' }}>
                     Discover Relevant Candidates
                 </span>} key='0' extra={<ThunderboltTwoTone />}>
-                    <Form form={form} initialValues={{ 'min_years_of_exp': 0 }}
+                    <Form
+                        form={form}
+                        initialValues={{ 'min_years_of_exp': 0 }}
                         onResetCapture={() => { setFilteredCandidates([]); setSelectedCourse(undefined); setMinExpDisabled(false) }}
                         onFinish={searchForCandidate}
                     >

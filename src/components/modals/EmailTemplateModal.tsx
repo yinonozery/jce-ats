@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useState, useRef, useEffect } from 'react';
 import { Modal, Form, Input, message, Divider, Select, Space, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { ADD_SUCCESS, FIELD_MIN_LENGTH, MISSING_FIELD } from '../../utils/messages';
+import { ADD_SUCCESS, FIELD_MIN_LENGTH, MISSING_FIELD, UPDATE_SUCCESS } from '../../utils/messages';
 import dataStore from '../../stores/dataStore';
 
 type emailTemplateType = {
@@ -66,8 +66,13 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
                 body: JSON.stringify(newTemplateForm),
             });
             const data: any = await response.json();
-            if (data.statusCode === 200)
-                message.success(ADD_SUCCESS('Email Template'));
+            if (data.statusCode === 200) {
+                if (props.mode === 'Add')
+                    message.success(ADD_SUCCESS('Email Template'));
+                else if (props.mode === 'Edit')
+                    message.success(UPDATE_SUCCESS('Email Template'))
+                dataStore.fetchTemplatesData(true);
+            }
             else
                 throw data.error;
             form.resetFields();

@@ -11,6 +11,7 @@ import Error from "../components/Error";
 import Courses from "../components/Courses";
 import appConfig from "../stores/appStore";
 import EmailTemplates from "../components/EmailTemplates";
+import GoogleCalendar from "../utils/meetServices/GoogleCalendar";
 
 const AllRoutes: React.FC = () => {
     const location = useLocation();
@@ -21,6 +22,7 @@ const AllRoutes: React.FC = () => {
         'candidates',
         'courses',
         'email-templates',
+        'meeting'
     ]
 
     useEffect(() => {
@@ -38,6 +40,7 @@ const AllRoutes: React.FC = () => {
                 <Route path={appRoutes[3]} element={<Candidates />} action={() => appConfig.setCurrPage('Candidates')} />
                 <Route path={appRoutes[4]} element={<Courses />} />
                 <Route path={appRoutes[5]} element={<EmailTemplates />} />
+                <Route path={appRoutes[6]} element={<GoogleCalendar />} />
             </Route>
         </Routes>
     );

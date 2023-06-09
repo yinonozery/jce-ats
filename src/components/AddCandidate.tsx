@@ -2,14 +2,15 @@ import { Form, Input, InputNumber, Select, Button, Upload, UploadProps, Checkbox
 import { UploadOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
 import { ADD_FAILED, ADD_SUCCESS, MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, VALID_EMAIL } from '../utils/messages';
 import { Link } from 'react-router-dom';
-import appConfig from '../stores/appStore';
 import dataStore from '../stores/dataStore';
+import { useState } from 'react';
 
 const { TextArea } = Input;
 
 const AddCandidate: React.FC = () => {
     const [form] = Form.useForm();
     const { Dragger } = Upload;
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     type UploadForm = {
         first_name: string,
@@ -25,6 +26,7 @@ const AddCandidate: React.FC = () => {
     }
 
     const onFinish = async () => {
+        setIsLoading(true);
         try {
             const values: UploadForm = await form.validateFields(['resume', 'first_name', 'last_name', 'email', 'terms', 'gender', 'years_of_exp']);
             if (typeof (values.resume) === "object") {
@@ -43,8 +45,6 @@ const AddCandidate: React.FC = () => {
                 })
                 await readerPromise;
             }
-
-            appConfig.loadingHandler(true);
             // API Request AWS Form
             const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/candidates/add/`, {
                 method: 'POST',
@@ -68,7 +68,7 @@ const AddCandidate: React.FC = () => {
             console.error(err);
             return;
         } finally {
-            appConfig.loadingHandler(false);
+            setIsLoading(false);
         }
     };
 
@@ -202,7 +202,7 @@ const AddCandidate: React.FC = () => {
 
                 {/* Submit Button */}
                 <Form.Item style={{ textAlign: 'center', marginTop: '15px' }}>
-                    <Button block type="primary" htmlType="submit">Submit</Button>
+                    <Button block type="primary" htmlType="submit" loading={isLoading}>Submit</Button>
                 </Form.Item>
             </Form>
         </>

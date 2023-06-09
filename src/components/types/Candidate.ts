@@ -5,7 +5,8 @@ type Candidate = {
     gender: 'Male' | 'Female',
     email: string,
     work_experience: number,
-    keywords: any,
+    keywords: Map<string,number>,
+    links: string[],
     resume_file_name: string,
     status: 'Available' | 'Accepted' | 'Rejected' | 'In progress',
 }

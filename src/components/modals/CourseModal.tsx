@@ -1,9 +1,10 @@
 import React, { Dispatch, SetStateAction, useState, useEffect, useRef } from 'react';
 import { Modal, Form, Input, message, Divider, Button, List, FormInstance, Radio, Tag } from 'antd';
-import { MISSING_FIELD, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD, ADD_SUCCESS } from '../../utils/messages';
+import { MISSING_FIELD, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD, ADD_SUCCESS, UPDATE_SUCCESS } from '../../utils/messages';
 import { FileSearchOutlined, CloseCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import Keyword from '../types/Keyword';
 import Course from '../types/Course';
+import dataStore from '../../stores/dataStore';
 
 interface modalProps {
     mode: 'Add' | 'Edit';
@@ -53,11 +54,15 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
             });
             const data: any = await response.json();
             if (data.statusCode === 200) {
-                message.success(ADD_SUCCESS("Course"));
+                if (props.mode === 'Add')
+                    message.success(ADD_SUCCESS("Course"));
+                else if (props.mode === 'Edit')
+                    message.success(UPDATE_SUCCESS("Course"))
+                dataStore.fetchCoursesData(true);
             } else {
                 throw data.error;
             }
-            handleReset(true);
+            handleReset(false);
         } catch (error: any) {
             message.error(error);
         } finally {
@@ -200,15 +205,16 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
                             return (
                                 <List.Item>
                                     # {item.keyword} - {props.weightLevels[Number(keywords.find((keyObj) => keyObj.keyword === item.keyword)?.weight)].level}
-                                    {keywords.find((keyObj) => keyObj.keyword === item.keyword)?.synonyms?.map((synonym, index) => {
-                                        const uniqueKey = `${item.keyword}-${synonym}-${index}`;
-                                        return (
-                                            <Tag key={uniqueKey} onClose={() => handleDeleteTag(item.keyword, synonym)} closable>
-                                                {synonym}
-                                            </Tag>
-                                        )
-                                    })}
-
+                                    <span style={{ marginLeft: '10px' }}>
+                                        {keywords.find((keyObj) => keyObj.keyword === item.keyword)?.synonyms?.map((synonym, index) => {
+                                            const uniqueKey = `${item.keyword}-${synonym}-${index}`;
+                                            return (
+                                                <Tag key={uniqueKey} onClose={() => handleDeleteTag(item.keyword, synonym)} closable>
+                                                    {synonym}
+                                                </Tag>
+                                            )
+                                        })}
+                                    </span>
                                     <span style={{ 'float': 'right', marginLeft: '10px' }} onClick={() => { setKeywords(keywords.filter((keyObj) => keyObj.keyword !== item.keyword)) }}>
                                         <CloseCircleOutlined />
                                     </span>

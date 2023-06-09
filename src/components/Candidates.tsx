@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Input, Space, Table, Divider, message, InputRef, Modal, Tooltip } from 'antd';
-import { DoubleRightOutlined, SearchOutlined, CheckCircleOutlined, CloseCircleOutlined, CloudDownloadOutlined, DeleteOutlined, SendOutlined, EditOutlined } from '@ant-design/icons';
+import { DoubleRightOutlined, SearchOutlined, CheckCircleOutlined, CloseCircleOutlined, VideoCameraAddOutlined, CloudDownloadOutlined, DeleteOutlined, SendOutlined, EditOutlined } from '@ant-design/icons';
 import { DELETE_SUCCESS, DELETE_SURE } from '../utils/messages';
 import Candidate from './types/Candidate';
 import Discover from './Discover';
@@ -9,12 +10,14 @@ import SendEmail from './modals/SendEmailModal';
 import dataStore from '../stores/dataStore';
 import type { ColumnType } from 'antd/es/table';
 
+
 type DataIndex = keyof Candidate;
 
 const Candidates: React.FC = () => {
     const [deleteModal, setDeleteModal] = useState<{ mode: boolean, id: string, file: string, keywords: Map<string, number> | undefined }>({ mode: false, id: '', file: '', keywords: undefined });
     const [sendEmailModal, setSendEmailModal] = useState<boolean>(false);
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
 
@@ -93,17 +96,26 @@ const Candidates: React.FC = () => {
     });
 
     const CircleButton = (color: string, tooltip: string) =>
-        <Tooltip title={tooltip}>
-            <Button type="text"
-                style={{
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '50%',
-                    backgroundColor: color,
-                }}
-                icon={<CheckCircleOutlined style={{ position: 'relative', color: '#fff', bottom: '3px' }} />}
-            />
-        </Tooltip>
+        <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+        }}>
+            <Tooltip title={tooltip}>
+                <Button type="text"
+                    style={{
+                        display: 'flex',
+                        alignContent: 'center',
+                        justifyContent: 'center',
+                        width: '26px',
+                        height: '26px',
+                        borderRadius: '50%',
+                        backgroundColor: color,
+
+                    }}
+                    icon={<CheckCircleOutlined style={{ color: '#fff' }} />}
+                />
+            </Tooltip>
+        </div>
 
 
     const columns = [
@@ -144,16 +156,32 @@ const Candidates: React.FC = () => {
             title: 'Contact',
             dataIndex: 'keywords',
             key: 'contact',
-            render: (record: any) =>
-                <div style={{ display: 'flex', gap: '2px', justifyContent: 'center', alignContent: 'center' }}>
-                    {Object.keys(record).map((word: string) => {
-                        if (word.includes('linkedin.com/in')) return Contact_Linkedin(word);
-                        else if (word.includes('github.com')) return Contact_Github(word);
-                        else if (word.includes('facebook.com')) return Contact_Facebook(word);
-                        else if (word.includes('@') && word.includes('.')) return Contact_Email(word);
-                        return null;
-                    })}
-                </div>
+            render: (record: any, rowData: Candidate) => {
+                if (rowData.resume_file_name.endsWith('.pdf')) {
+                    return (
+                        <div style={{ display: 'flex', gap: '2px', justifyContent: 'center', alignContent: 'center' }}>
+                            {rowData.links.map((word: string) => {
+                                if (word.includes('linkedin.com/in')) return Contact_Linkedin(word);
+                                else if (word.includes('github.com')) return Contact_Github(word);
+                                else if (word.includes('facebook.com')) return Contact_Facebook(word);
+                                else if (word.includes('@') && word.includes('.')) return Contact_Email(word);
+                                return null;
+                            })}
+                        </div>)
+                }
+                else {
+                    return (
+                        <div style={{ display: 'flex', gap: '2px', justifyContent: 'center', alignContent: 'center' }}>
+                            {Object.keys(record).map((word: string) => {
+                                if (word.includes('linkedin.com/in')) return Contact_Linkedin(word);
+                                else if (word.includes('github.com')) return Contact_Github(word);
+                                else if (word.includes('facebook.com')) return Contact_Facebook(word);
+                                else if (word.includes('@') && word.includes('.')) return Contact_Email(word);
+                                return null;
+                            })}
+                        </div>)
+                }
+            }
         },
         {
             title: 'Status',
@@ -174,7 +202,9 @@ const Candidates: React.FC = () => {
                     <Tooltip title="Delete"><Button type='link' size='small' onClick={() => setDeleteModal({ mode: true, id: rowData.id, file: rowData.resume_file_name, keywords: rowData.keywords })} danger><DeleteOutlined style={{ fontSize: '1.2em' }} /></Button></Tooltip>
                     <Tooltip title="Edit"><Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}><EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} /></Button></Tooltip>
                     <Tooltip title="Send Email"><Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}><SendOutlined style={{ fontSize: '1.2em', color: '#00C851 ' }} /></Button></Tooltip>
-                </div>
+                    <Tooltip title="Schedule Video Interview"><Button type='link' size='small' onClick={() => { navigate('/meeting', { state: { candidate: JSON.stringify(rowData) } }); }}>
+                        <VideoCameraAddOutlined style={{ fontSize: '1.2em', color: '#8E44AD ' }} /></Button></Tooltip>
+                </div >
         },
     ];
 
