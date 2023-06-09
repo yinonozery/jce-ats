@@ -34,7 +34,9 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
         scope: SCOPES,
         callback: '', // defined later
     }))
-
+    function initMap() {
+        console.log("sds")
+    }
     useEffect(() => {
         if (accessToken && expiresIn && Number(localStorage.getItem('login_date')) + Number(expiresIn) < Math.floor(Date.now() / 1000))
             handleSignoutClick()
