@@ -32,11 +32,9 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
     const [tokenClient, setTokenClient] = useState(google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: SCOPES,
-        callback: '', // defined later
+        callback: '',
     }))
-    function initMap() {
-        console.log("sds")
-    }
+
     useEffect(() => {
         if (accessToken && expiresIn && Number(localStorage.getItem('login_date')) + Number(expiresIn) < Math.floor(Date.now() / 1000))
             handleSignoutClick()
@@ -261,24 +259,23 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
         }
     };
 
-    if (!accessToken && !expiresIn) {
-        return (
-            <Button onClick={handleSigninClick} type='primary' block>
-                <GoogleOutlined style={{ marginInline: '5px', padding: '1px', fontSize: '1.2em' }} /> Sign in with Google
-            </Button>
-        );
-    } else {
-        return (
-            <>
-                <Tooltip title='Back to candidates'>
-                    <Button icon={<ArrowLeftOutlined />}
-                        style={{ position: 'absolute', float: 'left' }}
-                        type='ghost'
-                        onClick={() => navigate(-1)}
-                    >
-                    </Button>
-                </Tooltip>
-                <Divider><ScheduleOutlined style={{ marginInline: '10px' }} />Schedule a Google Calendar Event</Divider>
+    return (
+        <>
+            <Tooltip title='Back to candidates'>
+                <Button icon={<ArrowLeftOutlined />}
+                    style={{ position: 'absolute', float: 'left' }}
+                    type='ghost'
+                    onClick={() => navigate(-1)}
+                >
+                </Button>
+            </Tooltip>
+            <Divider><ScheduleOutlined style={{ marginInline: '10px' }} />Schedule a Google Calendar Event</Divider>
+            <div hidden={!(!accessToken && !expiresIn)}>
+                <Button onClick={handleSigninClick} type='primary' block>
+                    <GoogleOutlined style={{ marginInline: '5px', padding: '1px', fontSize: '1.2em' }} /> Sign in with Google
+                </Button>
+            </div>
+            <div hidden={!accessToken && !expiresIn}>
                 <Button onClick={handleSignoutClick} type='primary' block danger>Sign Out</Button>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <Divider orientation='left'>Candidate Info</Divider>
@@ -372,9 +369,9 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
                         </div>
                     </Form>
                 </div>
-            </>
-        )
-    }
+            </div>
+        </>
+    )
 }
 
 export default GoogleCalendar;
