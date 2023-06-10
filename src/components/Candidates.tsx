@@ -9,6 +9,7 @@ import Discover from './Discover';
 import SendEmail from './modals/SendEmailModal';
 import dataStore from '../stores/dataStore';
 import type { ColumnType } from 'antd/es/table';
+import CandidateCard from './modals/CandidateCard';
 
 
 type DataIndex = keyof Candidate;
@@ -17,6 +18,8 @@ const Candidates: React.FC = () => {
     const [deleteModal, setDeleteModal] = useState<{ mode: boolean, id: string, file: string, keywords: Map<string, number> | undefined }>({ mode: false, id: '', file: '', keywords: undefined });
     const [sendEmailModal, setSendEmailModal] = useState<boolean>(false);
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+    const [candidateCardModal, setCandidateCardModal] = useState<boolean>(false);
+
     const navigate = useNavigate();
 
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
@@ -123,9 +126,9 @@ const Candidates: React.FC = () => {
             title: 'Name',
             key: 'name',
             align: 'center',
-            render: (record: { first_name: string; last_name: string; }) => `${record.first_name} ${record.last_name}`,
             ...getColumnSearchProps('last_name', 'first_name'),
             sorter: (a: Candidate, b: Candidate) => a.first_name.localeCompare(b.first_name),
+            render: (record: { first_name: string; last_name: string; }, rowData: Candidate) => <div onClick={() => { setCandidateCardModal(true); setSelectedCandidate(rowData) }}>{record.first_name} {record.last_name}</div>,
         },
         {
             title: 'Gender',
@@ -211,9 +214,11 @@ const Candidates: React.FC = () => {
     return (
         <>
             <SendEmail state={sendEmailModal} stateFunc={setSendEmailModal} candidate={selectedCandidate} />
+            <CandidateCard state={candidateCardModal} stateFunc={setCandidateCardModal} candidate={selectedCandidate} />
             <Discover />
             {/* Candidates */}
             <Divider orientation='left'><DoubleRightOutlined />&nbsp;&nbsp;Candidates List ({dataStore.candidatesData?.length})</Divider>
+            <p style={{ color: 'gray', fontSize: '0.8em', marginLeft: '10px' }}>* Click on a candidate's name to view the keywords heatmap</p>
             <Table
                 dataSource={dataStore.candidatesData || []}
                 loading={dataStore.candidatesData ? false : true}
