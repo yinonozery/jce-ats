@@ -2,7 +2,7 @@ import { makeAutoObservable, reaction } from "mobx";
 import Candidate from "../components/types/Candidate";
 import appConfig from "./appStore";
 import Course from "../components/types/Course";
-import EmailTemplate from "../components/types/EmailTemplates";
+import EmailTemplate from "../components/types/EmailTemplate";
 import userStore from "./userStore";
 
 class DataStore {
