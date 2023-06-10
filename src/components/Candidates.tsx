@@ -1,58 +1,33 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input, Space, Table, Divider, message, InputRef, Modal, Tooltip } from 'antd';
+import { Button, Input, Space, Table, Divider, InputRef, Tooltip } from 'antd';
 import { DoubleRightOutlined, SearchOutlined, CheckCircleOutlined, CloseCircleOutlined, VideoCameraAddOutlined, CloudDownloadOutlined, DeleteOutlined, SendOutlined, EditOutlined } from '@ant-design/icons';
-import { DELETE_SUCCESS, DELETE_SURE } from '../utils/messages';
+import { CLICK_KEYWORDS_HEATMAP } from '../utils/messages';
 import Candidate from './types/Candidate';
 import Discover from './Discover';
 import SendEmail from './modals/SendEmailModal';
 import dataStore from '../stores/dataStore';
 import type { ColumnType } from 'antd/es/table';
-import CandidateCard from './modals/CandidateCard';
-
+import KeywordsHeatmap from './modals/KeywordsHeatmap';
+import EditCandidate from './modals/EditCandidateModal';
+import DeleteCandidateModal from './modals/DeleteCandidateModal';
 
 type DataIndex = keyof Candidate;
 
 const Candidates: React.FC = () => {
-    const [deleteModal, setDeleteModal] = useState<{ mode: boolean, id: string, file: string, keywords: Map<string, number> | undefined }>({ mode: false, id: '', file: '', keywords: undefined });
     const [sendEmailModal, setSendEmailModal] = useState<boolean>(false);
-    const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
     const [candidateCardModal, setCandidateCardModal] = useState<boolean>(false);
-
-    const navigate = useNavigate();
-
+    const [editCandidateModal, setEditCandidateModal] = useState<boolean>(false);
+    const [deleteCandidateModal, setDeleteCandidateModal] = useState<boolean>(false);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
-
+    const navigate = useNavigate();
     const searchInput = useRef<InputRef>(null);
-    const url_candidates = `${process.env.REACT_APP_BASE_URL}/jce/candidates`;
 
     useEffect(() => {
         dataStore.fetchCandidatesData(false);
     }, []);
 
-    const deleteCandidate = () => {
-        setDeleteLoading(true);
-        fetch(`${url_candidates}?id=${deleteModal.id}&file=${deleteModal.file}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(deleteModal.keywords),
-
-        })
-            .then(response => response.json().then((data) => {
-                if (data.statusCode === 200) {
-                    message.success(DELETE_SUCCESS("Candidate"));
-                    dataStore.fetchCandidatesData(true);
-                    dataStore.fetchKeywordsData(true);
-                } else {
-                    message.error(data?.error);
-                }
-                setDeleteModal({ mode: false, id: '', file: '', keywords: undefined });
-                setDeleteLoading(false);
-            }))
-    }
 
     const Contact_Email = (link: string) =>
         <a key='email' href={`mailto:${link}`}><img width="25" alt='Email' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+Cgo8ZGVmcz4KPC9kZWZzPgo8ZyBzdHlsZT0ic3Ryb2tlOiBub25lOyBzdHJva2Utd2lkdGg6IDA7IHN0cm9rZS1kYXNoYXJyYXk6IG5vbmU7IHN0cm9rZS1saW5lY2FwOiBidXR0OyBzdHJva2UtbGluZWpvaW46IG1pdGVyOyBzdHJva2UtbWl0ZXJsaW1pdDogMTA7IGZpbGw6IG5vbmU7IGZpbGwtcnVsZTogbm9uemVybzsgb3BhY2l0eTogMTsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEuNDA2NTkzNDA2NTkzNDAxNiAxLjQwNjU5MzQwNjU5MzQwMTYpIHNjYWxlKDIuODEgMi44MSkiID4KCTxjaXJjbGUgY3g9IjQ1IiBjeT0iNDUiIHI9IjQ1IiBzdHlsZT0ic3Ryb2tlOiBub25lOyBzdHJva2Utd2lkdGg6IDE7IHN0cm9rZS1kYXNoYXJyYXk6IG5vbmU7IHN0cm9rZS1saW5lY2FwOiBidXR0OyBzdHJva2UtbGluZWpvaW46IG1pdGVyOyBzdHJva2UtbWl0ZXJsaW1pdDogMTA7IGZpbGw6IHJnYigzNSw5MSwyMTYpOyBmaWxsLXJ1bGU6IG5vbnplcm87IG9wYWNpdHk6IDE7IiB0cmFuc2Zvcm09IiAgbWF0cml4KDEgMCAwIDEgMCAwKSAiLz4KCTxwYXRoIGQ9Ik0gNjQuNTY3IDI2LjQ5NSBIIDI1LjQzMyBjIC0zLjE0MiAwIC01LjY4OSAyLjU0NyAtNS42ODkgNS42ODkgdiAyNS42MzEgYyAwIDMuMTQyIDIuNTQ3IDUuNjg5IDUuNjg5IDUuNjg5IGggMzkuMTM1IGMgMy4xNDIgMCA1LjY4OSAtMi41NDcgNS42ODkgLTUuNjg5IFYgMzIuMTg0IEMgNzAuMjU2IDI5LjA0MyA2Ny43MDkgMjYuNDk1IDY0LjU2NyAyNi40OTUgeiBNIDYzLjM0MyA1Ny40NyBjIC0wLjI5NSAwLjMwNiAtMC42ODggMC40NiAtMS4wODEgMC40NiBjIC0wLjM3NCAwIC0wLjc0OSAtMC4xNCAtMS4wNCAtMC40MTkgbCAtOS40MTkgLTkuMDY1IGwgLTEuMzU3IDEuNDg5IGMgLTEuMzk0IDEuNTI4IC0zLjM3OCAyLjQwNCAtNS40NDYgMi40MDQgYyAtMi4wNjggMCAtNC4wNTMgLTAuODc2IC01LjQ0NiAtMi40MDQgbCAtMS4zMzcgLTEuNDY3IGwgLTkuMDIyIDkuMDIzIGMgLTAuMjkyIDAuMjkzIC0wLjY3NyAwLjQzOSAtMS4wNjEgMC40MzkgcyAtMC43NjggLTAuMTQ2IC0xLjA2MSAtMC40MzkgYyAtMC41ODYgLTAuNTg2IC0wLjU4NiAtMS41MzUgMCAtMi4xMjEgbCA5LjEyIC05LjEyMSBMIDI2LjYzIDM1Ljc1NCBjIC0wLjU1OCAtMC42MTIgLTAuNTE0IC0xLjU2MSAwLjA5OCAtMi4xMTkgYyAwLjYxMyAtMC41NTggMS41NjIgLTAuNTE0IDIuMTE5IDAuMDk4IGwgMTIuOTI0IDE0LjE4IGMgMC44MzggMC45MiAxLjk4NSAxLjQyNiAzLjIyOSAxLjQyNiBzIDIuMzkyIC0wLjUwNiAzLjIyOSAtMS40MjYgbCAyLjQyMiAtMi42NTcgbCAxMC41MDIgLTExLjUyMiBjIDAuNTU5IC0wLjYxMiAxLjUwNyAtMC42NTUgMi4xMTkgLTAuMDk4IGMgMC42MTIgMC41NTggMC42NTYgMS41MDYgMC4wOTggMi4xMTkgbCAtOS41NDYgMTAuNDc0IGwgOS40NzcgOS4xMjEgQyA2My44OTggNTUuOTI0IDYzLjkxNyA1Ni44NzMgNjMuMzQzIDU3LjQ3IHoiIHN0eWxlPSJzdHJva2U6IG5vbmU7IHN0cm9rZS13aWR0aDogMTsgc3Ryb2tlLWRhc2hhcnJheTogbm9uZTsgc3Ryb2tlLWxpbmVjYXA6IGJ1dHQ7IHN0cm9rZS1saW5lam9pbjogbWl0ZXI7IHN0cm9rZS1taXRlcmxpbWl0OiAxMDsgZmlsbDogcmdiKDI1NSwyNTUsMjU1KTsgZmlsbC1ydWxlOiBub256ZXJvOyBvcGFjaXR5OiAxOyIgdHJhbnNmb3JtPSIgbWF0cml4KDEgMCAwIDEgMCAwKSAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgLz4KPC9nPgo8L3N2Zz4=" /></a>;
@@ -202,8 +177,8 @@ const Candidates: React.FC = () => {
             align: 'center',
             render: (_: string, rowData: Candidate) =>
                 <div style={{ display: 'flex' }}>
-                    <Tooltip title="Delete"><Button type='link' size='small' onClick={() => setDeleteModal({ mode: true, id: rowData.id, file: rowData.resume_file_name, keywords: rowData.keywords })} danger><DeleteOutlined style={{ fontSize: '1.2em' }} /></Button></Tooltip>
-                    <Tooltip title="Edit"><Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}><EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} /></Button></Tooltip>
+                    <Tooltip title="Delete"><Button type='link' size='small' onClick={() => { setDeleteCandidateModal(true); setSelectedCandidate(rowData) }} danger><DeleteOutlined style={{ fontSize: '1.2em' }} /></Button></Tooltip>
+                    <Tooltip title="Edit"><Button type='link' size='small' onClick={() => { setEditCandidateModal(true); setSelectedCandidate(rowData) }}><EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} /></Button></Tooltip>
                     <Tooltip title="Send Email"><Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}><SendOutlined style={{ fontSize: '1.2em', color: '#00C851 ' }} /></Button></Tooltip>
                     <Tooltip title="Schedule Video Interview"><Button type='link' size='small' onClick={() => { navigate('/meeting', { state: { candidate: JSON.stringify(rowData) } }); }}>
                         <VideoCameraAddOutlined style={{ fontSize: '1.2em', color: '#8E44AD ' }} /></Button></Tooltip>
@@ -214,27 +189,22 @@ const Candidates: React.FC = () => {
     return (
         <>
             <SendEmail state={sendEmailModal} stateFunc={setSendEmailModal} candidate={selectedCandidate} />
-            <CandidateCard state={candidateCardModal} stateFunc={setCandidateCardModal} candidate={selectedCandidate} />
+            <KeywordsHeatmap state={candidateCardModal} stateFunc={setCandidateCardModal} candidate={selectedCandidate} />
+            <EditCandidate state={editCandidateModal} stateFunc={setEditCandidateModal} candidate={selectedCandidate} />
+            <DeleteCandidateModal state={deleteCandidateModal} stateFunc={setDeleteCandidateModal} candidate={selectedCandidate} />
             <Discover />
+
             {/* Candidates */}
             <Divider orientation='left'><DoubleRightOutlined />&nbsp;&nbsp;Candidates List ({dataStore.candidatesData?.length})</Divider>
-            <p style={{ color: 'gray', fontSize: '0.8em', marginLeft: '10px' }}>* Click on a candidate's name to view the keywords heatmap</p>
+            <p style={{ color: 'gray', fontSize: '0.8em', marginLeft: '10px' }}>{CLICK_KEYWORDS_HEATMAP}</p>
             <Table
                 dataSource={dataStore.candidatesData || []}
                 loading={dataStore.candidatesData ? false : true}
                 // @ts-ignore
                 columns={columns}
-                size='small'
-
+                size='middle'
                 style={{ textAlign: 'center' }}
                 bordered
-            />
-            <Modal
-                onOk={() => deleteCandidate()}
-                onCancel={() => setDeleteModal({ mode: false, id: '', file: '', keywords: undefined })}
-                open={deleteModal.mode}
-                title={DELETE_SURE("candidate")}
-                confirmLoading={deleteLoading}
             />
         </>
     )

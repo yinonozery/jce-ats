@@ -8,7 +8,7 @@ interface modalProps {
     candidate: Candidate | undefined,
 }
 
-const CandidateCard: React.FC<modalProps> = (props) => {
+const KeywordsHeatmap: React.FC<modalProps> = (props) => {
     const keywordsMap = new Map(Object.entries(props.candidate?.keywords || []));
     const keywordsSortedMap = new Map(
         Array.from(keywordsMap).sort(([, valueA], [, valueB]) => valueB - valueA)
@@ -57,4 +57,4 @@ const CandidateCard: React.FC<modalProps> = (props) => {
     )
 };
 
-export default CandidateCard;
+export default KeywordsHeatmap;
