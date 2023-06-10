@@ -32,7 +32,7 @@ const ChangePasswordModal: React.FC<modalProps> = (props) => {
         <Modal
             title={<Divider orientation="left">Change Password</Divider>}
             open={props.state}
-            onOk={() => reAuthenticationNeeded ? handleChangePassword() : alert("REAUTH NEEDEED")}
+            onOk={() => reAuthenticationNeeded ? handleChangePassword() : null}
             onCancel={() => props.stateFunc(false)}
             confirmLoading={false}
         >
