@@ -126,8 +126,8 @@ const AddCandidate: React.FC = () => {
                         },
                     ]} hasFeedback>
                         <Select id="gender">
-                            <Select.Option value="Male">Male <ManOutlined /></Select.Option>
-                            <Select.Option value="Female">Female <WomanOutlined /></Select.Option>
+                            <Select.Option value="Male"><span>Male <ManOutlined /></span></Select.Option>
+                            <Select.Option value="Female"><span>Female <WomanOutlined /></span></Select.Option>
                         </Select>
                     </Form.Item>
 
