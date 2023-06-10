@@ -5,7 +5,7 @@ import { EllipsisOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
 import type { MenuProps } from 'antd';
 import EmailTemplateModal from './modals/EmailTemplateModal';
-import EmailTemplate from './types/EmailTemplates';
+import EmailTemplate from './types/EmailTemplate';
 import DataStore from '../stores/dataStore';
 
 
