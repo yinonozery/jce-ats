@@ -6,15 +6,7 @@ import { ArrowLeftOutlined, GoogleOutlined, ScheduleOutlined, EnvironmentOutline
 import { MISSING_FIELD } from '../messages';
 import TextArea from 'antd/es/input/TextArea';
 
-type eventProps = {
-    title: string,
-    date: Date,
-    name: string,
-    email: string,
-    videoType: 'GoogleMeet'
-}
-
-const GoogleCalendar: React.FC<eventProps | any> = (props) => {
+const GoogleCalendar: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const candidate = JSON.parse(location?.state.candidate);
@@ -27,6 +19,7 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
     const [form] = Form.useForm();
     const [isOnline, setIsOnline] = useState<boolean>(false);
     const [duration, setDuration] = useState<number>(0);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem('access_token'));
     const [expiresIn, setExpiresIn] = useState<string | null>(localStorage.getItem('expires_in'));
     const [tokenClient, setTokenClient] = useState(google.accounts.oauth2.initTokenClient({
@@ -36,8 +29,11 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
     }))
 
     useEffect(() => {
-        if (accessToken && expiresIn && Number(localStorage.getItem('login_date')) + Number(expiresIn) < Math.floor(Date.now() / 1000))
-            handleSignoutClick()
+        if (accessToken && expiresIn && Number(localStorage.getItem('login_date')) + Number(expiresIn) < Math.floor(Date.now() / 1000)) {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('expires_in');
+            localStorage.removeItem('login_date');
+        }
 
         const gisLoaded = () => {
             setTokenClient(google.accounts.oauth2.initTokenClient({
@@ -96,7 +92,6 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
         if (token !== null) {
             google.accounts.oauth2.revoke(token.access_token);
             gapi.client.setToken('');
-            localStorage.clear();
             localStorage.removeItem('access_token');
             localStorage.removeItem('expires_in');
             localStorage.removeItem('login_date');
@@ -153,7 +148,8 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
     }, [form, isOnline])
 
     const addEvent = async () => {
-        const { datePicker, description, location, duration, video } = await form.validateFields();
+        const { summary, datePicker, description, location, duration, video } = await form.validateFields();
+        setIsLoading(true);
         const date = new Date(datePicker).getTime();
         const conferenceID = new Date().getTime();
         const calendarId = await checkCalendarExists();
@@ -162,7 +158,7 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
             calendarId: calendarId,
             eventId: 'hangoutsMeet' + conferenceID,
             kind: 'calendar#event',
-            summary: 'Jerusalem College Of Engineering Interview',
+            summary: summary,
             location: video ? 'Online - Google Meet' : location,
             description: description,
             conferenceData: {},
@@ -207,6 +203,7 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
         }, (error: any) => {
             console.error(error);
         });
+        setIsLoading(false);
     }
 
     const initGoogleMapsAutoComplete = () => {
@@ -269,7 +266,9 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
                 >
                 </Button>
             </Tooltip>
+
             <Divider><ScheduleOutlined style={{ marginInline: '10px' }} />Schedule a Google Calendar Event</Divider>
+
             <div hidden={!(!accessToken && !expiresIn)}>
                 <Button onClick={handleSigninClick} type='primary' block>
                     <GoogleOutlined style={{ marginInline: '5px', padding: '1px', fontSize: '1.2em' }} /> Sign in with Google
@@ -277,13 +276,17 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
             </div>
             <div hidden={!accessToken && !expiresIn}>
                 <Button onClick={handleSignoutClick} type='primary' block danger>Sign Out</Button>
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
+                    {/* Candidate Details */}
                     <Divider orientation='left'>Candidate Info</Divider>
                     <span><b>Name:</b> {candidate.first_name} {candidate.last_name}</span>
                     <span><b>Email:</b> {candidate.email}</span>
                     <span><b>Work Experience:</b> {candidate.work_experience} Years</span>
                     <span><b>Status:</b> {candidate.status}</span>
 
+                    {/* Event Info Form */}
                     <Divider orientation='left'>Event Info</Divider>
                     <Form
                         form={form}
@@ -365,7 +368,7 @@ const GoogleCalendar: React.FC<eventProps | any> = (props) => {
 
                         {/* Submit */}
                         <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                            <Button style={{ display: (!accessToken && !expiresIn) ? 'none' : 'block' }} type='primary' htmlType='submit'><PlusCircleTwoTone style={{ marginInlineEnd: '5px' }} /> Add Event</Button>
+                            <Button type='primary' htmlType='submit' loading={isLoading} block><PlusCircleTwoTone style={{ marginInlineEnd: '5px' }} /> Add Event</Button>
                         </div>
                     </Form>
                 </div>
