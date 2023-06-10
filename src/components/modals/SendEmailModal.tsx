@@ -1,7 +1,7 @@
 import { Button, Form, Input, Modal, Select, message } from 'antd';
 import React, { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import Candidate from '../types/Candidate';
-import EmailTemplate from '../types/EmailTemplates';
+import EmailTemplate from '../types/EmailTemplate';
 import DataStore from '../../stores/dataStore';
 
 interface sendEmailProps {

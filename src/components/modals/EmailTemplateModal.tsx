@@ -3,19 +3,11 @@ import { Modal, Form, Input, message, Divider, Select, Space, Button } from 'ant
 import { PlusOutlined } from '@ant-design/icons';
 import { ADD_SUCCESS, FIELD_MIN_LENGTH, MISSING_FIELD, UPDATE_SUCCESS } from '../../utils/messages';
 import dataStore from '../../stores/dataStore';
-
-type emailTemplateType = {
-    TemplateId: string,
-    TemplateType: string,
-    Subject: string,
-    Body: string,
-    UpdatedAt: string,
-    key: number,
-};
+import EmailTemplate from '../types/EmailTemplate';
 
 interface modalProps {
     mode: 'Add' | 'Edit';
-    template: emailTemplateType | undefined;
+    template: EmailTemplate | undefined;
     state: boolean,
     stateFunc: Dispatch<SetStateAction<boolean>>;
 }
@@ -132,9 +124,7 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
                     min: 4,
                     message: FIELD_MIN_LENGTH('Subject', 4)
                 }]}>
-                    <Input
-                    // defaultValue={props.mode === 'Edit' ? props.template?.Subject : ''}
-                    />
+                    <Input />
                 </Form.Item>
 
                 {/* Body */}
@@ -153,9 +143,7 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
                         min: 10,
                         message: FIELD_MIN_LENGTH('Body', 10)
                     }]}>
-                    <Input.TextArea size='middle' rows={9}
-                        // defaultValue={props.mode === 'Edit' ? props.template?.Body : ''}
-                        showCount />
+                    <Input.TextArea size='middle' rows={9} showCount />
                 </Form.Item>
 
                 {/* Submit Button */}
