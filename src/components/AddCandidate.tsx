@@ -4,12 +4,11 @@ import { ADD_FAILED, ADD_SUCCESS, MISSING_FIELD, MISSING_FILE, TERMS_AGREEMENT, 
 import { Link } from 'react-router-dom';
 import dataStore from '../stores/dataStore';
 import { useState } from 'react';
-
-const { TextArea } = Input;
+import TermsConditionsModal from './modals/TermsConditionsModal';
 
 const AddCandidate: React.FC = () => {
     const [form] = Form.useForm();
-    const { Dragger } = Upload;
+    const [termsModal, setTermsModal] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     type UploadForm = {
@@ -17,10 +16,10 @@ const AddCandidate: React.FC = () => {
         last_name: string,
         email: string,
         gender: string,
-        years_of_exp: string,
+        work_experience: string,
         resume: {
             file: File,
-            fileList: Array<File>,
+            fileList: File[],
         } | string | undefined,
         terms: boolean,
     }
@@ -28,7 +27,7 @@ const AddCandidate: React.FC = () => {
     const onFinish = async () => {
         setIsLoading(true);
         try {
-            const values: UploadForm = await form.validateFields(['resume', 'first_name', 'last_name', 'email', 'terms', 'gender', 'years_of_exp']);
+            const values: UploadForm = await form.validateFields(['resume', 'first_name', 'last_name', 'email', 'comments', 'gender', 'work_experience']);
             if (typeof (values.resume) === "object") {
                 if (values.resume.fileList.length === 0)
                     throw String("A resume file must be attached");
@@ -63,10 +62,9 @@ const AddCandidate: React.FC = () => {
             } else {
                 message.error(ADD_FAILED('Candidate'))
             }
-        } catch (err) {
-            message.error('Failed: ' + err + ', Try again please.');
+        } catch (err: any) {
+            message.error(err);
             console.error(err);
-            return;
         } finally {
             setIsLoading(false);
         }
@@ -78,23 +76,26 @@ const AddCandidate: React.FC = () => {
         beforeUpload: () => {
             return false;
         },
+        onRemove: () => {
+            form.resetFields(['resume']);
+        },
+        maxCount: 1,
+        accept: ".doc, .docx, .pdf",
     };
 
     return (
         <>
+            <TermsConditionsModal state={termsModal} stateFunc={setTermsModal} />
             <Divider style={{ marginTop: -10, marginBottom: 25 }}>Add a new candidate</Divider>
             <Form
                 form={form}
-                autoComplete="true"
-                name="control-hooks"
-                layout="horizontal"
+                layout="vertical"
                 onFinish={onFinish}
-                style={{ display: 'flex', flexDirection: 'column', maxWidth: 'max(65%, 750px)', justifyContent: 'center' }}
             >
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 20, flexWrap: 'nowrap' }}>
 
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', gap: 20, flexWrap: 'wrap' }}>
                     {/* First Name */}
-                    <Form.Item style={{ minWidth: '48%' }} name="first_name" label="First Name" htmlFor='firstname' rules={[
+                    <Form.Item name="first_name" label="First Name" htmlFor='firstname' rules={[
                         {
                             type: 'string',
                             required: true,
@@ -105,7 +106,7 @@ const AddCandidate: React.FC = () => {
                     </Form.Item>
 
                     {/* Last Name */}
-                    <Form.Item style={{ minWidth: '48%' }} name="last_name" label="Last Name" htmlFor='lastname' rules={[
+                    <Form.Item name="last_name" label="Last Name" htmlFor='lastname' rules={[
                         {
                             type: 'string',
                             required: true,
@@ -115,25 +116,33 @@ const AddCandidate: React.FC = () => {
                         <Input id='lastname' />
                     </Form.Item>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: 20, flexWrap: 'nowrap' }}>
+
+
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', gap: 20, flexWrap: 'wrap' }}>
 
                     {/* Gender */}
-                    <Form.Item style={{ minWidth: '48%' }} name="gender" label="Gender" htmlFor='gender' rules={[
+                    <Form.Item style={{ minWidth: '40%' }} name="gender" label="Gender" rules={[
                         {
                             type: 'string',
                             required: true,
                             message: MISSING_FIELD("gender"),
                         },
                     ]} hasFeedback>
-                        <Select id="gender">
+                        <Select>
                             <Select.Option value="Male"><span>Male <ManOutlined /></span></Select.Option>
                             <Select.Option value="Female"><span>Female <WomanOutlined /></span></Select.Option>
                         </Select>
                     </Form.Item>
 
                     {/* Years of Experience */}
-                    <Form.Item style={{ minWidth: '48%' }} name="years_of_exp" label="Years of Experience" htmlFor='years_of_exp' hasFeedback>
-                        <InputNumber min={0} max={99} id='years_of_exp' />
+                    <Form.Item style={{ minWidth: '40%' }} name="work_experience" label="Work Experience" htmlFor='work_experience' rules={[
+                        {
+                            type: 'number',
+                            required: true,
+                            message: MISSING_FIELD("work experience"),
+                        },
+                    ]} hasFeedback>
+                        <InputNumber min={0} max={99} id='work_experience' />
                     </Form.Item>
                 </div>
 
@@ -149,8 +158,8 @@ const AddCandidate: React.FC = () => {
                 </Form.Item>
 
                 {/* Additional Comments */}
-                <Form.Item label="Additional Comments (Optional)" htmlFor='additional' hasFeedback>
-                    <TextArea rows={4} showCount maxLength={200} style={{ resize: 'none' }} id='additional' />
+                <Form.Item name='comments' label="Additional Comments (Optional)" htmlFor='additional' hasFeedback>
+                    <Input.TextArea rows={4} showCount maxLength={200} style={{ resize: 'none' }} id='additional' />
                 </Form.Item>
 
                 {/* Upload */}
@@ -158,7 +167,7 @@ const AddCandidate: React.FC = () => {
                     required: true,
                     message: MISSING_FILE,
                 }]}>
-                    <Dragger {...props} maxCount={1} accept=".doc, .docx, .pdf">
+                    <Upload.Dragger {...props}>
                         <p className="ant-upload-drag-icon">
                             <UploadOutlined />
                         </p>
@@ -184,7 +193,7 @@ const AddCandidate: React.FC = () => {
                                 </div>
                             </div>
                         </div>
-                    </Dragger>
+                    </Upload.Dragger>
                 </Form.Item>
 
                 {/* Terms and Conditions */}
@@ -196,7 +205,7 @@ const AddCandidate: React.FC = () => {
                 }]}
                     valuePropName="checked" hasFeedback>
                     <Checkbox>
-                        Agree to our <Link to="#">Terms and Conditions</Link>
+                        Agree to our <Link to="#" style={{ padding: 0, margin: 0 }} onClick={() => setTermsModal(true)}>Terms and Conditions</Link>
                     </Checkbox>
                 </Form.Item>
 
