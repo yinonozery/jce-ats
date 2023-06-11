@@ -19,7 +19,7 @@ const DeleteCandidateModal: React.FC<modalProps> = (props) => {
 
     const deleteCandidate = () => {
         setDeleteLoading(true);
-        fetch(`${url_candidates}?id=${props?.candidate?.id}&file=${props?.candidate?.file}`, {
+        fetch(`${url_candidates}?id=${props?.candidate?.id}&file=${props?.candidate?.resume_file_name}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
