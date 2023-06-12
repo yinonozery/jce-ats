@@ -1,9 +1,8 @@
-import { Divider, message, Table, Dropdown, Button, Modal, Tag } from 'antd';
+import { Divider, message, Table, Button, Modal, Tag, Tooltip } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DELETE_SUCCESS, DELETE_SURE } from '../utils/messages';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
-import type { MenuProps } from 'antd';
 import CourseModal from './modals/CourseModal';
 import Course from './types/Course';
 import Keyword from './types/Keyword';
@@ -12,12 +11,10 @@ import { observer } from 'mobx-react';
 import dataStore from '../stores/dataStore';
 
 const Courses: React.FC = () => {
-    // const [courses, setCourses] = useState<Course[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<Course | undefined>(undefined);
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [openTemplateModal, setEditTemplateModal] = useState<boolean>(false);
     const [modalMode, setModalMode] = useState<'Add' | 'Edit'>('Add');
-    const [actionID, setActionID] = useState<{ courseName: string }>();
 
     const weightLevels: Record<number, { level: string, color: string, backgroundColor: string }> = {
         0.25: {
@@ -42,14 +39,13 @@ const Courses: React.FC = () => {
         },
     };
 
-
     useEffect(() => {
         DataStore.fetchCoursesData(false);
     }, [])
 
     const deleteTemplate = async () => {
         const url_courses = `${process.env.REACT_APP_BASE_URL}/jce/courses`;
-        const response = await fetch(`${url_courses}?name=${actionID?.courseName}`, {
+        const response = await fetch(`${url_courses}?name=${selectedCourse?.name}`, {
             method: 'DELETE',
         })
         const data = await response.json();
@@ -60,33 +56,6 @@ const Courses: React.FC = () => {
             message.error(data?.error);
         }
         setDeleteModal(false);
-    }
-
-    const items: MenuProps['items'] = [
-        {
-            label: <span onClick={() => {
-                setSelectedCourse(DataStore.coursesData?.find((course) => course.name === actionID?.courseName))
-                setModalMode('Edit');
-                setEditTemplateModal(true);
-            }}>Edit</span>,
-            key: '0',
-        },
-        {
-            type: 'divider',
-        },
-        {
-            label: <span onClick={() => setDeleteModal(true)}>Delete</span>,
-            key: '3',
-            danger: true,
-        },
-    ];
-
-    const dropdown = (courseName: string) => {
-        return (
-            <Dropdown menu={{ items }} trigger={['click']} onOpenChange={() => setActionID({ courseName })}>
-                <EllipsisOutlined />
-            </Dropdown>
-        )
     }
 
     const columns = [
@@ -108,7 +77,24 @@ const Courses: React.FC = () => {
             title: 'Actions',
             key: 'Actions',
             align: 'center' as AlignType,
-            render: (text: string, row: Course) => dropdown(row.name),
+            render: (_: string, row: Course) =>
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center' }}>
+                    <Tooltip title="Edit">
+                        <Button type='link' size='small' onClick={() => {
+                            setSelectedCourse(DataStore.coursesData?.find((course) => course.name === row.name))
+                            setModalMode('Edit');
+                            setEditTemplateModal(true);
+                        }}>
+                            <EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} />
+                        </Button>
+                    </Tooltip>
+                    <Divider type='vertical' style={{ backgroundColor: '#dddddd  ' }} />
+                    <Tooltip title="Delete">
+                        <Button type='link' size='small' onClick={() => { setSelectedCourse(DataStore.coursesData?.find((course) => course.name === row.name)); setDeleteModal(true) }} danger>
+                            <DeleteOutlined style={{ fontSize: '1.2em' }} />
+                        </Button>
+                    </Tooltip>
+                </div>
         },
     ];
 
@@ -131,7 +117,7 @@ const Courses: React.FC = () => {
                 onOk={() => deleteTemplate()}
                 onCancel={() => setDeleteModal(false)}
                 open={deleteModal}
-                title={DELETE_SURE("course")}
+                title={DELETE_SURE("course '" + selectedCourse?.name + "'")}
             />
             <CourseModal state={openTemplateModal} weightLevels={weightLevels} stateFunc={setEditTemplateModal} course={selectedCourse} mode={modalMode} />
         </>

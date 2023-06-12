@@ -1,20 +1,17 @@
-import { Divider, message, Table, Dropdown, Button, Modal, TableProps } from 'antd';
+import { Divider, message, Table, Button, Modal, TableProps, Tooltip } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DELETE_SURE, DELETE_SUCCESS } from '../utils/messages';
-import { EllipsisOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
-import type { MenuProps } from 'antd';
 import EmailTemplateModal from './modals/EmailTemplateModal';
 import EmailTemplate from './types/EmailTemplate';
 import DataStore from '../stores/dataStore';
-
 
 const EmailTemplates: React.FC = () => {
     const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | undefined>(undefined);
     const [deleteModal, setDeleteModal] = useState<boolean>(false);
     const [openTemplateModal, setEditTemplateModal] = useState<boolean>(false);
     const [modalMode, setModalMode] = useState<'Add' | 'Edit'>('Add');
-    const [actionID, setActionID] = useState<{ TemplateId: string, TemplateType: string }>();
 
     useEffect(() => {
         DataStore.fetchTemplatesData(false)
@@ -22,7 +19,7 @@ const EmailTemplates: React.FC = () => {
 
     const deleteTemplate = async () => {
         const url_templates = `${process.env.REACT_APP_BASE_URL}/jce/email-templates`;
-        const response = await fetch(`${url_templates}?id=${actionID?.TemplateId}`, {
+        const response = await fetch(`${url_templates}?id=${selectedTemplate?.TemplateId}`, {
             method: 'DELETE',
         })
         const data = await response.json();
@@ -33,34 +30,6 @@ const EmailTemplates: React.FC = () => {
             message.error(data?.error);
         }
         setDeleteModal(false);
-    }
-
-
-    const items: MenuProps['items'] = [
-        {
-            label: <span onClick={() => {
-                setSelectedTemplate(DataStore.templatesData?.find((template) => template.TemplateId === actionID?.TemplateId))
-                setModalMode('Edit');
-                setEditTemplateModal(true);
-            }}>Edit</span>,
-            key: '0',
-        },
-        {
-            type: 'divider',
-        },
-        {
-            label: <span onClick={() => setDeleteModal(true)}>Delete</span>,
-            key: '3',
-            danger: true,
-        },
-    ];
-
-    const dropdown = (TemplateId: string, TemplateType: string) => {
-        return (
-            <Dropdown menu={{ items }} trigger={['click']} onOpenChange={() => setActionID({ TemplateId, TemplateType })}>
-                <EllipsisOutlined />
-            </Dropdown>
-        )
     }
 
     const columns: TableProps<EmailTemplate>['columns'] = [
@@ -91,7 +60,24 @@ const EmailTemplates: React.FC = () => {
             title: 'Actions',
             key: 'Actions',
             align: 'center' as AlignType,
-            render: (text: string, rowData: EmailTemplate) => dropdown(rowData.TemplateId, rowData.TemplateType),
+            render: (_: string, rowData: EmailTemplate) =>
+                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'center' }}>
+                    <Tooltip title="Edit">
+                        <Button type='link' size='small' onClick={() => {
+                            setSelectedTemplate(DataStore.templatesData?.find((template) => template.TemplateId === rowData.TemplateId))
+                            setModalMode('Edit');
+                            setEditTemplateModal(true);
+                        }}>
+                            <EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} />
+                        </Button>
+                    </Tooltip>
+                    <Divider type='vertical' style={{ backgroundColor: '#dddddd  ' }} />
+                    <Tooltip title="Delete">
+                        <Button type='link' size='small' onClick={() => { setSelectedTemplate(DataStore.templatesData?.find((template) => template.TemplateId === rowData.TemplateId)); setDeleteModal(true) }} danger>
+                            <DeleteOutlined style={{ fontSize: '1.2em' }} />
+                        </Button>
+                    </Tooltip>
+                </div>
         },
     ];
 
@@ -114,7 +100,7 @@ const EmailTemplates: React.FC = () => {
                 onOk={() => deleteTemplate()}
                 onCancel={() => setDeleteModal(false)}
                 open={deleteModal}
-                title={DELETE_SURE("email template")}
+                title={DELETE_SURE("email template '" + selectedTemplate?.Subject + "'")}
             />
             <EmailTemplateModal state={openTemplateModal} stateFunc={setEditTemplateModal} template={selectedTemplate} mode={modalMode} />
         </>

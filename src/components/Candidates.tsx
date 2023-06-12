@@ -150,13 +150,13 @@ const Candidates: React.FC = () => {
             title: 'Actions',
             align: 'center',
             render: (_: string, rowData: Candidate) =>
-                <div style={{ display: 'flex' }}>
+                <div style={{ display: 'flex', alignItems: 'baseline' }}>
                     <Tooltip title="Delete"><Button type='link' size='small' onClick={() => { setDeleteCandidateModal(true); setSelectedCandidate(rowData) }} danger><DeleteOutlined style={{ fontSize: '1.2em' }} /></Button></Tooltip>
                     <Tooltip title="Edit"><Button type='link' size='small' onClick={() => { setEditCandidateModal(true); setSelectedCandidate(rowData) }}><EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} /></Button></Tooltip>
                     <Tooltip title="Send Email"><Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}><SendOutlined style={{ fontSize: '1.2em', color: '#00C851 ' }} /></Button></Tooltip>
                     <Tooltip title="Schedule Video Interview"><Button type='link' size='small' onClick={() => { navigate('/meeting', { state: { candidate: JSON.stringify(rowData) } }); }}>
                         <VideoCameraAddOutlined style={{ fontSize: '1.2em', color: '#8E44AD ' }} /></Button></Tooltip>
-                </div >
+                </div>
         },
     ];
 
