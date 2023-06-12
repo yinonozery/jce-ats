@@ -44,7 +44,7 @@ const KeywordsHeatmap: React.FC<modalProps> = (props) => {
                         {Array.from(keywordsSortedMap.entries()).map(([keyword, value], index) => (
                             <Tag
                                 key={index}
-                                style={{ backgroundColor: calculateTagColor(value) }}
+                                style={{ backgroundColor: calculateTagColor(value), margin: '2px' }}
                             >
                                 {keyword} {value > 1 ? `(${value})` : ''}
                             </Tag>
