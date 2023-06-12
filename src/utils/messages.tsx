@@ -25,6 +25,7 @@ export const DELETE_SUCCESS = (item: string) => `${item} deleted successfully`;
 export const ADD_SUCCESS = (item: string) => `${item} added successfully`;
 export const UPDATE_SUCCESS = (item: string) => `${item} updated successfully`;
 export const ADD_FAILED = (item: string) => `Error: Unable to add new ${item}. Please try again later.`;
+export const UPDATE_FAILED = (item: string) => `Error: Failed to update ${item}`;
 
 // Edit Profile Modal
 export const REAUTHENTICATION_MSG = 'Please logout and login again to update your email/password.';
