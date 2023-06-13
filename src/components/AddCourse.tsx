@@ -31,7 +31,7 @@ const AddCourse: React.FC = () => {
             }
 
             // API Request AWS Form
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/courses`, {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses`, {
                 method: 'POST',
                 headers: {
                     // 'Accept': 'application/json',

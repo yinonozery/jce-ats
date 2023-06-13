@@ -37,7 +37,7 @@ const CandidateStatus: React.FC<{ candidateID: Candidate['id'], resumeFileName: 
             //@ts-ignore
             setCurrStatus(selectedItem?.key)
             try {
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/candidates/${props.candidateID}`, {
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/candidates/${props.candidateID}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

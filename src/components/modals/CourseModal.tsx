@@ -45,7 +45,7 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
 
         try {
             // API Request AWS Form
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/courses`, {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

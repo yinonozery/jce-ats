@@ -44,7 +44,7 @@ const Courses: React.FC = () => {
     }, [])
 
     const deleteTemplate = async () => {
-        const url_courses = `${process.env.REACT_APP_BASE_URL}/jce/courses`;
+        const url_courses = `${process.env.REACT_APP_BASE_URL}/courses`;
         const response = await fetch(`${url_courses}?name=${selectedCourse?.name}`, {
             method: 'DELETE',
         })
@@ -88,7 +88,7 @@ const Courses: React.FC = () => {
                             <EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} />
                         </Button>
                     </Tooltip>
-                    <Divider type='vertical' style={{ backgroundColor: '#dddddd  ' }} />
+                    <Divider type='vertical' style={{ backgroundColor: '#dddddd', margin: 0 }} />
                     <Tooltip title="Delete">
                         <Button type='link' size='small' onClick={() => { setSelectedCourse(DataStore.coursesData?.find((course) => course.name === row.name)); setDeleteModal(true) }} danger>
                             <DeleteOutlined style={{ fontSize: '1.2em' }} />

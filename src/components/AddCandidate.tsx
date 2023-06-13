@@ -45,7 +45,7 @@ const AddCandidate: React.FC = () => {
                 await readerPromise;
             }
             // API Request AWS Form
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/candidates/add/`, {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/candidates/add/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -91,6 +91,7 @@ const AddCandidate: React.FC = () => {
                 form={form}
                 layout="vertical"
                 onFinish={onFinish}
+                disabled={isLoading}
             >
 
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', gap: 20, flexWrap: 'wrap' }}>

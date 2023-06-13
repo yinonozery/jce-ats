@@ -15,7 +15,7 @@ const DeleteCandidateModal: React.FC<modalProps> = (props) => {
 
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
-    const url_candidates = `${process.env.REACT_APP_BASE_URL}/jce/candidates`;
+    const url_candidates = `${process.env.REACT_APP_BASE_URL}/candidates`;
 
     const deleteCandidate = () => {
         setDeleteLoading(true);

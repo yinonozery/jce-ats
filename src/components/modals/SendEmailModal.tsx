@@ -61,7 +61,7 @@ const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
             body,
             copies: []
         }
-        fetch(`${process.env.REACT_APP_BASE_URL}/jce/email-sender`, {
+        fetch(`${process.env.REACT_APP_BASE_URL}/email-sender`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

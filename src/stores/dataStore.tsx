@@ -58,7 +58,7 @@ class DataStore {
         ) {
             try {
                 appConfig.loadingHandler(true);
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/candidates`);
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/candidates`);
                 const data = await response.json();
                 if (data.statusCode === 200) {
                     this.candidatesData = data.body;
@@ -84,7 +84,7 @@ class DataStore {
         ) {
             try {
                 appConfig.loadingHandler(true);
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/courses`);
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses`);
                 const data = await response.json();
                 if (data.statusCode === 200) {
                     this.coursesData = data.body;
@@ -110,7 +110,7 @@ class DataStore {
         ) {
             try {
                 appConfig.loadingHandler(true);
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/keywords`);
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/keywords`);
                 const data = await response.json();
                 if (data.statusCode === 200) {
                     this.keywordsData = {
@@ -140,7 +140,7 @@ class DataStore {
         ) {
             try {
                 appConfig.loadingHandler(true);
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/email-templates`);
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/email-templates`);
                 const data = await response.json();
                 if (data.statusCode === 200) {
                     this.templatesData = data.body;

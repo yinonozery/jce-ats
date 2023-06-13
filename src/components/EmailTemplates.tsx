@@ -18,7 +18,7 @@ const EmailTemplates: React.FC = () => {
     }, [])
 
     const deleteTemplate = async () => {
-        const url_templates = `${process.env.REACT_APP_BASE_URL}/jce/email-templates`;
+        const url_templates = `${process.env.REACT_APP_BASE_URL}/email-templates`;
         const response = await fetch(`${url_templates}?id=${selectedTemplate?.TemplateId}`, {
             method: 'DELETE',
         })
@@ -71,7 +71,7 @@ const EmailTemplates: React.FC = () => {
                             <EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} />
                         </Button>
                     </Tooltip>
-                    <Divider type='vertical' style={{ backgroundColor: '#dddddd  ' }} />
+                    <Divider type='vertical' style={{ backgroundColor: '#dddddd', margin: 0 }} />
                     <Tooltip title="Delete">
                         <Button type='link' size='small' onClick={() => { setSelectedTemplate(DataStore.templatesData?.find((template) => template.TemplateId === rowData.TemplateId)); setDeleteModal(true) }} danger>
                             <DeleteOutlined style={{ fontSize: '1.2em' }} />

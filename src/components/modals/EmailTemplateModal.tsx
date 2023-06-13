@@ -50,7 +50,7 @@ const EditProfileModal: React.FC<modalProps> = (props: modalProps) => {
 
         try {
             // API Request AWS Form
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/jce/email-templates`, {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/email-templates`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
