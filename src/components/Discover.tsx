@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Collapse, Checkbox, Select, Row, InputNumber, Form, message } from 'antd';
-import { ThunderboltTwoTone, UpCircleFilled } from '@ant-design/icons';
+import { ThunderboltTwoTone, UpCircleFilled, WomanOutlined, ManOutlined } from '@ant-design/icons';
 import { MISSING_FIELD } from '../utils/messages';
 import ResultsModal from './modals/ResultsModal';
 import RelevantCandidate from './types/RelevantCandidate';
@@ -39,6 +39,8 @@ const Discover: React.FC = () => {
 
         const relevantsCandidates = [];
         for (const candidate of DataStore.candidatesData || []) {
+            if (values.gender !== 'Any' && candidate.gender !== values.gender)
+                continue;
             const relevantCandidate: RelevantCandidate = {
                 candidate: undefined,
                 keywordsMatches: [],
@@ -64,7 +66,6 @@ const Discover: React.FC = () => {
                             const denominator = 1 + (DataStore.keywordsData?.currentDocStats[keywordObj.keyword] || 0);
                             const IDF = Math.log(numerator / denominator)
 
-                            // relevantCandidate.score += (TF * IDF !== 0 ? IDF : 1 * keywordObj.weight); Old formula
                             relevantCandidate.score += (TF * IDF * keywordObj.weight);
                             relevantCandidate.keywordsMatches.push(keywordObj.keyword);
                         }
@@ -78,18 +79,15 @@ const Discover: React.FC = () => {
                 relevantsCandidates.push(relevantCandidate);
             }
         }
-
         relevantsCandidates.sort((a, b) => b.score - a.score);
         setFilteredCandidates(relevantsCandidates);
         setResultsModal(true);
     };
 
-
-
     return (
         <>
             <ResultsModal state={resultsModal} stateFunc={setResultsModal} data={filteredCandidates} />
-            <Collapse bordered={false} expandIcon={({ isActive }) => <UpCircleFilled style={{ fontSize: '16px' }} rotate={isActive ? 180 : 0} />} >
+            <Collapse bordered={false} expandIcon={({ isActive }) => <UpCircleFilled style={{ fontSize: '16px' }} rotate={isActive ? 180 : 90} />} >
                 <Panel header={<span style={{ fontWeight: 'bold' }}>
                     Discover Relevant Candidates
                 </span>} key='0' extra={<ThunderboltTwoTone />}>
@@ -117,6 +115,19 @@ const Discover: React.FC = () => {
                                     <Checkbox onClick={() => { setMinExpDisabled(!minExpDisabled); form.setFieldsValue({ 'min_years_of_exp': 0 }) }} />
                                 </Form.Item>
                             </div>
+
+                            {/* Gender */}
+                            <Form.Item name='gender' label='Gender' style={{ width: 'fit-content' }}>
+                                <Select
+                                    style={{ width: 120 }}
+                                    options={[
+                                        { value: 'Any', label: 'Any' },
+                                        { value: 'Male', label: <span>Male <ManOutlined /></span> },
+                                        { value: 'Female', label: <span>Female <WomanOutlined /></span> },
+                                    ]}
+                                    defaultValue={'Any'}
+                                />
+                            </Form.Item>
 
                             {/* Select Course */}
                             <Form.Item name='course' label='Course' htmlFor='course' rules={[{
