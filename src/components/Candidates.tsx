@@ -2,8 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Input, Space, Table, Divider, InputRef, Tooltip } from 'antd';
-import { DoubleRightOutlined, SearchOutlined, CloseCircleOutlined, VideoCameraAddOutlined, CloudDownloadOutlined, DeleteOutlined, SendOutlined, EditOutlined } from '@ant-design/icons';
-import { CLICK_KEYWORDS_HEATMAP } from '../utils/messages';
+import { DoubleRightOutlined, SearchOutlined, CloseCircleOutlined, VideoCameraAddOutlined, CloudDownloadOutlined, DeleteOutlined, SendOutlined, EditOutlined, FullscreenOutlined } from '@ant-design/icons';
 import Candidate from './types/Candidate';
 import Discover from './Discover';
 import SendEmail from './modals/SendEmailModal';
@@ -22,13 +21,12 @@ const Candidates: React.FC = () => {
     const [editCandidateModal, setEditCandidateModal] = useState<boolean>(false);
     const [deleteCandidateModal, setDeleteCandidateModal] = useState<boolean>(false);
     const [selectedCandidate, setSelectedCandidate] = useState<Candidate>();
-    const navigate = useNavigate();
     const searchInput = useRef<InputRef>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         dataStore.fetchCandidatesData(false);
     }, []);
-
 
     const Contact_Email = (link: string) =>
         <a key='email' href={link.includes('mailto') ? link : `mailto:${link}`}><img width="25" alt='Email' src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHdpZHRoPSIyNTYiIGhlaWdodD0iMjU2IiB2aWV3Qm94PSIwIDAgMjU2IDI1NiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+Cgo8ZGVmcz4KPC9kZWZzPgo8ZyBzdHlsZT0ic3Ryb2tlOiBub25lOyBzdHJva2Utd2lkdGg6IDA7IHN0cm9rZS1kYXNoYXJyYXk6IG5vbmU7IHN0cm9rZS1saW5lY2FwOiBidXR0OyBzdHJva2UtbGluZWpvaW46IG1pdGVyOyBzdHJva2UtbWl0ZXJsaW1pdDogMTA7IGZpbGw6IG5vbmU7IGZpbGwtcnVsZTogbm9uemVybzsgb3BhY2l0eTogMTsiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDEuNDA2NTkzNDA2NTkzNDAxNiAxLjQwNjU5MzQwNjU5MzQwMTYpIHNjYWxlKDIuODEgMi44MSkiID4KCTxjaXJjbGUgY3g9IjQ1IiBjeT0iNDUiIHI9IjQ1IiBzdHlsZT0ic3Ryb2tlOiBub25lOyBzdHJva2Utd2lkdGg6IDE7IHN0cm9rZS1kYXNoYXJyYXk6IG5vbmU7IHN0cm9rZS1saW5lY2FwOiBidXR0OyBzdHJva2UtbGluZWpvaW46IG1pdGVyOyBzdHJva2UtbWl0ZXJsaW1pdDogMTA7IGZpbGw6IHJnYigzNSw5MSwyMTYpOyBmaWxsLXJ1bGU6IG5vbnplcm87IG9wYWNpdHk6IDE7IiB0cmFuc2Zvcm09IiAgbWF0cml4KDEgMCAwIDEgMCAwKSAiLz4KCTxwYXRoIGQ9Ik0gNjQuNTY3IDI2LjQ5NSBIIDI1LjQzMyBjIC0zLjE0MiAwIC01LjY4OSAyLjU0NyAtNS42ODkgNS42ODkgdiAyNS42MzEgYyAwIDMuMTQyIDIuNTQ3IDUuNjg5IDUuNjg5IDUuNjg5IGggMzkuMTM1IGMgMy4xNDIgMCA1LjY4OSAtMi41NDcgNS42ODkgLTUuNjg5IFYgMzIuMTg0IEMgNzAuMjU2IDI5LjA0MyA2Ny43MDkgMjYuNDk1IDY0LjU2NyAyNi40OTUgeiBNIDYzLjM0MyA1Ny40NyBjIC0wLjI5NSAwLjMwNiAtMC42ODggMC40NiAtMS4wODEgMC40NiBjIC0wLjM3NCAwIC0wLjc0OSAtMC4xNCAtMS4wNCAtMC40MTkgbCAtOS40MTkgLTkuMDY1IGwgLTEuMzU3IDEuNDg5IGMgLTEuMzk0IDEuNTI4IC0zLjM3OCAyLjQwNCAtNS40NDYgMi40MDQgYyAtMi4wNjggMCAtNC4wNTMgLTAuODc2IC01LjQ0NiAtMi40MDQgbCAtMS4zMzcgLTEuNDY3IGwgLTkuMDIyIDkuMDIzIGMgLTAuMjkyIDAuMjkzIC0wLjY3NyAwLjQzOSAtMS4wNjEgMC40MzkgcyAtMC43NjggLTAuMTQ2IC0xLjA2MSAtMC40MzkgYyAtMC41ODYgLTAuNTg2IC0wLjU4NiAtMS41MzUgMCAtMi4xMjEgbCA5LjEyIC05LjEyMSBMIDI2LjYzIDM1Ljc1NCBjIC0wLjU1OCAtMC42MTIgLTAuNTE0IC0xLjU2MSAwLjA5OCAtMi4xMTkgYyAwLjYxMyAtMC41NTggMS41NjIgLTAuNTE0IDIuMTE5IDAuMDk4IGwgMTIuOTI0IDE0LjE4IGMgMC44MzggMC45MiAxLjk4NSAxLjQyNiAzLjIyOSAxLjQyNiBzIDIuMzkyIC0wLjUwNiAzLjIyOSAtMS40MjYgbCAyLjQyMiAtMi42NTcgbCAxMC41MDIgLTExLjUyMiBjIDAuNTU5IC0wLjYxMiAxLjUwNyAtMC42NTUgMi4xMTkgLTAuMDk4IGMgMC42MTIgMC41NTggMC42NTYgMS41MDYgMC4wOTggMi4xMTkgbCAtOS41NDYgMTAuNDc0IGwgOS40NzcgOS4xMjEgQyA2My44OTggNTUuOTI0IDYzLjkxNyA1Ni44NzMgNjMuMzQzIDU3LjQ3IHoiIHN0eWxlPSJzdHJva2U6IG5vbmU7IHN0cm9rZS13aWR0aDogMTsgc3Ryb2tlLWRhc2hhcnJheTogbm9uZTsgc3Ryb2tlLWxpbmVjYXA6IGJ1dHQ7IHN0cm9rZS1saW5lam9pbjogbWl0ZXI7IHN0cm9rZS1taXRlcmxpbWl0OiAxMDsgZmlsbDogcmdiKDI1NSwyNTUsMjU1KTsgZmlsbC1ydWxlOiBub256ZXJvOyBvcGFjaXR5OiAxOyIgdHJhbnNmb3JtPSIgbWF0cml4KDEgMCAwIDEgMCAwKSAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgLz4KPC9nPgo8L3N2Zz4=" /></a>;
@@ -81,7 +79,7 @@ const Candidates: React.FC = () => {
             align: 'center',
             ...getColumnSearchProps('last_name', 'first_name'),
             sorter: (a: Candidate, b: Candidate) => a.first_name.localeCompare(b.first_name),
-            render: (record: { first_name: string; last_name: string; }, rowData: Candidate) => <div onClick={() => { setCandidateCardModal(true); setSelectedCandidate(rowData) }}>{record.first_name} {record.last_name}</div>,
+            render: (record: { first_name: string; last_name: string; }) => <>{record.first_name} {record.last_name}</>,
         },
         {
             title: 'Gender',
@@ -95,7 +93,7 @@ const Candidates: React.FC = () => {
             onFilter: (value: any, record: Candidate) => record.gender === value,
         },
         {
-            title: 'Years Exp',
+            title: 'Years of Exp',
             dataIndex: 'work_experience',
             key: 'work_experience',
             align: 'center',
@@ -106,7 +104,7 @@ const Candidates: React.FC = () => {
             dataIndex: 'resume_file_name',
             key: 'resume_file_name',
             align: 'center',
-            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/jce/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '1.5vh', height: '3.5vh', width: '3.5vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
+            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '1.5vh', height: '3.5vh', width: '3.5vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
         },
         {
             title: 'Contact',
@@ -147,15 +145,25 @@ const Candidates: React.FC = () => {
             render: (record: Candidate['status'], rowData: Candidate) => <div style={{ display: 'flex', justifyContent: 'center' }}><CandidateStatus status={record} candidateID={rowData.id} resumeFileName={rowData.resume_file_name} /></div>
         },
         {
+            title: () => (
+                <>Keywords<br />Heatmap</>
+            ),
+            key: 'KeywordsModal',
+            align: 'center',
+            render: (_: any, rowData: Candidate) => <Button type='link' onClick={() => { setCandidateCardModal(true); setSelectedCandidate(rowData) }} icon={<FullscreenOutlined />} />,
+        },
+        {
             title: 'Actions',
             align: 'center',
             render: (_: string, rowData: Candidate) =>
                 <div style={{ display: 'flex', alignItems: 'baseline' }}>
                     <Tooltip title="Delete"><Button type='link' size='small' onClick={() => { setDeleteCandidateModal(true); setSelectedCandidate(rowData) }} danger><DeleteOutlined style={{ fontSize: '1.2em' }} /></Button></Tooltip>
+                    <Divider type='vertical' style={{ backgroundColor: '#dddddd', margin: 0 }} />
                     <Tooltip title="Edit"><Button type='link' size='small' onClick={() => { setEditCandidateModal(true); setSelectedCandidate(rowData) }}><EditOutlined style={{ fontSize: '1.2em', color: '#3399FF' }} /></Button></Tooltip>
+                    <Divider type='vertical' style={{ backgroundColor: '#dddddd', margin: 0 }} />
                     <Tooltip title="Send Email"><Button type='link' size='small' onClick={() => { setSendEmailModal(true); setSelectedCandidate(rowData) }}><SendOutlined style={{ fontSize: '1.2em', color: '#00C851 ' }} /></Button></Tooltip>
-                    <Tooltip title="Schedule Video Interview"><Button type='link' size='small' onClick={() => { navigate('/meeting', { state: { candidate: JSON.stringify(rowData) } }); }}>
-                        <VideoCameraAddOutlined style={{ fontSize: '1.2em', color: '#8E44AD ' }} /></Button></Tooltip>
+                    <Divider type='vertical' style={{ backgroundColor: '#dddddd', margin: 0 }} />
+                    <Tooltip title="Schedule Video Interview"><Button type='link' size='small' onClick={() => { navigate('/meeting', { state: { candidate: JSON.stringify(rowData) } }); }}><VideoCameraAddOutlined style={{ fontSize: '1.2em', color: '#8E44AD ' }} /></Button></Tooltip>
                 </div>
         },
     ];
@@ -170,14 +178,13 @@ const Candidates: React.FC = () => {
 
             {/* Candidates */}
             <Divider orientation='left'><DoubleRightOutlined />&nbsp;&nbsp;Candidates List ({dataStore.candidatesData?.length})</Divider>
-            <p style={{ color: 'gray', fontSize: '0.8em', marginLeft: '10px' }}>{CLICK_KEYWORDS_HEATMAP}</p>
+            {/* <p style={{ color: 'gray', fontSize: '0.8em', marginLeft: '10px' }}>{CLICK_KEYWORDS_HEATMAP}</p> */}
             <Table
-                dataSource={dataStore.candidatesData || []}
+                dataSource={dataStore.candidatesData}
                 loading={dataStore.candidatesData ? false : true}
                 // @ts-ignore
                 columns={columns}
-                size='middle'
-                style={{ textAlign: 'center' }}
+                size='large'
                 bordered
             />
         </>
