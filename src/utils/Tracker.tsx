@@ -1,18 +1,15 @@
 import { useEffect } from 'react';
 
 const Tracker = () => {
-
   useEffect(() => {
-    const trackVisit = async () => {
-      fetch(`${process.env.REACT_APP_BASE_URL}/jce/tracking`, {
+    if (Date.now() > Number(localStorage.getItem('trackInfo'))) {
+      fetch(`${process.env.REACT_APP_BASE_URL}/tracking`, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-    };
-
-    trackVisit();
+      }).then((res) => res.json().then((resJson) => {
+        if (resJson?.statusCode === 200)
+          localStorage.setItem("trackInfo", String(Date.now() + 60 * 60000)); // 60 Minutes
+      }));
+    }
   }, []);
   return <></>
 };
