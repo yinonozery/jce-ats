@@ -1,22 +1,17 @@
 
-import { Breadcrumb, Layout, theme } from 'antd';
+import { Breadcrumb, Layout } from 'antd';
 import HeaderNav from './Header';
 import SideNav from './SideNav';
 import userStore from '../stores/userStore';
 import React, { useState, ReactNode } from 'react';
 import appConfig from '../stores/appStore';
 import { observer } from 'mobx-react';
-import CurrentTime from '../utils/CurrentTime';
 import ErrorDataModal from './modals/ErrorDataModal';
 
-const { Content, Sider, Footer } = Layout;
+const { Content, Footer } = Layout;
 
 const FullLayout: React.FC<{ children: ReactNode }> = (props) => {
     const [marginResponsive, setMarginResponsive] = useState(200)
-
-    const {
-        token: { colorBgContainer },
-    } = theme.useToken();
 
     const setPath = (pathname: string | null) => {
         document.title = process.env.REACT_APP_WINDOW_TITLE || '';
@@ -32,34 +27,11 @@ const FullLayout: React.FC<{ children: ReactNode }> = (props) => {
         }
     };
 
-
     return (
         <>
             <Layout hasSider>
                 <Layout>
-                    <Sider
-                        width={200}
-                        style={{
-                            background: colorBgContainer,
-                            height: '100vh',
-                            position: 'fixed',
-                            left: 0,
-                            top: 0,
-                            bottom: 0,
-                            overflowY: 'auto',
-                            boxShadow: 'rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px',
-                        }}
-                        onCollapse={(smaller) => {
-                            if (smaller)
-                                setMarginResponsive(80)
-                            else
-                                setMarginResponsive(200)
-                        }}
-                        breakpoint="md"
-                    >
-                        <SideNav smaller={marginResponsive === 80 ? true : false} />
-                        <CurrentTime />
-                    </Sider>
+                    <SideNav state={marginResponsive} stateFunc={setMarginResponsive} />
                     <Layout className="site-layout" style={{ marginLeft: (marginResponsive) }} >
                         <HeaderNav marginResponsive={marginResponsive}>
                             <div style={{ position: 'fixed', marginLeft: '20px', left: marginResponsive, marginTop: '60px', color: 'black' }}>
@@ -79,12 +51,13 @@ const FullLayout: React.FC<{ children: ReactNode }> = (props) => {
                             <Content
                                 className="responsive-content"
                                 style={{
+                                    background: 'white',
                                     margin: '0 auto',
                                     marginBlockStart: '50px',
-                                    zIndex: -1,
+                                    position: 'relative',
+                                    zIndex: 0,
                                     padding: '30px',
                                     minWidth: 'fit-content',
-                                    background: colorBgContainer,
                                     boxShadow: "rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px"
                                 }}
                             >
