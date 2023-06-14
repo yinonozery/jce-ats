@@ -30,6 +30,7 @@ const ResultsModal: React.FC<modalProps> = (props) => {
                 onCancel={closeModelHandler}
                 footer={<Button block onClick={closeModelHandler} type='default'>OK</Button>}
                 confirmLoading={false}
+                centered
             >
                 {/* Minimum Score */}
                 <Form.Item label='Minimum score to show: '>
