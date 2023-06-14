@@ -1,16 +1,16 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import firebase from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Menu, Modal, MenuProps, Avatar, Divider, Dropdown, theme } from 'antd';
 import { LaptopOutlined, ReadOutlined, NotificationOutlined, UserOutlined, FacebookOutlined, GlobalOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, FileAddOutlined, SolutionOutlined, QuestionOutlined, ContainerOutlined } from '@ant-design/icons';
-import userStore from "../stores/userStore";
-import { LOG_OUT_QUESTION } from "../utils/messages";
-import EditProfileModal from "./modals/EditProfileModal";
-import ChangePasswordModal from "./modals/ChangePasswordModal";
-import appConfig from "../stores/appStore";
-import { observer } from "mobx-react";
-import Sider from "antd/es/layout/Sider";
-import CurrentTime from "../utils/CurrentTime";
+import userStore from '../stores/userStore';
+import { LOG_OUT_QUESTION } from '../utils/messages';
+import EditProfileModal from './modals/EditProfileModal';
+import ChangePasswordModal from './modals/ChangePasswordModal';
+import appConfig from '../stores/appStore';
+import { observer } from 'mobx-react';
+import Sider from 'antd/es/layout/Sider';
+import CurrentTime from '../utils/CurrentTime';
 
 interface modalProps {
     state: number,
@@ -127,10 +127,10 @@ const SideNav: React.FC<modalProps> = observer((props) => {
                     else
                         props.stateFunc(200)
                 }}
-                breakpoint="md"
+                breakpoint='xl'
             >
                 <Modal
-                    title="Logout"
+                    title='Logout'
                     open={logoutModal}
                     onOk={signOut}
                     onCancel={() => setLogoutModal(false)}
@@ -141,7 +141,7 @@ const SideNav: React.FC<modalProps> = observer((props) => {
                 <ChangePasswordModal state={changePassModal} stateFunc={setChangePassModal} />
                 {userStore.userInfo ?
                     <Divider style={{ borderBlockStartColor: '#8db286' }}>
-                        <Dropdown menu={{ items }} placement="bottom" arrow>
+                        <Dropdown menu={{ items }} placement='bottom' arrow>
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBlock: '15px', borderRadius: '10px', padding: 5, boxShadow: 'rgba(0, 0, 0, 0.2) 0px 18px 50px -10px' }}>
                                 <Avatar shape='square' style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
                                 {props.state === 80 ? userStore.userInfo.email?.charAt(0).toUpperCase() : userStore.userInfo.email}
@@ -150,7 +150,7 @@ const SideNav: React.FC<modalProps> = observer((props) => {
                     </Divider>
                     : null}
                 <Menu
-                    mode="inline"
+                    mode='inline'
                     inlineIndent={15}
                     selectedKeys={[String(sideMenuItems.find((item) => item.path === `/${appConfig?.currPage}`)?.index)]}
                     defaultOpenKeys={['8']}
