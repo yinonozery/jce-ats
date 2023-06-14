@@ -69,14 +69,14 @@ const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
             body: JSON.stringify(values)
         }).then((res) => res.json()).then((response) => {
             if (response.statusCode === 200)
-                message.success("Email sent!")
+                message.success('Email sent!')
             else
-                message.error("Error occured: " + response.error)
+                message.error('Error occured: ' + response.error)
             onCancelModal();
         }).catch((err) => {
-            message.error("Error occured: " + err)
+            message.error('Error occured: ' + err)
             return;
-        }).finally(() => setIsLoading(true))
+        }).finally(() => setIsLoading(false))
     }
 
 
@@ -116,12 +116,6 @@ const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
                     style={{ padding: '20px' }}
                     onFinish={sendEmail}
                 >
-                    <Form.Item label='Name'>
-                        <Input placeholder={props.candidate?.first_name + ' ' + props.candidate?.last_name} disabled />
-                    </Form.Item>
-                    <Form.Item label='Email'>
-                        <Input placeholder={props.candidate?.email} disabled />
-                    </Form.Item>
                     <Form.Item label='Email Template' name='option'>
                         <Select
                             options={groupEmailTemplatesByType(DataStore.templatesData || [])}
@@ -133,7 +127,7 @@ const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item label='Body' name='body'>
-                        <Input.TextArea />
+                        <Input.TextArea rows={5} />
                     </Form.Item>
                     <Button type='primary' htmlType='submit' loading={isLoading} block>Send Email</Button>
                 </Form>
