@@ -83,24 +83,6 @@ const Candidates: React.FC = () => {
             render: (record: { first_name: string; last_name: string; }) => <>{record.first_name} {record.last_name}</>,
         },
         {
-            title: 'Gender',
-            dataIndex: 'gender',
-            key: 'gender',
-            align: 'center',
-            filters: [
-                { text: 'Male', value: 'Male' },
-                { text: 'Female', value: 'Female' },
-            ],
-            onFilter: (value: any, record: Candidate) => record.gender === value,
-        },
-        {
-            title: 'Years of Exp',
-            dataIndex: 'work_experience',
-            key: 'work_experience',
-            align: 'center',
-            sorter: (a: any, b: any) => a.work_experience - b.work_experience,
-        },
-        {
             title: 'Degree',
             dataIndex: 'degree',
             key: 'degree',
@@ -114,11 +96,29 @@ const Candidates: React.FC = () => {
             onFilter: (value: any, record: Candidate) => record.degree === value,
         },
         {
+            title: 'Years of Exp',
+            dataIndex: 'work_experience',
+            key: 'work_experience',
+            align: 'center',
+            sorter: (a: any, b: any) => a.work_experience - b.work_experience,
+        },
+        {
+            title: 'Gender',
+            dataIndex: 'gender',
+            key: 'gender',
+            align: 'center',
+            filters: [
+                { text: 'Male', value: 'Male' },
+                { text: 'Female', value: 'Female' },
+            ],
+            onFilter: (value: any, record: Candidate) => record.gender === value,
+        },
+        {
             title: 'Resume file',
             dataIndex: 'resume_file_name',
             key: 'resume_file_name',
             align: 'center',
-            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '1.5vh', height: '3.5vh', width: '3.5vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
+            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '1.5vh', height: '30px', width: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
         },
         {
             title: 'Contact',

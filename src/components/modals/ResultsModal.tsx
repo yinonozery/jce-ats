@@ -40,7 +40,7 @@ const ResultsModal: React.FC<modalProps> = (props) => {
                 {/* Search Results */}
                 {typeof (props.data) !== 'undefined' && props.data && props.data.length > 0 ?
                     <>
-                        <List>
+                        <List key={props.data[0].candidate?.id}>
                             <VirtualList
                                 data={props.data}
                                 height={450}
