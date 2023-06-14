@@ -16,7 +16,7 @@ const CandidateStatus: React.FC<{ candidateID: Candidate['id'], resumeFileName: 
     };
 
     const statusCircle = (status: string) =>
-        <Tooltip title={status}>
+        <Tooltip title={status} key={status} color={colorsMap[status]}>
             <Button type='text'
                 style={{
                     display: 'flex',
