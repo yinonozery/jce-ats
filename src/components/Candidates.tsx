@@ -72,6 +72,7 @@ const Candidates: React.FC = () => {
         }
     });
 
+
     const columns = [
         {
             title: 'Name',
@@ -98,6 +99,19 @@ const Candidates: React.FC = () => {
             key: 'work_experience',
             align: 'center',
             sorter: (a: any, b: any) => a.work_experience - b.work_experience,
+        },
+        {
+            title: 'Degree',
+            dataIndex: 'degree',
+            key: 'degree',
+            align: 'center',
+            filters: [
+                { text: 'Associate', value: 'Associate' },
+                { text: 'Bachelor', value: 'Bachelor' },
+                { text: 'Master', value: 'Master' },
+                { text: 'Doctor', value: 'Doctor' },
+            ],
+            onFilter: (value: any, record: Candidate) => record.degree === value,
         },
         {
             title: 'Resume file',
@@ -180,6 +194,8 @@ const Candidates: React.FC = () => {
             <Divider orientation='left'><DoubleRightOutlined />&nbsp;&nbsp;Candidates List ({dataStore.candidatesData?.length})</Divider>
             {/* <p style={{ color: 'gray', fontSize: '0.8em', marginLeft: '10px' }}>{CLICK_KEYWORDS_HEATMAP}</p> */}
             <Table
+                showSorterTooltip={false}
+                tableLayout='auto'
                 dataSource={dataStore.candidatesData}
                 loading={dataStore.candidatesData ? false : true}
                 // @ts-ignore
