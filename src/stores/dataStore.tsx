@@ -9,7 +9,6 @@ class DataStore {
     candidatesData: Candidate[] | undefined = undefined;
     coursesData: Course[] | undefined = undefined;
     keywordsData: {
-        currentKeywords: string[];
         numOfResumes: number;
         currentDocStats: any;
     } | undefined = undefined;
@@ -114,7 +113,6 @@ class DataStore {
                 const data = await response.json();
                 if (data.statusCode === 200) {
                     this.keywordsData = {
-                        currentKeywords: data.currentKeywords,
                         numOfResumes: data.numOfResumes,
                         currentDocStats: data.currentDocStats,
                     };
