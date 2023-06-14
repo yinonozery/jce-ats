@@ -1,17 +1,17 @@
-import { useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from '../components/Home';
-import Login from "../components/auth/Login";
-import SignOut from "../components/auth/Signout";
-import AddCandidate from "../components/AddCandidate";
-import ProtectedRoute from "../components/auth/ProtectedRoute";
-import userStore from "../stores/userStore";
-import Candidates from "../components/Candidates";
-import Error from "../components/Error";
-import Courses from "../components/Courses";
-import appConfig from "../stores/appStore";
-import EmailTemplates from "../components/EmailTemplates";
-import GoogleCalendar from "../utils/meetServices/GoogleCalendar";
+import Login from '../components/auth/Login';
+import SignOut from '../components/auth/Signout';
+import AddCandidate from '../components/AddCandidate';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
+import userStore from '../stores/userStore';
+import Candidates from '../components/Candidates';
+import Error from '../components/Error';
+import Courses from '../components/Courses';
+import appConfig from '../stores/appStore';
+import EmailTemplates from '../components/EmailTemplates';
+import GoogleCalendar from '../utils/meetServices/GoogleCalendar';
 
 const AllRoutes: React.FC = () => {
     const location = useLocation();
@@ -26,18 +26,23 @@ const AllRoutes: React.FC = () => {
     ]
 
     useEffect(() => {
-        appConfig.setCurrPage(appRoutes.includes(location.pathname.substring(1,)) ? location.pathname.substring(1,) : '');
+        if (appRoutes.includes(location.pathname.substring(1,)))
+            appConfig.setCurrPage(location.pathname.substring(1,))
+        else {
+            appConfig.setCurrPage('');
+            document.title = process.env.REACT_APP_WINDOW_TITLE || '';
+        }
     })
 
     return (
         <Routes>
-            <Route path="*" element={<Error statusCode={404} subTitle={"Sorry, the page you visited does not exist."} />} />
-            <Route path="/" element={<Home />} />
+            <Route path='*' element={<Error statusCode={404} subTitle={'Sorry, the page you visited does not exist.'} />} />
+            <Route path={'/'} element={<Home />} />
             <Route path={appRoutes[0]} element={<Login />} />
             <Route path={appRoutes[1]} element={<SignOut />} />
             <Route element={<ProtectedRoute user={userStore.userInfo} />}>
                 <Route path={appRoutes[2]} element={<AddCandidate />} />
-                <Route path={appRoutes[3]} element={<Candidates />} action={() => appConfig.setCurrPage('Candidates')} />
+                <Route path={appRoutes[3]} element={<Candidates />} />
                 <Route path={appRoutes[4]} element={<Courses />} />
                 <Route path={appRoutes[5]} element={<EmailTemplates />} />
                 <Route path={appRoutes[6]} element={<GoogleCalendar />} />
