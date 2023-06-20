@@ -1,8 +1,9 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { Modal, Form, Button, Input, Select, Divider, InputNumber } from 'antd';
+import { Modal, Form, Button, Input, Select, Divider, InputNumber, message } from 'antd';
 import Candidate from '../types/Candidate';
-import { ManOutlined, WomanOutlined, LoadingOutlined, CloseCircleOutlined, IdcardOutlined, CheckCircleOutlined } from '@ant-design/icons';
-import { EDIT_CANDIDATE_MSG, MISSING_FIELD } from '../../utils/messages';
+import { ManOutlined, WomanOutlined, LoadingOutlined, CloseCircleOutlined, ClockCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { EDIT_CANDIDATE_MSG, MISSING_FIELD, UPDATE_SUCCESS } from '../../utils/messages';
+import dataStore from '../../stores/dataStore';
 
 interface modalProps {
     state: boolean,
@@ -20,7 +21,30 @@ const EditCandidate: React.FC<modalProps> = (props) => {
         for (const key in editedCandidate)
             if (props.candidate && editedCandidate.hasOwnProperty(key))
                 props.candidate[key] = editedCandidate[key];
-        setIsLoading(false);
+
+
+        try {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/candidates/${props.candidate?.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(props.candidate),
+            });
+            const data: any = await response.json();
+            if (data.statusCode === 200) {
+                message.success(UPDATE_SUCCESS('Candidate'))
+                dataStore.fetchCandidatesData(true);
+            }
+            else
+                throw data.error;
+            form.resetFields();
+            props.stateFunc(false);
+        } catch (error: any) {
+            message.error(error);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -35,6 +59,7 @@ const EditCandidate: React.FC<modalProps> = (props) => {
             footer={<Button type='primary' onClick={saveCandidate} loading={isLoading} block>Save</Button>}
             confirmLoading={false}
             title={<Divider>Edit Candidate: {props.candidate?.first_name} {props.candidate?.last_name}</Divider>}
+            centered
         >
             <Form form={form}>
                 <Form.Item name='first_name' label='First Name' rules={[
@@ -75,8 +100,8 @@ const EditCandidate: React.FC<modalProps> = (props) => {
                 </Form.Item>
                 <Form.Item name='status' label='Status'>
                     <Select>
-                        <Select.Option value='Available'><span>Available <CheckCircleOutlined style={{ color: 'green', marginInlineStart: '5px' }} /></span></Select.Option>
-                        <Select.Option value='Accepted'><span>Accepted <IdcardOutlined style={{ color: 'blue', marginInlineStart: '5px' }} /></span></Select.Option>
+                        <Select.Option value='Available'><span>Available <ClockCircleOutlined style={{ color: 'blue', marginInlineStart: '5px' }} /></span></Select.Option>
+                        <Select.Option value='Accepted'><span>Accepted <CheckCircleOutlined style={{ color: 'green', marginInlineStart: '5px' }} /></span></Select.Option>
                         <Select.Option value='In Progress'><span>In Progress <LoadingOutlined style={{ color: 'orange', marginInlineStart: '5px' }} /></span></Select.Option>
                         <Select.Option value='Rejected'><span>Rejected <CloseCircleOutlined style={{ color: 'red', marginInlineStart: '5px' }} /></span></Select.Option>
                     </Select>
