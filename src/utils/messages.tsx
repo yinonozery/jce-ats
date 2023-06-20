@@ -32,7 +32,6 @@ export const REAUTHENTICATION_MSG = 'Please logout and login again to update you
 export const PASSWORD_CONFIRMATION = 'Please confirm your password!';
 
 // Candidates
-export const CLICK_KEYWORDS_HEATMAP = "* Click on a candidate's name to view the keywords heatmap";
 
 // Edit Candidate
-export const EDIT_CANDIDATE_MSG = 'Please note that to update the resume file or keywords for this candidate, kindly delete the current candidate and add a new candidate with the desired file and keywords.';
+export const EDIT_CANDIDATE_MSG = '* Please note that to update the resume file or keywords for this candidate, kindly delete the current candidate and add a new candidate with the desired file and keywords.';
