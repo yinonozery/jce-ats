@@ -81,8 +81,11 @@ const EditCandidate: React.FC<modalProps> = (props) => {
                         <Select.Option value='Rejected'><span>Rejected <CloseCircleOutlined style={{ color: 'red', marginInlineStart: '5px' }} /></span></Select.Option>
                     </Select>
                 </Form.Item>
+                <Form.Item name='comments' label='Additional Comments' required={false}>
+                    <Input.TextArea rows={4} showCount maxLength={200} style={{ resize: 'none' }} />
+                </Form.Item>
             </Form>
-            <p style={{ color: 'gray', fontSize: '.85em', marginBlockEnd: '20px' }}>{EDIT_CANDIDATE_MSG}</p>
+            <p style={{ color: 'gray', fontSize: '.85em', marginBlock: '40px 20px' }}>{EDIT_CANDIDATE_MSG}</p>
         </Modal >
     )
 };
