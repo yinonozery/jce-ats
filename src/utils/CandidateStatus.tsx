@@ -36,16 +36,17 @@ const CandidateStatus: React.FC<{ candidateID: Candidate['id'], resumeFileName: 
         if (selectedItem) {
             //@ts-ignore
             setCurrStatus(selectedItem?.key)
+            const body = JSON.stringify({
+                newStatus: selectedItem?.key,
+                resumeFileName: props.resumeFileName,
+            })
             try {
-                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/candidates/${props.candidateID}`, {
+                const response = await fetch(`${process.env.REACT_APP_BASE_URL}/candidates/${props.candidateID}/status`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        newStatus: selectedItem?.key,
-                        resumeFileName: props.resumeFileName,
-                    })
+                    body: body,
                 });
                 const data = await response.json();
                 if (response.ok && data?.statusCode === 200) {
