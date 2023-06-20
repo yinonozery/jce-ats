@@ -11,7 +11,7 @@ import Error from '../components/Error';
 import Courses from '../components/Courses';
 import appConfig from '../stores/appStore';
 import EmailTemplates from '../components/EmailTemplates';
-import GoogleCalendar from '../utils/meetServices/GoogleCalendar';
+import GoogleCalendar from '../utils/videoServices/GoogleCalendar';
 
 const AllRoutes: React.FC = () => {
     const location = useLocation();
