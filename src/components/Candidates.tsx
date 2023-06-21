@@ -110,7 +110,20 @@ const Candidates: React.FC = () => {
             dataIndex: 'resume_file_name',
             key: 'resume_file_name',
             align: 'center',
-            render: (record: any) => <a style={{ display: 'flex', justifyContent: 'center' }} href={`${process.env.REACT_APP_BASE_URL}/resume?file_name=${record}`} target='_blank' rel='noreferrer'><Button style={{ borderRadius: '50%', boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px', fontSize: '1.5vh', height: '30px', width: '20px', display: 'flex', justifyContent: 'center', alignItems: 'center' }} type='default' shape='circle' icon={<CloudDownloadOutlined />} /></a>
+            render: (record: any) =>
+                <Button onClick={() => {
+                    fetch(`${process.env.REACT_APP_BASE_URL}/resume?file_name=${record}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Api-Key': process.env.REACT_APP_API_KEY || '',
+                        }
+                    }).then((response: any) => response.text()).then((html: any) => {
+                        const blob = new Blob([html], { type: 'text/html' });
+                        const url = URL.createObjectURL(blob);
+                        window.open(url, '_blank');
+                        URL.revokeObjectURL(url);
+                    })
+                }}>Download</Button>
         },
         {
             title: 'Social Media',
