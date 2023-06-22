@@ -5,6 +5,7 @@ import { Button, Checkbox, Form, Input, message, Divider, Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import appConfig from '../../stores/appStore';
 import { FORGOT_PASS_SUCCESS, WRONG_EMAIL, MISSING_FIELD, VALID_EMAIL, WRONG_PASSWORD } from '../../utils/messages';
+import { FormInstance, useForm } from 'antd/es/form/Form';
 
 type loginForm = {
     email: string,
@@ -16,6 +17,8 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
     const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
     const [forgotPasswordModal, setForgotPasswordModal] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const form: FormInstance<any> = useForm()[0];
 
     useEffect(() => {
         const userInfo = localStorage.getItem('userInfo');
@@ -40,28 +43,38 @@ const Login: React.FC = () => {
 
     const resetPassword = async (values: any) => {
         const { emailReset } = values;
+        setIsLoading(true);
         try {
             await firebase.doResetPassword(emailReset);
             message.success(FORGOT_PASS_SUCCESS)
             setForgotPasswordModal(false);
+            form.resetFields();
         } catch (err: any) {
             if (err.code === 'auth/user-not-found')
                 message.error(WRONG_EMAIL)
+        } finally {
+            setIsLoading(false);
         }
     }
 
     return (
-        <>
+        <div style={{ paddingInline: '50px' }}>
             <Divider>Login</Divider>
             <Form
                 initialValues={{ remember: true }}
                 onFinish={onFinish}
+                layout='horizontal'
+                labelCol={{ span: 6 }}
+                wrapperCol={{ span: 20 }}
+                labelAlign='right'
             >
 
                 {/* Email */}
                 <Form.Item
                     name='email'
                     rules={[{ type: 'email', required: true, message: VALID_EMAIL }]}
+                    label='Email'
+                    required={false}
                 >
                     <Input prefix={<UserOutlined />} placeholder='Email' />
                 </Form.Item>
@@ -70,6 +83,8 @@ const Login: React.FC = () => {
                 <Form.Item
                     name='password'
                     rules={[{ required: true, message: MISSING_FIELD('password') }]}
+                    label='Password'
+                    required={false}
                 >
                     <Input.Password
                         prefix={<LockOutlined />}
@@ -97,19 +112,18 @@ const Login: React.FC = () => {
             </Form>
 
             {/* Forgot Password Modal */}
-            <Modal title={<Divider>Reset password</Divider>} open={forgotPasswordModal} footer={[]} onCancel={() => setForgotPasswordModal(false)}>
-                <Form onFinish={resetPassword}>
+            <Modal title={<Divider>Reset password</Divider>} open={forgotPasswordModal} footer={[]} onCancel={() => { setForgotPasswordModal(false); form.resetFields() }}>
+                <Form form={form} onFinish={resetPassword}>
                     <Form.Item
                         name='emailReset'
                         rules={[{ type: 'email', required: true, message: VALID_EMAIL }]}
-                        hasFeedback
                     >
                         <Input type='email' prefix={<UserOutlined />} placeholder='Email' />
                     </Form.Item>
-                    <Button type='primary' htmlType='submit' block>Submit</Button>
+                    <Button type='primary' htmlType='submit' loading={isLoading} block>Submit</Button>
                 </Form>
             </Modal>
-        </>
+        </div>
     )
 }
 
