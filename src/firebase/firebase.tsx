@@ -42,13 +42,14 @@ const doResetPassword = (email: string) =>
 
 const doUpdateProfile = async (displayName: string, email: string) => {
     try {
-        if (!displayName || !email)
-            throw new Error('Both name and email are required to update profile');
+        if (!email)
+            throw new Error('Email are required to update profile');
 
         if (auth.currentUser) {
-            await updateProfile(auth.currentUser, {
-                displayName: displayName
-            });
+            if (auth.currentUser.email !== displayName)
+                await updateProfile(auth.currentUser, {
+                    displayName: displayName
+                });
             if (auth.currentUser.email !== email)
                 await updateEmail(auth.currentUser, email);
         }
