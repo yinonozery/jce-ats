@@ -116,6 +116,9 @@ const SendEmail: React.FC<sendEmailProps> = React.memo((props) => {
                     style={{ padding: '20px' }}
                     onFinish={sendEmail}
                 >
+                    <Form.Item label='Email'>
+                        <Input value={props.candidate?.email} disabled />
+                    </Form.Item>
                     <Form.Item label='Email Template' name='option'>
                         <Select
                             options={groupEmailTemplatesByType(DataStore.templatesData || [])}
