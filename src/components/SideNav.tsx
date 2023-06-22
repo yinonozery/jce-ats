@@ -17,7 +17,7 @@ interface modalProps {
     stateFunc: Dispatch<SetStateAction<number>>,
 }
 
-const SideNav: React.FC<modalProps> = observer((props) => {
+const SideNav: React.FC<modalProps> = (props) => {
     const navigate = useNavigate();
     const [logoutModal, setLogoutModal] = useState(false);
     const [editProfileModal, setEditProfileModal] = useState(false);
@@ -79,6 +79,7 @@ const SideNav: React.FC<modalProps> = observer((props) => {
     const items: MenuProps['items'] = [
         {
             key: '1',
+            title: '',
             label: (
                 <span onClick={() => setEditProfileModal(true)}>
                     Edit Profile
@@ -87,6 +88,7 @@ const SideNav: React.FC<modalProps> = observer((props) => {
         },
         {
             key: '2',
+            title: '',
             label: (
                 <span onClick={() => setChangePassModal(true)}>
                     Change Password
@@ -117,7 +119,7 @@ const SideNav: React.FC<modalProps> = observer((props) => {
                     left: 0,
                     top: 0,
                     bottom: 0,
-                    overflowY: 'auto',
+                    overflowX: 'hidden',
                     boxShadow: 'rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px',
                     zIndex: 1,
                 }}
@@ -141,10 +143,20 @@ const SideNav: React.FC<modalProps> = observer((props) => {
                 <ChangePasswordModal state={changePassModal} stateFunc={setChangePassModal} />
                 {userStore.userInfo ?
                     <Divider style={{ borderBlockStartColor: '#8db286' }}>
-                        <Dropdown menu={{ items }} placement='bottom' arrow>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBlock: '15px', borderRadius: '10px', padding: 5, boxShadow: 'rgba(0, 0, 0, 0.2) 0px 18px 50px -10px' }}>
+                        <Dropdown menu={{ items }} placement='bottom' arrow >
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBlock: '15px', borderRadius: '10px', padding: 5, boxShadow: 'rgba(0, 0, 0, 0.2) 0px 18px 50px -10px', maxWidth: '160px' }}>
                                 <Avatar shape='square' style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-                                {props.state === 80 ? userStore.userInfo.email?.charAt(0).toUpperCase() : userStore.userInfo.email}
+                                <span style={{ display: 'inline-block', marginInline: 'auto', maxWidth: '150px', wordWrap: 'break-word', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    {props.state === 80 ? (
+                                        userStore.userInfo.displayName ? (
+                                            userStore.userInfo.displayName.charAt(0).toUpperCase()
+                                        ) : (
+                                            userStore.userInfo.email?.charAt(0).toUpperCase()
+                                        )
+                                    ) : (
+                                        userStore.userInfo.displayName || userStore.userInfo.email
+                                    )}
+                                </span>
                             </div>
                         </Dropdown>
                     </Divider>
@@ -174,6 +186,6 @@ const SideNav: React.FC<modalProps> = observer((props) => {
             </Sider>
         </>
     )
-})
+}
 
-export default SideNav;
+export default observer(SideNav);
