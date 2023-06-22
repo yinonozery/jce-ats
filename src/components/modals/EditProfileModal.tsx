@@ -1,10 +1,10 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Modal, Form, Input, message, Divider } from "antd";
 import userStore from "../../stores/userStore";
 import firebase from "../../firebase/firebase";
-import type { FormInstance } from 'antd/es/form';
 import { REAUTHENTICATION_MSG, VALID_EMAIL } from "../../utils/messages";
 import { observer } from "mobx-react";
+import { FormInstance, useForm } from "antd/es/form/Form";
 
 interface modalProps {
     state: boolean,
@@ -12,12 +12,17 @@ interface modalProps {
 }
 
 const EditProfileModal: React.FC<modalProps> = (props) => {
-    const profileFormRef = React.useRef<FormInstance>(null);
+    const profileFormRef: FormInstance<any> = useForm()[0];
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        profileFormRef.setFields([{ name: "name", value: userStore.userInfo?.displayName }, { name: "email", value: userStore.userInfo?.email }]);
+    }, [profileFormRef, props.state]);
 
     const handleUpdateProfile = async () => {
         setIsLoading(true);
-        const { name, email } = profileFormRef?.current?.getFieldsValue(["name", "email"]);
+        const { name, email } = profileFormRef?.getFieldsValue(["name", "email"]);
         try {
             await firebase.doUpdateProfile(name, email);
             message.success("Profile details have been updated successfully");
@@ -40,7 +45,7 @@ const EditProfileModal: React.FC<modalProps> = (props) => {
             confirmLoading={isLoading}
         >
             <Form
-                ref={profileFormRef}
+                form={profileFormRef}
                 initialValues={{ name: userStore.userInfo?.displayName, email: userStore.userInfo?.email }}
                 layout="vertical"
             >
