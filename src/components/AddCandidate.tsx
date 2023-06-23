@@ -22,12 +22,14 @@ const AddCandidate: React.FC = () => {
             fileList: File[],
         } | string | undefined,
         terms: boolean,
+        comments: string,
+        degree: string,
     }
 
     const onFinish = async () => {
         setIsLoading(true);
         try {
-            const values: UploadForm = await form.validateFields(['resume', 'first_name', 'last_name', 'email', 'comments', 'gender', 'work_experience']);
+            const values: UploadForm = await form.validateFields(['resume', 'first_name', 'last_name', 'email', 'comments', 'gender', 'work_experience', 'degree']);
             if (typeof (values.resume) === 'object') {
                 if (values.resume.fileList.length === 0)
                     throw String('A resume file must be attached');
