@@ -19,7 +19,7 @@ class DataStore {
     lastKeywordsFetchTime: number = 0;
     lastTemplatesFetchTime: number = 0;
     lastTemplatesTypesFetchTime: number = 0;
-    waitingTime: number = 2 * 60 * 1000;
+    waitingTime: number = parseInt(process.env.REACT_APP_FETCHING_WAITING_TIME || '') * 60 * 1000;
 
     constructor() {
         makeAutoObservable(this);
