@@ -92,6 +92,14 @@ const EditCandidate: React.FC<modalProps> = (props) => {
                 <Form.Item name='work_experience' label='Work Experience'>
                     <InputNumber min={0} max={99} />
                 </Form.Item>
+                <Form.Item name='degree' label='Degree' required={false}>
+                    <Select>
+                        <Select.Option value='Associate'>Associate</Select.Option>
+                        <Select.Option value='Bachelor'>Bachelor</Select.Option>
+                        <Select.Option value='Master'>Master</Select.Option>
+                        <Select.Option value='Doctor'>Doctor</Select.Option>
+                    </Select>
+                </Form.Item>
                 <Form.Item name='gender' label='Gender' required={false}>
                     <Select>
                         <Select.Option value='Male'><span>Male <ManOutlined /></span></Select.Option>
