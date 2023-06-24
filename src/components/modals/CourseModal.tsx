@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState, useEffect, useRef } from 'react';
 import { Modal, Form, Input, message, Divider, Button, List, FormInstance, Radio, Tag } from 'antd';
-import { MISSING_FIELD, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD, ADD_SUCCESS, UPDATE_SUCCESS } from '../../utils/messages';
+import { MISSING_FIELD, FIELD_MIN_LENGTH, DUPLICATE_KEYWORD, ADD_SUCCESS, UPDATE_SUCCESS, MISSING_KEYWORDS } from '../../utils/messages';
 import { FileSearchOutlined, CloseCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import Keyword from '../types/Keyword';
 import Course from '../types/Course';
@@ -32,8 +32,13 @@ const CourseModal: React.FC<modalProps> = (props: modalProps) => {
     const onFinish = async () => {
         const values = await form.validateFields(['name']);
 
-        if (!values.name || !keywords)
+        if (values.name?.length < 3) {
+            message.error(FIELD_MIN_LENGTH("Course name", 3))
             return;
+        } else if (keywords?.length < 5) {
+            message.error(MISSING_KEYWORDS(5 - keywords.length))
+            return;
+        }
 
         setAddLoading(false);
 
