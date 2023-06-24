@@ -6,7 +6,7 @@ export const TERMS_AGREEMENT = 'Please agree the terms and conditions.';
 
 
 // Add Course
-export const MISSING_KEYWORDS = (left: number) => `Error: Please enter at least 3 keywords (${left} more)`;
+export const MISSING_KEYWORDS = (left: number) => `Error: Please enter at least 5 keywords (${left} more)`;
 export const MISSING_COURSE_NAME = 'Please enter a course name!';
 export const DUPLICATE_KEYWORD = (keyword: string) => `Error: The keyword '${keyword}' already exists. Please enter a different keyword`;
 
