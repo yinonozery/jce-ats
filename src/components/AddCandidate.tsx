@@ -65,7 +65,7 @@ const AddCandidate: React.FC = () => {
                 message.error(ADD_FAILED('Candidate'))
             }
         } catch (err: any) {
-            message.error(err);
+            message.error(ADD_FAILED('Candidate'));
             console.error(err);
         } finally {
             setIsLoading(false);
