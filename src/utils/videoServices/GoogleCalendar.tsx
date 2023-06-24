@@ -148,7 +148,7 @@ const GoogleCalendar: React.FC = () => {
     }, [form, isOnline])
 
     const addEvent = async () => {
-        const { summary, datePicker, description, location, duration, video } = await form.validateFields();
+        const { summary, datePicker, description, location, duration } = await form.validateFields();
         setIsLoading(true);
         const date = new Date(datePicker).getTime();
         const conferenceID = new Date().getTime();
@@ -159,7 +159,7 @@ const GoogleCalendar: React.FC = () => {
             eventId: 'hangoutsMeet' + conferenceID,
             kind: 'calendar#event',
             summary: summary,
-            location: video ? 'Online - Google Meet' : location,
+            location: isOnline ? 'Online - Google Meet' : location,
             description: description,
             conferenceData: {},
             start: {
@@ -179,7 +179,8 @@ const GoogleCalendar: React.FC = () => {
             },
             guestsCanSeeOtherGuests: true,
         }
-        if (video)
+
+        if (isOnline) {
             event['conferenceData'] = {
                 createRequest:
                 {
@@ -189,6 +190,7 @@ const GoogleCalendar: React.FC = () => {
                     }
                 }
             }
+        }
 
         const request = gapi.client.calendar.events.insert({
             calendarId: calendarId,
