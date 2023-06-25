@@ -1,7 +1,7 @@
 import { Divider, message, Table, Button, Modal, TableProps, Tooltip } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DELETE_SURE, DELETE_SUCCESS } from '../utils/messages';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
 import EmailTemplateModal from './modals/EmailTemplateModal';
 import EmailTemplate from './types/EmailTemplate';
@@ -97,10 +97,18 @@ const EmailTemplates: React.FC = () => {
                 bordered
             />
             <Modal
+                title={
+                    <>
+                        <ExclamationCircleOutlined style={{ fontSize: '1.5em', color: 'red' }} />
+                        <p style={{ marginBlockEnd: '20px' }}>
+                            {DELETE_SURE("email template '" + selectedTemplate?.Subject + "'")}
+                        </p>
+                    </>
+                }
                 onOk={() => deleteTemplate()}
                 onCancel={() => setDeleteModal(false)}
                 open={deleteModal}
-                title={DELETE_SURE("email template '" + selectedTemplate?.Subject + "'")}
+                okButtonProps={{ style: { backgroundColor: 'red' } }}
             />
             <EmailTemplateModal state={openTemplateModal} stateFunc={setEditTemplateModal} template={selectedTemplate} mode={modalMode} />
         </>

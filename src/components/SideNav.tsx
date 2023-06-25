@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import firebase from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 import { Menu, Modal, MenuProps, Avatar, Divider, Dropdown, theme } from 'antd';
-import { LaptopOutlined, ReadOutlined, NotificationOutlined, UserOutlined, FacebookOutlined, GlobalOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, FileAddOutlined, SolutionOutlined, QuestionOutlined, ContainerOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, LaptopOutlined, ReadOutlined, NotificationOutlined, UserOutlined, FacebookOutlined, GlobalOutlined, InstagramOutlined, LoginOutlined, LogoutOutlined, FileAddOutlined, SolutionOutlined, QuestionOutlined, ContainerOutlined } from '@ant-design/icons';
 import userStore from '../stores/userStore';
 import { LOG_OUT_QUESTION } from '../utils/messages';
 import EditProfileModal from './modals/EditProfileModal';
@@ -132,13 +132,19 @@ const SideNav: React.FC<modalProps> = (props) => {
                 breakpoint='xl'
             >
                 <Modal
-                    title='Logout'
+                    title={
+                        <>
+                            <ExclamationCircleOutlined style={{ fontSize: '1.5em', color: 'red' }} />
+                            <p style={{ marginBlockEnd: '20px' }}>
+                                {LOG_OUT_QUESTION}
+                            </p>
+                        </>
+                    }
                     open={logoutModal}
                     onOk={signOut}
                     onCancel={() => setLogoutModal(false)}
-                >
-                    <p>{LOG_OUT_QUESTION}</p>
-                </Modal>
+                    okButtonProps={{ style: { backgroundColor: 'red' } }}
+                />
                 <EditProfileModal state={editProfileModal} stateFunc={setEditProfileModal} />
                 <ChangePasswordModal state={changePassModal} stateFunc={setChangePassModal} />
                 {userStore.userInfo ?

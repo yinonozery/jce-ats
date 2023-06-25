@@ -1,7 +1,7 @@
 import { Divider, message, Table, Button, Modal, Tag, Tooltip } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { DELETE_SUCCESS, DELETE_SURE } from '../utils/messages';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { AlignType } from 'rc-table/lib/interface';
 import CourseModal from './modals/CourseModal';
 import Course from './types/Course';
@@ -117,7 +117,15 @@ const Courses: React.FC = () => {
                 onOk={() => deleteTemplate()}
                 onCancel={() => setDeleteModal(false)}
                 open={deleteModal}
-                title={DELETE_SURE("course '" + selectedCourse?.name + "'")}
+                title={
+                    <>
+                        <ExclamationCircleOutlined style={{ fontSize: '1.5em', color: 'red' }} />
+                        <p style={{ marginBlockEnd: '20px' }}>
+                            {DELETE_SURE("course '" + selectedCourse?.name + "'")}
+                        </p>
+                    </>
+                }
+                okButtonProps={{ style: { backgroundColor: 'red' } }}
             />
             <CourseModal state={openTemplateModal} weightLevels={weightLevels} stateFunc={setEditTemplateModal} course={selectedCourse} mode={modalMode} />
         </>
