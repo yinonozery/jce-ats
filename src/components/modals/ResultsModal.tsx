@@ -49,7 +49,7 @@ const ResultsModal: React.FC<modalProps> = (props) => {
                                 {(item: any, index: number) => {
                                     if (item?.score >= minScore) {
                                         return (
-                                            <List.Item key={`${item}--${index}`}>
+                                            <List.Item key={`${item?.score}--${index}`}>
                                                 <List.Item.Meta
                                                     avatar={null}
                                                     title={
