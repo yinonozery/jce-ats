@@ -41,7 +41,8 @@ const Discover: React.FC = () => {
             if (
                 (values.min_years_of_exp && candidate?.work_experience < values.min_years_of_exp) ||
                 (values.degree !== 'All' && candidate?.degree !== values.degree && values.degree !== 'Any') ||
-                (values.gender !== 'All' && candidate?.gender !== values.gender && values.gender !== 'Any')
+                (values.gender !== 'All' && candidate?.gender !== values.gender && values.gender !== 'Any') ||
+                candidate.status === 'Accepted' || candidate.status === 'Rejected'
             )
                 continue;
 
