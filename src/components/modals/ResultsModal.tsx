@@ -73,7 +73,8 @@ const ResultsModal: React.FC<modalProps> = (props) => {
                                                             <div style={{ display: 'flex', flexWrap: 'wrap', marginBlockEnd: '10px' }}>
                                                                 {item.keywordsMatches.map((keyword: string, index: number) => <Tag color='green' key={`${index}-${keyword}`}>{keyword}</Tag>)}
                                                             </div>
-                                                            <b>Score:</b> {item.score}
+                                                            <b>Score:</b> {item.score}<br />
+                                                            <b>Status:</b> {item.candidate.status}
                                                         </>
                                                     }
                                                     style={{ border: '1px solid #e2e2e2', borderRadius: '10px', padding: '10px' }}
