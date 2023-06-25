@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Home from '../components/Home';
 import Login from '../components/auth/Login';
-import SignOut from '../components/auth/Signout';
 import AddCandidate from '../components/AddCandidate';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 import userStore from '../stores/userStore';
@@ -17,7 +16,6 @@ const AllRoutes: React.FC = () => {
     const location = useLocation();
     const appRoutes = [
         'login',
-        'signout',
         'add-candidate',
         'candidates',
         'courses',
@@ -39,13 +37,12 @@ const AllRoutes: React.FC = () => {
             <Route path='*' element={<Error statusCode={404} subTitle={'Sorry, the page you visited does not exist.'} />} />
             <Route path={'/'} element={<Home />} />
             <Route path={appRoutes[0]} element={<Login />} />
-            <Route path={appRoutes[1]} element={<SignOut />} />
             <Route element={<ProtectedRoute user={userStore.userInfo} />}>
-                <Route path={appRoutes[2]} element={<AddCandidate />} />
-                <Route path={appRoutes[3]} element={<Candidates />} />
-                <Route path={appRoutes[4]} element={<Courses />} />
-                <Route path={appRoutes[5]} element={<EmailTemplates />} />
-                <Route path={appRoutes[6]} element={<GoogleCalendar />} />
+                <Route path={appRoutes[1]} element={<AddCandidate />} />
+                <Route path={appRoutes[2]} element={<Candidates />} />
+                <Route path={appRoutes[3]} element={<Courses />} />
+                <Route path={appRoutes[4]} element={<EmailTemplates />} />
+                <Route path={appRoutes[5]} element={<GoogleCalendar />} />
             </Route>
         </Routes>
     );
