@@ -11,10 +11,12 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   // <React.StrictMode>
-  <Provider {...userStore}>
+  <>
     <Tracker />
-    <App />
-  </Provider>
+    <Provider {...userStore}>
+      <App />
+    </Provider>
+  </>
   // </React.StrictMode>
 );
 
