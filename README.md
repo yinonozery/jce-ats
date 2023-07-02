@@ -5,10 +5,16 @@
   <img src="https://github.com/yinonozery/jce-ats/assets/74764366/e5eaea8f-a426-42c6-8831-14819c1ab988" width="350">
 </p>
 
+> **Note**
+> Restricted Access for Security Reasons
+> 
+> Due privacy and confidentiality reasons, login details, including usernames and passwords, cannot be provided for this project. Access to sensitive information, such as personal details, resume files, and more, is intentionally restricted. Safeguarding this data is my top priority as the author of this project. If you have any inquiries or require further information, please feel free to contact me directly.
+
 ## Introduction
 The purpose of the project is to develop a system for the college and especially the recruitment department whose job is to manage and store the resumes of candidates.
 Providing various options such as search, association with relevant courses, analysis of the resume file (doc/docx/pdf), maintaining touch with the candidate throughout the recruitment process, and additional actions on each candidate.
 If there is a lack of a lecturer/practitioner in some courses, with the help of the system we can reach suitable candidates relatively easily without having to go through dozens of resumes.
+
 
 ## Stack
 **Client-side:** `React, TypeScript, Ant Design, MobX (State Management)`
