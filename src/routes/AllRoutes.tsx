@@ -4,7 +4,6 @@ import Home from '../components/Home';
 import Login from '../components/auth/Login';
 import AddCandidate from '../components/AddCandidate';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
-import userStore from '../stores/userStore';
 import Candidates from '../components/Candidates';
 import Error from '../components/Error';
 import Courses from '../components/Courses';
@@ -37,7 +36,7 @@ const AllRoutes: React.FC = () => {
             <Route path='*' element={<Error statusCode={404} subTitle={'Sorry, the page you visited does not exist.'} />} />
             <Route path={'/'} element={<Home />} />
             <Route path={appRoutes[0]} element={<Login />} />
-            <Route element={<ProtectedRoute user={userStore.userInfo} />}>
+            <Route element={<ProtectedRoute to='/login' />}>
                 <Route path={appRoutes[1]} element={<AddCandidate />} />
                 <Route path={appRoutes[2]} element={<Candidates />} />
                 <Route path={appRoutes[3]} element={<Courses />} />
