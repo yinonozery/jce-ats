@@ -1,21 +1,25 @@
-# JCE - ATS
-<sup> Department of Software Engineering, Final project 2023</sup>
+# Managing & Filtering Candidates for Teaching Positions 
 
-A system for managing a resume database of college applicants.
+<sup> Department of Software Engineering, Final project 2023</sup>
+<p align="center">
+  <img src="https://github.com/yinonozery/jce-ats/assets/74764366/e5eaea8f-a426-42c6-8831-14819c1ab988" width="350">
+</p>
 
 ## Introduction
 The purpose of the project is to develop a system for the college and especially the recruitment department whose job is to manage and store the resumes of candidates.
-Providing various options such as search, association with relevant courses, analysis of the resume file (docs/pdf), maintaining touch with the candidate throughout the recruitment process, and additional actions on each candidate.
+Providing various options such as search, association with relevant courses, analysis of the resume file (doc/docx/pdf), maintaining touch with the candidate throughout the recruitment process, and additional actions on each candidate.
 If there is a lack of a lecturer/practitioner in some courses, with the help of the system we can reach suitable candidates relatively easily without having to go through dozens of resumes.
 
 ## Stack
-**Client-side:** `React, TypeScript, MobX, Firebase (User Authentication), Ant Design`
+**Client-side:** `React, TypeScript, Ant Design, MobX (State Management)`
 
-**Server-side:** `Python, Node.js`
+**Server-side:** `Serverless with AWS Lambda Functions (Python & Node.js) and API Gateway, Firebase (User Authentication)`
 
 **Storage** `AWS Simple Storage Service (S3)`
 
 **Database:** `AWS DynamoDB`
+
+**Other services:** `AWS Simple Email Service (SES), Google API (Maps & Calendar)`
 
 ## Hiring Manager Use Case
 ![image](https://user-images.githubusercontent.com/74764366/214918318-17b339b4-267e-4759-a773-cd2246e0d989.png)
