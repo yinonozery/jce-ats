@@ -6,6 +6,7 @@ import { AlignType } from 'rc-table/lib/interface';
 import EmailTemplateModal from './modals/EmailTemplateModal';
 import EmailTemplate from './types/EmailTemplate';
 import DataStore from '../stores/dataStore';
+import { observer } from 'mobx-react';
 
 const EmailTemplates: React.FC = () => {
     const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | undefined>(undefined);
@@ -25,7 +26,7 @@ const EmailTemplates: React.FC = () => {
         const data = await response.json();
         if (data.statusCode === 200) {
             message.success(DELETE_SUCCESS("Email template"));
-            DataStore.fetchKeywordsData(true);
+            DataStore.templatesData = DataStore.templatesData?.filter((template) => template.TemplateId !== selectedTemplate?.TemplateId)
         } else {
             message.error(data?.error);
         }
@@ -115,4 +116,4 @@ const EmailTemplates: React.FC = () => {
     )
 }
 
-export default EmailTemplates;
+export default observer(EmailTemplates);
